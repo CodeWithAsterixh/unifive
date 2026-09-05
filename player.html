@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UNIFIVE Arcade - Web Game Player</title>
+  
+  <!-- App Icons & Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Pixel Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Vector Icons Library -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Pixelated Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <style>
+    body.standalone-player {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #060204;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .player-header {
+      height: 48px;
+      background-color: var(--burgundy-darkest);
+      border-bottom: 2px solid #3b0816;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      z-index: 100;
+    }
+
+    .player-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--gold-bright);
+      font-family: var(--font-pixel);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .player-header-title {
+      font-family: var(--font-pixel);
+      color: #fef08a;
+      font-size: 0.8rem;
+    }
+
+    .player-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .standalone-viewport {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 48px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+  </style>
+
+  <!-- p5.js Core Library -->
+  <script src="libraries/p5.min.js"></script>
+
+  <!-- UNIFIVE Studio Core & Player Modules -->
+  <script src="sketch.js"></script>
+  <script src="player.js"></script>
+</head>
+<body class="standalone-player mode-play">
+
+  <!-- Standalone Top Bar -->
+  <header class="player-header">
+    <a href="./" class="player-header-brand" title="Return to UNIFIVE Home">
+      <img src="favicon-32x32.png" alt="U5 Logo" style="width: 20px; height: 20px; image-rendering: pixelated;" />
+      <span>UNIFIVE ARCADE</span>
+    </a>
+
+    <div class="player-header-title" id="standalone-project-title">
+      LOADING GAME...
+    </div>
+
+    <div class="player-header-actions">
+      <button id="btn-standalone-presets" class="btn btn-pixel btn-hud-action" title="Browse Presets">
+        <i class="ph ph-sparkle"></i>
+        <span>PRESETS</span>
+      </button>
+      <button id="btn-standalone-open" class="btn btn-pixel btn-hud-action" title="Open .U5 File">
+        <i class="ph ph-folder-open"></i>
+        <span>OPEN .U5</span>
+      </button>
+      <a href="app/" class="btn btn-pixel btn-hud-action btn-hud-exit" title="Launch Studio Editor">
+        <i class="ph ph-pencil-simple"></i>
+        <span>STUDIO</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Viewport Area -->
+  <main class="standalone-viewport">
+    
+    <!-- Dedicated Game Player Pane -->
+    <section class="game-player-pane" id="game-player-pane" style="display: flex; width: 100%; height: 100%;" aria-label="UNIFIVE Game Player">
+      
+      <!-- Minimal Floating In-Game Player Overlay (Clean distraction-free with minimal Quit button) -->
+      <div class="player-floating-bar" id="player-hud">
+        <button id="btn-player-pause" class="btn btn-pixel btn-player-floating-btn" title="Pause Game (ESC)">
+          <i class="ph ph-pause"></i>
+        </button>
+        <button id="btn-player-fullscreen" class="btn btn-pixel btn-player-floating-btn" title="Toggle Fullscreen (F)">
+          <i class="ph ph-arrows-out-simple"></i>
+        </button>
+        <a href="app/" id="btn-player-exit" class="btn btn-pixel btn-player-floating-btn btn-player-quit" title="Quit to Studio Editor">
+          <i class="ph ph-x-bold"></i>
+          <span>QUIT</span>
+        </a>
+      </div>
+
+      <!-- Player Canvas Container -->
+      <div class="player-canvas-container" id="player-canvas-container">
+        <div id="canvas-container" class="canvas-wrapper"></div>
+      </div>
+
+      <!-- Mobile / Touch Virtual Gamepad Overlay -->
+      <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
+        <!-- Left: 4-Way D-Pad -->
+        <div class="virtual-dpad-cluster">
+          <button class="virtual-dpad-btn dpad-up" data-dir="up" aria-label="Up">
+            <i class="ph ph-caret-up-fill"></i>
+          </button>
+          <button class="virtual-dpad-btn dpad-left" data-dir="left" aria-label="Left">
+            <i class="ph ph-caret-left-fill"></i>
+          </button>
+          <div class="virtual-dpad-center"></div>
+          <button class="virtual-dpad-btn dpad-right" data-dir="right" aria-label="Right">
+            <i class="ph ph-caret-right-fill"></i>
+          </button>
+          <button class="virtual-dpad-btn dpad-down" data-dir="down" aria-label="Down">
+            <i class="ph ph-caret-down-fill"></i>
+          </button>
+        </div>
+
+        <!-- Right: Action Buttons (A & B) -->
+        <div class="virtual-actions-cluster">
+          <button class="virtual-action-btn action-b" data-action="attack" aria-label="Action B / Attack">
+            <span>B</span>
+            <small>ATTACK</small>
+          </button>
+          <button class="virtual-action-btn action-a" data-action="jump" aria-label="Action A / Jump">
+            <span>A</span>
+            <small>JUMP</small>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Modal: In-Game Pause Menu -->
+  <div id="modal-player-pause" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box player-pause-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-pause-circle"></i>
+          <span>GAME PAUSED</span>
+        </div>
+      </div>
+      <div class="pixel-modal-body player-pause-body">
+        <div class="pause-menu-actions">
+          <button id="btn-pause-resume" class="btn btn-pixel btn-pause-option btn-resume">
+            <i class="ph ph-play-fill"></i>
+            <span>RESUME GAME</span>
+          </button>
+          <button id="btn-pause-restart" class="btn btn-pixel btn-pause-option">
+            <i class="ph ph-arrow-counter-clockwise"></i>
+            <span>RESTART LEVEL</span>
+          </button>
+          <a href="app/" class="btn btn-pixel btn-pause-option btn-exit-studio" style="text-decoration: none;">
+            <i class="ph ph-pencil-simple"></i>
+            <span>EDIT IN STUDIO</span>
+          </a>
+        </div>
+
+        <div class="pause-controls-guide">
+          <span class="guide-title"><i class="ph ph-keyboard"></i> CONTROLS GUIDE</span>
+          <div class="guide-grid">
+            <div class="guide-row"><span>Move:</span> <strong>WASD / Arrow Keys</strong></div>
+            <div class="guide-row"><span>Jump / Action:</span> <strong>Space / [A] Button</strong></div>
+            <div class="guide-row"><span>Attack:</span> <strong>Z / [B] Button</strong></div>
+            <div class="guide-row"><span>Interact / Click:</span> <strong>Touch / Click Objects</strong></div>
+            <div class="guide-row"><span>Pause:</span> <strong>ESC Key</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Game Over -->
+  <div id="modal-player-gameover" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box player-gameover-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-skull"></i>
+          <span>GAME OVER</span>
+        </div>
+      </div>
+      <div class="pixel-modal-body player-gameover-body">
+        <div class="gameover-stats-card">
+          <div class="gameover-stat-item">
+            <span class="stat-label">FINAL SCORE</span>
+            <strong class="stat-value" id="gameover-final-score">0</strong>
+          </div>
+          <div class="gameover-stat-item">
+            <span class="stat-label">COINS COLLECTED</span>
+            <strong class="stat-value" id="gameover-final-coins">0</strong>
+          </div>
+        </div>
+
+        <div class="gameover-actions-row">
+          <button id="btn-gameover-retry" class="btn btn-pixel btn-gameover-retry">
+            <i class="ph ph-arrow-counter-clockwise"></i>
+            <span>TRY AGAIN</span>
+          </button>
+          <a href="app/" class="btn btn-pixel btn-gameover-exit" style="text-decoration: none; text-align: center;">
+            <i class="ph ph-house"></i>
+            <span>RETURN TO STUDIO</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Presets Gallery Browser -->
+  <div id="modal-presets-browser" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box presets-browser-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-sparkle"></i>
+          <span>CHOOSE GAME PRESET</span>
+        </div>
+        <button id="btn-close-presets-modal" class="btn-icon-pixel" title="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="pixel-modal-body presets-modal-body">
+        <div id="presets-cards-grid" class="presets-cards-grid"></div>
+        <div id="presets-loading-status" class="presets-loading-status" style="display: none;">
+          <div class="presets-spinner-box">
+            <i class="ph ph-spinner ph-spin"></i>
+          </div>
+          <span id="presets-loading-text">Loading game preset...</span>
+        </div>
+      </div>
+      <div class="pixel-modal-footer">
+        <button id="btn-cancel-presets-modal" class="btn btn-pixel btn-modal-cancel">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="standalone-file-input" accept=".u5" style="display: none;" />
+
+  <script>
+    // Standalone Player Auto-loader
+    window.addEventListener("DOMContentLoaded", async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const presetParam = urlParams.get("preset") || "sidefacing_desert_oasis_expanse";
+
+      const btnPresets = document.getElementById("btn-standalone-presets");
+      const btnOpen = document.getElementById("btn-standalone-open");
+      const fileInput = document.getElementById("standalone-file-input");
+
+      if (btnPresets) {
+        btnPresets.addEventListener("click", () => {
+          if (typeof U5Compiler !== "undefined") U5Compiler.openPresetsModal();
+        });
+      }
+
+      if (btnOpen && fileInput) {
+        btnOpen.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", async (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file && typeof U5Compiler !== "undefined") {
+            await U5Compiler.decompressAndLoad(file);
+            GamePlayerEngine.enter();
+          }
+        });
+      }
+
+      // Load initial preset
+      setTimeout(async () => {
+        try {
+          const presetPath = presetParam.endsWith(".json") ? presetParam : `assets/presets/${presetParam}.json`;
+          if (typeof U5Compiler !== "undefined") {
+            await U5Compiler.loadPresetFile(presetPath);
+            const titleEl = document.getElementById("standalone-project-title");
+            if (titleEl) titleEl.textContent = presetParam.replace(/_/g, " ").toUpperCase();
+            GamePlayerEngine.enter();
+          }
+        } catch (err) {
+          console.warn("Failed to load preset in standalone player:", err);
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>

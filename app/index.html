@@ -29,6 +29,7 @@
 
   <!-- Application Script -->
   <script src="sketch.js"></script>
+  <script src="player.js"></script>
 </head>
 <body class="mode-canvas">
 
@@ -62,13 +63,17 @@
       <div class="header-mode-divider desktop-only"></div>
 
       <div class="mode-switch-group desktop-only" role="group" aria-label="Editor Mode Switcher">
-        <button id="btn-mode-canvas" class="btn btn-pixel btn-mode-toggle active" data-mode="canvas" title="Canvas Editor Mode" aria-label="Canvas Editor Mode">
+        <button id="btn-mode-canvas" class="btn btn-pixel btn-mode-toggle active" data-mode="canvas" title="Canvas Editor Mode (1)" aria-label="Canvas Editor Mode">
           <i class="ph ph-paint-brush"></i>
           <span>CANVAS</span>
         </button>
-        <button id="btn-mode-code" class="btn btn-pixel btn-mode-toggle" data-mode="code" title="Visual Code Mode" aria-label="Visual Code Mode">
+        <button id="btn-mode-code" class="btn btn-pixel btn-mode-toggle" data-mode="code" title="Visual Code Mode (2)" aria-label="Visual Code Mode">
           <i class="ph ph-code"></i>
           <span>CODE</span>
+        </button>
+        <button id="btn-mode-play" class="btn btn-pixel btn-mode-toggle btn-mode-play" data-mode="play" title="Play Game Mode (P)" aria-label="Play Game Mode">
+          <i class="ph ph-game-controller"></i>
+          <span>PLAY</span>
         </button>
       </div>
     </div>
@@ -325,7 +330,36 @@
               </div>
             </div>
 
-            <!-- 2. Transform: Position (X, Y) -->
+            <!-- 2. Gameplay Role & Device Display Settings -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-crown"></i>
+                <span>GAMEPLAY & DISPLAY</span>
+              </div>
+              <div class="prop-toggle-row">
+                <label class="prop-checkbox-label" title="Designate this character as the primary playable hero">
+                  <input type="checkbox" id="prop-is-playable" class="pixel-checkbox" />
+                  <span class="prop-checkbox-text">🎮 PLAYABLE HERO</span>
+                </label>
+              </div>
+              <div class="input-labeled" style="margin-top: 8px;">
+                <span class="input-tag" title="Control when this item is shown"><i class="ph ph-device-mobile"></i></span>
+                <select id="prop-device-visibility" class="input-pixel prop-select-vis">
+                  <option value="all">Display: All Devices</option>
+                  <option value="mobile_only">Display: Mobile / Touch Only</option>
+                  <option value="desktop_only">Display: Desktop Only</option>
+                </select>
+              </div>
+              <div class="input-labeled" style="margin-top: 8px;">
+                <span class="input-tag" title="Set whether this item is solid or walkable pass-through"><i class="ph ph-shield"></i></span>
+                <select id="prop-collision-type" class="input-pixel prop-select-vis">
+                  <option value="pass_through">Pass-Through (Walkable)</option>
+                  <option value="solid">Solid (Obstacle / Block)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 3. Transform: Position (X, Y) -->
             <div class="config-group">
               <div class="config-group-header">
                 <i class="ph ph-arrows-out-cardinal"></i>
@@ -536,7 +570,38 @@
               </div>
             </div>
 
-            <!-- 3. Unique Compressed Package (.U5) -->
+            <!-- 3. Gameplay & Depth Sorting Config -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-stack-overflow"></i>
+                <span>GAMEPLAY DEPTH LAYERING</span>
+              </div>
+              <div class="config-group-body">
+                <label class="pixel-checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="cfg-responsive-layering" class="pixel-checkbox" checked>
+                  <span style="font-family: var(--font-pixel); font-size: 0.72rem; color: var(--text-light); font-weight: 700;">
+                    RESPONSIVE GAMEPLAY LAYERING
+                  </span>
+                </label>
+                <p class="config-field-hint" style="margin-top: 6px; font-size: 0.65rem; color: var(--text-secondary); line-height: 1.35;">
+                  Automatically detects depth based on feet/bottom positions during gameplay so characters, NPCs, and props naturally appear in front or behind each other as they move.
+                </p>
+
+                <div style="height: 1px; background-color: var(--burgundy-darkest); margin: 10px 0 8px 0;"></div>
+
+                <label class="pixel-checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="cfg-auto-go-around" class="pixel-checkbox" checked>
+                  <span style="font-family: var(--font-pixel); font-size: 0.72rem; color: var(--text-light); font-weight: 700;">
+                    AUTO GO AROUND SOLID OBJECTS
+                  </span>
+                </label>
+                <p class="config-field-hint" style="margin-top: 6px; font-size: 0.65rem; color: var(--text-secondary); line-height: 1.35;">
+                  When walking against a solid obstacle corner or wall, automatically steers and guides the player around edges smoothly.
+                </p>
+              </div>
+            </div>
+
+            <!-- 4. Unique Compressed Package (.U5) -->
             <div class="config-group u5-compile-group">
               <div class="config-group-header">
                 <i class="ph ph-package"></i>
@@ -616,6 +681,14 @@
           <button class="code-cat-btn" data-category="control" title="Loops & Logic" style="--cat-color: #10b981;">
             <span class="code-cat-box"></span>
             <span>CONTROL</span>
+          </button>
+          <button class="code-cat-btn" data-category="sensing" title="Sensing & Collision" style="--cat-color: #0284c7;">
+            <span class="code-cat-box"></span>
+            <span>SENSING</span>
+          </button>
+          <button class="code-cat-btn" data-category="operators" title="Math & Logic Operators" style="--cat-color: #22c55e;">
+            <span class="code-cat-box"></span>
+            <span>OPERATORS</span>
           </button>
           <button class="code-cat-btn" data-category="variables" title="Variables & Scores" style="--cat-color: #f97316;">
             <span class="code-cat-box"></span>
@@ -852,6 +925,62 @@
       </div>
     </section>
 
+    <!-- DEDICATED GAME PLAYER PANE (Active when in Play Mode) -->
+    <section class="game-player-pane" id="game-player-pane" style="display: none;" aria-label="UNIFIVE Game Player">
+      
+      <!-- Minimal Floating In-Game Player Overlay (Clean distraction-free with minimal Quit button) -->
+      <div class="player-floating-bar" id="player-hud">
+        <button id="btn-player-pause" class="btn btn-pixel btn-player-floating-btn" title="Pause Game (ESC)">
+          <i class="ph ph-pause"></i>
+        </button>
+        <button id="btn-player-fullscreen" class="btn btn-pixel btn-player-floating-btn" title="Toggle Fullscreen (F)">
+          <i class="ph ph-arrows-out-simple"></i>
+        </button>
+        <button id="btn-player-exit" class="btn btn-pixel btn-player-floating-btn btn-player-quit" title="Quit Game (ESC / P)">
+          <i class="ph ph-x-bold"></i>
+          <span>QUIT</span>
+        </button>
+      </div>
+
+      <!-- Player Game Viewport -->
+      <div class="player-canvas-container" id="player-canvas-container">
+        <!-- #canvas-container is mounted here in Play Mode -->
+      </div>
+
+      <!-- Mobile / Touch Virtual Gamepad Overlay -->
+      <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
+        <!-- Left: 4-Way D-Pad -->
+        <div class="virtual-dpad-cluster">
+          <button class="virtual-dpad-btn dpad-up" data-dir="up" aria-label="Up">
+            <i class="ph ph-caret-up-fill"></i>
+          </button>
+          <button class="virtual-dpad-btn dpad-left" data-dir="left" aria-label="Left">
+            <i class="ph ph-caret-left-fill"></i>
+          </button>
+          <div class="virtual-dpad-center"></div>
+          <button class="virtual-dpad-btn dpad-right" data-dir="right" aria-label="Right">
+            <i class="ph ph-caret-right-fill"></i>
+          </button>
+          <button class="virtual-dpad-btn dpad-down" data-dir="down" aria-label="Down">
+            <i class="ph ph-caret-down-fill"></i>
+          </button>
+        </div>
+
+        <!-- Right: Action Buttons (A & B) -->
+        <div class="virtual-actions-cluster">
+          <button class="virtual-action-btn action-b" data-action="attack" aria-label="Action B / Attack">
+            <span>B</span>
+            <small>ATTACK</small>
+          </button>
+          <button class="virtual-action-btn action-a" data-action="jump" aria-label="Action A / Jump">
+            <span>A</span>
+            <small>JUMP</small>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
   <!-- Modal: Make a Variable -->
@@ -1001,6 +1130,80 @@
       </div>
       <div class="pixel-modal-footer">
         <button id="btn-cancel-presets-modal" class="btn btn-pixel btn-modal-cancel">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: In-Game Pause Menu -->
+  <div id="modal-player-pause" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box player-pause-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-pause-circle"></i>
+          <span>GAME PAUSED</span>
+        </div>
+      </div>
+      <div class="pixel-modal-body player-pause-body">
+        <div class="pause-menu-actions">
+          <button id="btn-pause-resume" class="btn btn-pixel btn-pause-option btn-resume">
+            <i class="ph ph-play-fill"></i>
+            <span>RESUME GAME</span>
+          </button>
+          <button id="btn-pause-restart" class="btn btn-pixel btn-pause-option">
+            <i class="ph ph-arrow-counter-clockwise"></i>
+            <span>RESTART LEVEL</span>
+          </button>
+          <button id="btn-pause-exit" class="btn btn-pixel btn-pause-option btn-exit-studio">
+            <i class="ph ph-sign-out"></i>
+            <span>EXIT TO STUDIO</span>
+          </button>
+        </div>
+
+        <div class="pause-controls-guide">
+          <span class="guide-title"><i class="ph ph-keyboard"></i> CONTROLS GUIDE</span>
+          <div class="guide-grid">
+            <div class="guide-row"><span>Move:</span> <strong>WASD / Arrow Keys</strong></div>
+            <div class="guide-row"><span>Jump / Action:</span> <strong>Space / [A] Button</strong></div>
+            <div class="guide-row"><span>Attack:</span> <strong>Z / [B] Button</strong></div>
+            <div class="guide-row"><span>Interact / Click:</span> <strong>Touch / Click Objects</strong></div>
+            <div class="guide-row"><span>Pause / Exit:</span> <strong>ESC / P Key</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Game Over -->
+  <div id="modal-player-gameover" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box player-gameover-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-skull"></i>
+          <span>GAME OVER</span>
+        </div>
+      </div>
+      <div class="pixel-modal-body player-gameover-body">
+        <div class="gameover-stats-card">
+          <div class="gameover-stat-item">
+            <span class="stat-label">FINAL SCORE</span>
+            <strong class="stat-value" id="gameover-final-score">0</strong>
+          </div>
+          <div class="gameover-stat-item">
+            <span class="stat-label">COINS COLLECTED</span>
+            <strong class="stat-value" id="gameover-final-coins">0</strong>
+          </div>
+        </div>
+
+        <div class="gameover-actions-row">
+          <button id="btn-gameover-retry" class="btn btn-pixel btn-gameover-retry">
+            <i class="ph ph-arrow-counter-clockwise"></i>
+            <span>TRY AGAIN</span>
+          </button>
+          <button id="btn-gameover-exit" class="btn btn-pixel btn-gameover-exit">
+            <i class="ph ph-house"></i>
+            <span>RETURN TO STUDIO</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

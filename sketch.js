@@ -45,7 +45,9 @@ const AsyncSceneStore = {
         worldHeight: WorldConfig.worldHeight,
         panX: WorldConfig.panX,
         panY: WorldConfig.panY,
-        zoom: WorldConfig.zoom
+        zoom: WorldConfig.zoom,
+        responsiveLayering: WorldConfig.responsiveLayering !== false,
+        autoGoAround: WorldConfig.autoGoAround !== false
       },
       items: typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.serialize() : [],
       undoStack: typeof HistoryManager !== "undefined" ? HistoryManager.undoStack.slice() : [],
@@ -74,6 +76,8 @@ const AsyncSceneStore = {
       WorldConfig.panX = typeof scene.worldConfig.panX === "number" ? scene.worldConfig.panX : Math.round(WorldConfig.worldWidth / 2);
       WorldConfig.panY = typeof scene.worldConfig.panY === "number" ? scene.worldConfig.panY : Math.round(WorldConfig.worldHeight / 2);
       WorldConfig.zoom = scene.worldConfig.zoom || 1.0;
+      WorldConfig.responsiveLayering = scene.worldConfig.responsiveLayering !== false;
+      WorldConfig.autoGoAround = scene.worldConfig.autoGoAround !== false;
       WorldConfig.clampPan();
     }
 
@@ -114,7 +118,9 @@ const AsyncSceneStore = {
         worldHeight: 1500,
         panX: 1000,
         panY: 750,
-        zoom: 1.0
+        zoom: 1.0,
+        responsiveLayering: true,
+        autoGoAround: true
       },
       items: [],
       undoStack: [],
@@ -138,6 +144,8 @@ const WorldConfig = {
   zoom: 1.0,
   minZoom: 0.15,
   maxZoom: 4.0,
+  responsiveLayering: true,
+  autoGoAround: true,
 
   // Pan Drag State
   isPanning: false,
@@ -186,6 +194,16 @@ const WorldConfig = {
     this.worldHeight = Math.max(200, parseInt(h) || 1500);
     this.clampPan();
     AsyncSceneStore.saveCurrentScene();
+  },
+
+  setResponsiveLayering(enabled) {
+    this.responsiveLayering = !!enabled;
+    AsyncSceneStore.saveCurrentScene();
+  },
+
+  setAutoGoAround(enabled) {
+    this.autoGoAround = !!enabled;
+    AsyncSceneStore.saveCurrentScene();
   }
 };
 
@@ -223,6 +241,14 @@ const PreviewConfig = {
 };
 
 function getActiveStageCamera() {
+  if (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying) {
+    return {
+      zoom: GamePlayerEngine.camZoom,
+      panX: GamePlayerEngine.camX,
+      panY: GamePlayerEngine.camY,
+      isPreview: false
+    };
+  }
   if (typeof AppModeController !== "undefined" && AppModeController.isCodeMode()) {
     const stageDims = getStageDimensions();
     return PreviewConfig.getCamera(stageDims.w, stageDims.h, WorldConfig.worldWidth, WorldConfig.worldHeight);
@@ -1254,7 +1280,11 @@ const LayersController = {
               <img src="${item.src}" alt="${item.name}" class="layer-thumb-img" />
             </div>
             <div class="layer-info-wrap">
-              <span class="layer-title" title="${item.name}">${item.name}</span>
+              <div class="layer-title-row">
+                <span class="layer-title" title="${item.name}">${item.name}</span>
+                ${item.isPlayable ? '<span class="layer-hero-badge" title="Designated Playable Character"><i class="ph ph-crown"></i> HERO</span>' : ''}
+                ${item.isSolid ? '<span class="layer-solid-badge" title="Solid Obstacle"><i class="ph ph-shield"></i> SOLID</span>' : ''}
+              </div>
               <span class="layer-meta">${meta}</span>
             </div>
           </div>
@@ -1445,6 +1475,25 @@ const ConfigController = {
       });
     });
 
+    // 3. Responsive Gameplay Layering & Auto Go Around
+    const layeringCheckbox = document.getElementById("cfg-responsive-layering");
+    if (layeringCheckbox) {
+      layeringCheckbox.checked = WorldConfig.responsiveLayering !== false;
+      layeringCheckbox.addEventListener("change", (e) => {
+        WorldConfig.setResponsiveLayering(e.target.checked);
+        if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(520, "sine", 0.04, 0.08);
+      });
+    }
+
+    const autoGoAroundCheckbox = document.getElementById("cfg-auto-go-around");
+    if (autoGoAroundCheckbox) {
+      autoGoAroundCheckbox.checked = WorldConfig.autoGoAround !== false;
+      autoGoAroundCheckbox.addEventListener("change", (e) => {
+        WorldConfig.setAutoGoAround(e.target.checked);
+        if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(540, "sine", 0.04, 0.08);
+      });
+    }
+
     // Set initial values from WorldConfig
     updateColorUI(WorldConfig.bgColor);
     updateSizeInputs(WorldConfig.worldWidth, WorldConfig.worldHeight);
@@ -1475,6 +1524,16 @@ const ConfigController = {
       const ch = parseInt(chip.getAttribute("data-h"));
       chip.classList.toggle("active", cw === WorldConfig.worldWidth && ch === WorldConfig.worldHeight);
     });
+
+    const layeringCheckbox = document.getElementById("cfg-responsive-layering");
+    if (layeringCheckbox) {
+      layeringCheckbox.checked = WorldConfig.responsiveLayering !== false;
+    }
+
+    const autoGoAroundCheckbox = document.getElementById("cfg-auto-go-around");
+    if (autoGoAroundCheckbox) {
+      autoGoAroundCheckbox.checked = WorldConfig.autoGoAround !== false;
+    }
   }
 };
 
@@ -1671,8 +1730,51 @@ const PropertiesController = {
     const btnDuplicate = document.getElementById("btn-duplicate-item");
     const btnDelete = document.getElementById("btn-delete-item");
 
-    if (btnDuplicate) btnDuplicate.addEventListener("click", () => WorldObjectsManager.duplicateSelected());
-    if (btnDelete) btnDelete.addEventListener("click", () => WorldObjectsManager.deleteSelected());
+    // 8. Playable Hero & Device Visibility Controls
+    const chkPlayable = document.getElementById("prop-is-playable");
+    if (chkPlayable) {
+      chkPlayable.addEventListener("change", (e) => {
+        const item = WorldObjectsManager.getSelectedItem();
+        if (item && !this.isUpdatingUI) {
+          item.isPlayable = e.target.checked;
+          if (item.isPlayable) {
+            // Unmark other items so there is a primary designated player
+            WorldObjectsManager.items.forEach(it => {
+              if (it.id !== item.id) it.isPlayable = false;
+            });
+          }
+          WorldObjectsManager.saveHistory();
+          if (typeof LayersController !== "undefined") LayersController.update();
+          if (typeof AppModeController !== "undefined") AppModeController.renderObjectsList();
+          SoundEngine.playChiptuneTone(item.isPlayable ? 784 : 440, "triangle", 0.05, 0.1);
+        }
+      });
+    }
+
+    const selectDeviceVis = document.getElementById("prop-device-visibility");
+    if (selectDeviceVis) {
+      selectDeviceVis.addEventListener("change", (e) => {
+        const item = WorldObjectsManager.getSelectedItem();
+        if (item && !this.isUpdatingUI) {
+          item.deviceVisibility = e.target.value || "all";
+          WorldObjectsManager.saveHistory();
+          SoundEngine.playChiptuneTone(520, "square", 0.04, 0.08);
+        }
+      });
+    }
+
+    const selectCollision = document.getElementById("prop-collision-type");
+    if (selectCollision) {
+      selectCollision.addEventListener("change", (e) => {
+        const item = WorldObjectsManager.getSelectedItem();
+        if (item && !this.isUpdatingUI) {
+          item.isSolid = (e.target.value === "solid");
+          WorldObjectsManager.saveHistory();
+          if (typeof LayersController !== "undefined") LayersController.update();
+          SoundEngine.playChiptuneTone(item.isSolid ? 620 : 440, "square", 0.04, 0.08);
+        }
+      });
+    }
 
     // Initialize Crop Controller
     CropController.init();
@@ -1706,6 +1808,9 @@ const PropertiesController = {
     const rotNum = document.getElementById("prop-rotation-num");
     const btnFlipH = document.getElementById("btn-flip-h");
     const btnFlipV = document.getElementById("btn-flip-v");
+    const chkPlayable = document.getElementById("prop-is-playable");
+    const selectDeviceVis = document.getElementById("prop-device-visibility");
+    const selectCollision = document.getElementById("prop-collision-type");
 
     const cropX = document.getElementById("prop-crop-x");
     const cropY = document.getElementById("prop-crop-y");
@@ -1727,6 +1832,9 @@ const PropertiesController = {
 
     if (btnFlipH) btnFlipH.classList.toggle("active", !!item.flipH);
     if (btnFlipV) btnFlipV.classList.toggle("active", !!item.flipV);
+    if (chkPlayable) chkPlayable.checked = !!item.isPlayable;
+    if (selectDeviceVis) selectDeviceVis.value = item.deviceVisibility || "all";
+    if (selectCollision) selectCollision.value = item.isSolid ? "solid" : "pass_through";
 
     const nw = item.naturalW || item.w;
     const nh = item.naturalH || item.h;
@@ -2889,12 +2997,14 @@ const WorldObjectsManager = {
   },
 
   // Layer Ordering Operations
-  bringForward() {
-    if (!this.selectedId) return;
-    const idx = this.items.findIndex(it => it.id === this.selectedId);
+  bringForward(targetId = null, count = 1) {
+    const id = targetId || this.selectedId;
+    if (!id) return;
+    const idx = this.items.findIndex(it => it.id === id);
     if (idx >= 0 && idx < this.items.length - 1) {
       const item = this.items.splice(idx, 1)[0];
-      this.items.splice(idx + 1, 0, item);
+      const newIdx = Math.min(this.items.length, idx + (count || 1));
+      this.items.splice(newIdx, 0, item);
       this.saveHistory();
       if (typeof LayersController !== "undefined") LayersController.update();
       if (typeof AppModeController !== "undefined") AppModeController.renderObjectsList();
@@ -2902,12 +3012,14 @@ const WorldObjectsManager = {
     }
   },
 
-  sendBackward() {
-    if (!this.selectedId) return;
-    const idx = this.items.findIndex(it => it.id === this.selectedId);
+  sendBackward(targetId = null, count = 1) {
+    const id = targetId || this.selectedId;
+    if (!id) return;
+    const idx = this.items.findIndex(it => it.id === id);
     if (idx > 0) {
       const item = this.items.splice(idx, 1)[0];
-      this.items.splice(idx - 1, 0, item);
+      const newIdx = Math.max(0, idx - (count || 1));
+      this.items.splice(newIdx, 0, item);
       this.saveHistory();
       if (typeof LayersController !== "undefined") LayersController.update();
       if (typeof AppModeController !== "undefined") AppModeController.renderObjectsList();
@@ -2915,9 +3027,10 @@ const WorldObjectsManager = {
     }
   },
 
-  bringToFront() {
-    if (!this.selectedId) return;
-    const idx = this.items.findIndex(it => it.id === this.selectedId);
+  bringToFront(targetId = null) {
+    const id = targetId || this.selectedId;
+    if (!id) return;
+    const idx = this.items.findIndex(it => it.id === id);
     if (idx >= 0 && idx < this.items.length - 1) {
       const item = this.items.splice(idx, 1)[0];
       this.items.push(item);
@@ -2928,9 +3041,10 @@ const WorldObjectsManager = {
     }
   },
 
-  sendToBack() {
-    if (!this.selectedId) return;
-    const idx = this.items.findIndex(it => it.id === this.selectedId);
+  sendToBack(targetId = null) {
+    const id = targetId || this.selectedId;
+    if (!id) return;
+    const idx = this.items.findIndex(it => it.id === id);
     if (idx > 0) {
       const item = this.items.splice(idx, 1)[0];
       this.items.unshift(item);
@@ -2939,6 +3053,14 @@ const WorldObjectsManager = {
       if (typeof AppModeController !== "undefined") AppModeController.renderObjectsList();
       SoundEngine.playChiptuneTone(360, "square", 0.06, 0.1);
     }
+  },
+
+  moveLayerFront(targetId, count = 1) {
+    this.bringForward(targetId, count);
+  },
+
+  moveLayerBack(targetId, count = 1) {
+    this.sendBackward(targetId, count);
   },
 
   duplicateSelected() {
@@ -3011,6 +3133,9 @@ const WorldObjectsManager = {
       animSpeed: it.animSpeed || 100,
       locked: !!it.locked,
       hidden: !!it.hidden,
+      isPlayable: !!it.isPlayable,
+      isSolid: !!it.isSolid,
+      deviceVisibility: it.deviceVisibility || "all",
       x: it.x,
       y: it.y,
       w: it.w,
@@ -3052,6 +3177,9 @@ const WorldObjectsManager = {
         animSpeed: raw.animSpeed || 100,
         locked: !!raw.locked,
         hidden: !!raw.hidden,
+        isPlayable: !!raw.isPlayable,
+        isSolid: !!raw.isSolid,
+        deviceVisibility: raw.deviceVisibility || "all",
         rotation: raw.rotation || 0,
         flipH: !!raw.flipH,
         flipV: !!raw.flipV,
@@ -3191,13 +3319,52 @@ const WorldObjectsManager = {
     pop();
   },
 
-  draw() {
-    // 1. Draw all placed items
-    for (let i = 0; i < this.items.length; i++) {
-      const item = this.items[i];
+  getSortedRenderList(isPlay = false) {
+    if (!this.items || this.items.length === 0) return [];
+    const isResponsive = WorldConfig.responsiveLayering !== false;
 
-      // If item is hidden by code runtime, skip rendering sprite & gizmo
+    if (!isResponsive || !isPlay) {
+      return this.items.slice();
+    }
+
+    const list = this.items.slice();
+    list.sort((a, b) => {
+      // 1. Static backdrops / Sky / Parallax backgrounds always render first in base layer order
+      const aIsBg = (a.locked && a.y <= 0 && (a.h || 0) >= WorldConfig.worldHeight * 0.7) || 
+                    (a.assetId && (a.assetId.includes("sky") || a.assetId.includes("bg_") || a.assetId.includes("gradient")));
+      const bIsBg = (b.locked && b.y <= 0 && (b.h || 0) >= WorldConfig.worldHeight * 0.7) || 
+                    (b.assetId && (b.assetId.includes("sky") || b.assetId.includes("bg_") || b.assetId.includes("gradient")));
+
+      if (aIsBg && !bIsBg) return -1;
+      if (!aIsBg && bIsBg) return 1;
+      if (aIsBg && bIsBg) return this.items.indexOf(a) - this.items.indexOf(b);
+
+      // 2. Y-Sorting by bottom feet ground position (item.y + item.h)
+      const aFeetY = (a.y || 0) + (a.h || 0);
+      const bFeetY = (b.y || 0) + (b.h || 0);
+
+      if (Math.abs(aFeetY - bFeetY) > 1) {
+        return aFeetY - bFeetY;
+      }
+
+      // 3. Secondary tie-breaker: original layer stacking index
+      return this.items.indexOf(a) - this.items.indexOf(b);
+    });
+
+    return list;
+  },
+
+  draw() {
+    const isPlay = typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying;
+    const renderItems = this.getSortedRenderList(isPlay);
+
+    // 1. Draw all placed items
+    for (let i = 0; i < renderItems.length; i++) {
+      const item = renderItems[i];
+
+      // If item is hidden by code runtime or in player mode, skip rendering
       if (item.hidden) continue;
+      if (isPlay && item.hiddenInPlayer) continue;
 
       push();
       translate(item.x + item.w / 2, item.y + item.h / 2);
@@ -3339,16 +3506,18 @@ const WorldObjectsManager = {
         pop();
       }
 
-      // Crop Mode Overlay vs Normal Selection Gizmo
-      if (CropController.isActive && item.id === CropController.targetItemId) {
-        CropController.drawCropOverlay(item);
-      } else if (item.id === this.selectedId) {
-        this.drawGizmo(item);
+      // Crop Mode Overlay vs Normal Selection Gizmo (Only in Editor Mode)
+      if (!isPlay) {
+        if (CropController.isActive && item.id === CropController.targetItemId) {
+          CropController.drawCropOverlay(item);
+        } else if (item.id === this.selectedId) {
+          this.drawGizmo(item);
+        }
       }
     }
 
-    // 2. Drag & Drop Ghost Preview
-    if (this.ghostPreview.active) {
+    // 2. Drag & Drop Ghost Preview (Only in Editor Mode)
+    if (!isPlay && this.ghostPreview.active) {
       push();
       const gw = 260;
       const gh = 160;
@@ -3447,6 +3616,12 @@ const HistoryManager = {
 let mainCanvas;
 
 function getStageDimensions() {
+  if ((typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying) || (typeof document !== "undefined" && document.body && document.body.classList.contains("mode-play"))) {
+    return {
+      w: window.innerWidth,
+      h: window.innerHeight
+    };
+  }
   const container = document.getElementById("canvas-container");
   if (container) {
     return {
@@ -3487,9 +3662,9 @@ const SplitterController = {
 
     if (!splitter || !workspaceContainer) return;
 
-    const savedWidth = localStorage.getItem("unifive_split_width");
-    if (savedWidth && controlsPane) {
-      controlsPane.style.width = savedWidth;
+    const savedCanvasWidth = localStorage.getItem("unifive_canvas_split_width") || localStorage.getItem("unifive_split_width");
+    if (savedCanvasWidth && controlsPane) {
+      controlsPane.style.width = savedCanvasWidth;
     }
 
     const startDrag = (e) => {
@@ -3505,8 +3680,10 @@ const SplitterController = {
       const rect = workspaceContainer.getBoundingClientRect();
       let newWidth = clientX - rect.left;
 
+      const isCode = typeof AppModeController !== "undefined" && AppModeController.isCodeMode();
+      const minW = isCode ? 360 : this.minControlsWidth;
       const maxControlsWidth = rect.width - this.minStageWidth;
-      newWidth = Math.max(this.minControlsWidth, Math.min(maxControlsWidth, newWidth));
+      newWidth = Math.max(minW, Math.min(maxControlsWidth, newWidth));
 
       const activePane = this.getActivePane();
       if (activePane) activePane.style.width = `${newWidth}px`;
@@ -3520,7 +3697,9 @@ const SplitterController = {
       document.body.classList.remove("resizing");
       const activePane = this.getActivePane();
       if (activePane) {
-        localStorage.setItem("unifive_split_width", activePane.style.width);
+        const isCode = typeof AppModeController !== "undefined" && AppModeController.isCodeMode();
+        const key = isCode ? "unifive_code_split_width" : "unifive_canvas_split_width";
+        localStorage.setItem(key, activePane.style.width);
       }
       resizeStageCanvas();
     };
@@ -3730,56 +3909,122 @@ const AppModeController = {
 
   categories: {
     events: [
-      { id: "when_flag", name: "when 🚩 clicked", hat: true, color: "#f59e0b", icon: "ph-flag" },
-      { id: "when_key", name: "when [space] key pressed", hat: true, color: "#f59e0b", icon: "ph-keyboard", options: ["space", "up arrow", "down arrow", "left arrow", "right arrow", "any"] },
-      { id: "when_clicked", name: "when this sprite clicked", hat: true, color: "#f59e0b", icon: "ph-cursor-click" },
-      { id: "broadcast", name: "broadcast [message1]", color: "#f59e0b", icon: "ph-broadcast" },
-      { id: "when_receive", name: "when I receive [message1]", hat: true, color: "#f59e0b", icon: "ph-bell-ringing" }
+      { id: "when_flag", name: "when 🚩 clicked", hat: true, scope: "global", color: "#f59e0b", icon: "ph-flag" },
+      { id: "when_key", name: "when [space] key pressed", hat: true, scope: "global", color: "#f59e0b", icon: "ph-keyboard", options: ["space", "up arrow", "down arrow", "left arrow", "right arrow", "any"] },
+      { id: "when_clicked", name: "when this sprite clicked", hat: true, scope: "object", color: "#f59e0b", icon: "ph-cursor-click" },
+      { id: "when_became_playable", name: "when became playable", hat: true, scope: "sprite", color: "#f59e0b", icon: "ph-crown" },
+      { id: "broadcast", name: "broadcast [message1]", scope: "global", color: "#f59e0b", icon: "ph-broadcast" },
+      { id: "when_receive", name: "when I receive [message1]", hat: true, scope: "global", color: "#f59e0b", icon: "ph-bell-ringing" }
     ],
     motion: [
-      { id: "move_x_steps", name: "move (10) steps x", color: "#3b82f6", icon: "ph-arrows-left-right" },
-      { id: "move_y_steps", name: "move (10) steps y", color: "#3b82f6", icon: "ph-arrows-down-up" },
-      { id: "turn_right", name: "turn ↻ (15) degrees", color: "#3b82f6", icon: "ph-arrow-clockwise" },
-      { id: "turn_left", name: "turn ↺ (15) degrees", color: "#3b82f6", icon: "ph-arrow-counter-clockwise" },
-      { id: "goto_xy", name: "go to x: (0) y: (0)", color: "#3b82f6", icon: "ph-crosshair" },
-      { id: "glide_xy", name: "glide (1) secs to x: (0) y: (0)", color: "#3b82f6", icon: "ph-paper-plane-tilt" },
-      { id: "point_dir", name: "point in direction (90)", color: "#3b82f6", icon: "ph-compass" },
-      { id: "bounce_edge", name: "if on edge, bounce", color: "#3b82f6", icon: "ph-arrows-left-right" }
+      { id: "move_x_steps", name: "move (10) steps x", scope: "sprite", color: "#3b82f6", icon: "ph-arrows-left-right" },
+      { id: "move_y_steps", name: "move (10) steps y", scope: "sprite", color: "#3b82f6", icon: "ph-arrows-down-up" },
+      { id: "turn_right", name: "turn ↻ (15) degrees", scope: "object", color: "#3b82f6", icon: "ph-arrow-clockwise" },
+      { id: "turn_left", name: "turn ↺ (15) degrees", scope: "object", color: "#3b82f6", icon: "ph-arrow-counter-clockwise" },
+      { id: "goto_xy", name: "go to x: (0) y: (0)", scope: "object", color: "#3b82f6", icon: "ph-crosshair" },
+      { id: "glide_xy", name: "glide (1) secs to x: (0) y: (0)", scope: "object", color: "#3b82f6", icon: "ph-paper-plane-tilt" },
+      { id: "point_dir", name: "point in direction (90)", scope: "sprite", color: "#3b82f6", icon: "ph-compass" },
+      { id: "bounce_edge", name: "if on edge, bounce", scope: "sprite", color: "#3b82f6", icon: "ph-arrows-left-right" }
     ],
     looks: [
-      { id: "say_text", name: 'say ["Hello!"] for (2) secs', color: "#a855f7", icon: "ph-chat-circle-dots" },
-      { id: "switch_costume", name: "switch pose to [Attack]", color: "#a855f7", icon: "ph-person-simple-walk" },
-      { id: "next_costume", name: "next pose", color: "#a855f7", icon: "ph-arrow-fat-right" },
-      { id: "change_size", name: "change size by (10)%", color: "#a855f7", icon: "ph-arrows-out-simple" },
-      { id: "set_size", name: "set size to (100)%", color: "#a855f7", icon: "ph-frame-corners" },
-      { id: "show", name: "show", color: "#a855f7", icon: "ph-eye" },
-      { id: "hide", name: "hide", color: "#a855f7", icon: "ph-eye-slash" }
+      { id: "say_text", name: 'say ["Hello!"] for (2) secs', scope: "sprite", color: "#a855f7", icon: "ph-chat-circle-dots" },
+      { id: "switch_costume", name: "switch pose to [Attack]", scope: "sprite", color: "#a855f7", icon: "ph-person-simple-walk" },
+      { id: "next_costume", name: "next pose", scope: "sprite", color: "#a855f7", icon: "ph-arrow-fat-right" },
+      { id: "change_size", name: "change size by (10)%", scope: "object", color: "#a855f7", icon: "ph-arrows-out-simple" },
+      { id: "set_size", name: "set size to (100)%", scope: "object", color: "#a855f7", icon: "ph-frame-corners" },
+      { id: "move_layer_front", name: "move (1) layer front", scope: "object", color: "#a855f7", icon: "ph-stack-overflow" },
+      { id: "move_layer_back", name: "move (1) layer back", scope: "object", color: "#a855f7", icon: "ph-stack-simple" },
+      { id: "go_to_layer", name: "go to [front] layer", scope: "object", color: "#a855f7", icon: "ph-layers-intersect", options: ["front", "back"] },
+      { id: "show", name: "show", scope: "object", color: "#a855f7", icon: "ph-eye" },
+      { id: "hide", name: "hide", scope: "object", color: "#a855f7", icon: "ph-eye-slash" }
     ],
     sound: [
-      { id: "play_sound", name: "play sound [jump] until done", color: "#ec4899", icon: "ph-speaker-high", options: ["jump", "laser", "coin", "hit", "powerup"] },
-      { id: "start_sound", name: "start sound [laser]", color: "#ec4899", icon: "ph-play", options: ["jump", "laser", "coin", "hit", "powerup"] },
-      { id: "stop_all_sounds", name: "stop all sounds", color: "#ec4899", icon: "ph-stop" },
-      { id: "change_volume", name: "change volume by (-10)", color: "#ec4899", icon: "ph-speaker-low" }
+      { id: "play_sound", name: "play sound [jump] until done", scope: "global", color: "#ec4899", icon: "ph-speaker-high", options: ["jump", "laser", "coin", "hit", "powerup"] },
+      { id: "start_sound", name: "start sound [laser]", scope: "global", color: "#ec4899", icon: "ph-play", options: ["jump", "laser", "coin", "hit", "powerup"] },
+      { id: "stop_all_sounds", name: "stop all sounds", scope: "global", color: "#ec4899", icon: "ph-stop" },
+      { id: "change_volume", name: "change volume by (-10)", scope: "global", color: "#ec4899", icon: "ph-speaker-low" }
     ],
     control: [
-      { id: "wait_secs", name: "wait (1) seconds", color: "#10b981", icon: "ph-timer" },
-      { id: "repeat", name: "repeat (10) times", c_block: true, color: "#10b981", icon: "ph-repeat" },
-      { id: "forever", name: "forever", c_block: true, color: "#10b981", icon: "ph-infinity" },
-      { id: "if_then", name: "if <[touching edge]> then", c_block: true, color: "#10b981", icon: "ph-git-fork", options: ["touching edge", "key space pressed", "score > 5"] },
-      { id: "if_else", name: "if <[touching edge]> then", e_block: true, color: "#10b981", icon: "ph-git-branch", options: ["touching edge", "key space pressed", "score > 5"] },
-      { id: "stop_all", name: "stop [all scripts]", cap: true, color: "#10b981", icon: "ph-stop-circle" }
+      { id: "wait_secs", name: "wait (1) seconds", scope: "global", color: "#10b981", icon: "ph-timer" },
+      { id: "repeat", name: "repeat (10) times", c_block: true, scope: "global", color: "#10b981", icon: "ph-repeat" },
+      { id: "forever", name: "forever", c_block: true, scope: "global", color: "#10b981", icon: "ph-infinity" },
+      { id: "if_then", name: "if <[touching edge]> then", c_block: true, scope: "global", color: "#10b981", icon: "ph-git-fork", isConditionBlock: true },
+      { id: "if_else", name: "if <[touching edge]> then", e_block: true, scope: "global", color: "#10b981", icon: "ph-git-branch", isConditionBlock: true },
+      { id: "set_playable_char", name: "set playable character to [this sprite]", scope: "sprite", color: "#10b981", icon: "ph-user-focus", isPlayableCharSelector: true },
+      { id: "set_player_control", name: "set player control to [enabled]", scope: "global", color: "#10b981", icon: "ph-game-controller", options: ["enabled", "disabled"] },
+      { id: "stop_all", name: "stop [all scripts]", cap: true, scope: "global", color: "#10b981", icon: "ph-stop-circle" }
+    ],
+    sensing: [
+      { id: "touching_object", name: "touching [edge]?", isBoolean: true, scope: "object", color: "#0284c7", icon: "ph-intersect", isTouchingSelector: true },
+      { id: "touching_solid", name: "touching solid object?", isBoolean: true, scope: "object", color: "#0284c7", icon: "ph-shield-check" },
+      { id: "distance_to_object", name: "distance to [hero] < (50)", isBoolean: true, scope: "object", color: "#0284c7", icon: "ph-ruler", isDistanceSelector: true },
+      { id: "key_pressed_check", name: "key [space] pressed?", isBoolean: true, scope: "global", color: "#0284c7", icon: "ph-keyboard", options: ["space", "up arrow", "down arrow", "left arrow", "right arrow", "any"] },
+      { id: "mouse_down_check", name: "mouse down?", isBoolean: true, scope: "global", color: "#0284c7", icon: "ph-cursor-click" },
+      { id: "is_mobile_sensing", name: "is mobile device?", isBoolean: true, scope: "global", color: "#0284c7", icon: "ph-device-mobile" },
+      { id: "is_playable_sensing", name: "is playable hero?", isBoolean: true, scope: "sprite", color: "#0284c7", icon: "ph-game-controller" }
+    ],
+    operators: [
+      { id: "op_add", name: "( ) + ( )", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-plus", opType: "+" },
+      { id: "op_subtract", name: "( ) - ( )", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-minus", opType: "-" },
+      { id: "op_multiply", name: "( ) * ( )", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-x", opType: "*" },
+      { id: "op_divide", name: "( ) / ( )", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-divide", opType: "/" },
+      { id: "op_random", name: "pick random (1) to (10)", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-shuffle", isRandom: true },
+      { id: "op_gt", name: "<( ) > (50)>", isBoolean: true, scope: "universal", color: "#22c55e", icon: "ph-caret-right", opType: ">" },
+      { id: "op_lt", name: "<( ) < (50)>", isBoolean: true, scope: "universal", color: "#22c55e", icon: "ph-caret-left", opType: "<" },
+      { id: "op_eq", name: "<( ) = (50)>", isBoolean: true, scope: "universal", color: "#22c55e", icon: "ph-equals", opType: "=" },
+      { id: "op_and", name: "<<> and <>>", isBoolean: true, isLogical: true, scope: "universal", color: "#22c55e", icon: "ph-intersect", opType: "and" },
+      { id: "op_or", name: "<<> or <>>", isBoolean: true, isLogical: true, scope: "universal", color: "#22c55e", icon: "ph-circles-three", opType: "or" },
+      { id: "op_not", name: "<not <>>", isBoolean: true, isLogical: true, scope: "universal", color: "#22c55e", icon: "ph-prohibit", opType: "not" },
+      { id: "op_join", name: "join [apple] [banana]", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-link" },
+      { id: "op_letter_of", name: "letter (1) of [apple]", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-text-aa" },
+      { id: "op_length_of", name: "length of [apple]", isReporter: true, scope: "universal", color: "#22c55e", icon: "ph-ruler" },
+      { id: "op_contains", name: "<[apple] contains [a]?>", isBoolean: true, scope: "universal", color: "#22c55e", icon: "ph-magnifying-glass", opType: "contains" }
     ],
     variables: [
-      { id: "set_var", name: "set [score] to (0)", color: "#f97316", icon: "ph-textbox", isVarSetter: true },
-      { id: "change_var", name: "change [score] by (1)", color: "#f97316", icon: "ph-plus-circle", isVarChanger: true },
-      { id: "show_var", name: "show variable [score]", color: "#f97316", icon: "ph-eye", isVarSelector: true },
-      { id: "hide_var", name: "hide variable [score]", color: "#f97316", icon: "ph-eye-slash", isVarSelector: true }
+      { id: "set_var", name: "set [score] to (0)", scope: "global", color: "#f97316", icon: "ph-textbox", isVarSetter: true },
+      { id: "change_var", name: "change [score] by (1)", scope: "global", color: "#f97316", icon: "ph-plus-circle", isVarChanger: true },
+      { id: "show_var", name: "show variable [score]", scope: "global", color: "#f97316", icon: "ph-eye", isVarSelector: true },
+      { id: "hide_var", name: "hide variable [score]", scope: "global", color: "#f97316", icon: "ph-eye-slash", isVarSelector: true }
     ]
   },
 
   getActiveTargetId() {
     const sel = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
     return sel ? sel.id : "global_stage";
+  },
+
+  getActiveTargetInfo() {
+    const sel = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
+    if (!sel) {
+      return { id: "global_stage", name: "Stage (Global)", type: "stage", isStage: true, isSprite: false, isProp: false };
+    }
+    const isSprite = sel.type === "sprite" || (sel.assetId && sel.assetId.startsWith("sprite_")) || (sel.poses && Object.keys(sel.poses).length > 0) || !!sel.isCharacter || !!sel.isPlayable;
+    return {
+      id: sel.id,
+      name: sel.name || "Object",
+      type: isSprite ? "sprite" : (sel.type || "prop"),
+      isStage: false,
+      isSprite: isSprite,
+      isProp: !isSprite
+    };
+  },
+
+  isBlockAvailableForTarget(block, targetInfo) {
+    if (!targetInfo) targetInfo = this.getActiveTargetInfo();
+    const scope = block.scope || "global";
+    if (scope === "universal" || scope === "global") {
+      return true;
+    }
+    if (targetInfo.isStage) {
+      return scope === "global" || scope === "universal";
+    }
+    if (targetInfo.isProp) {
+      return scope === "global" || scope === "universal" || scope === "object";
+    }
+    if (targetInfo.isSprite) {
+      return true;
+    }
+    return true;
   },
 
   getCurrentScripts() {
@@ -3865,7 +4110,7 @@ const AppModeController = {
       const targetDims = this.getBlockDimensions(target);
 
       // 1. SNAP UNDERNEATH TARGET BLOCK
-      if (!target.cap && !draggedBlock.hat) {
+      if (!target.cap && !draggedBlock.hat && !draggedBlock.isBoolean) {
         const snapX = target.x;
         const snapY = target.y + targetDims.h - 2;
 
@@ -3889,7 +4134,7 @@ const AppModeController = {
       }
 
       // 2. SNAP ABOVE TARGET BLOCK
-      if (!target.hat && !draggedBlock.cap) {
+      if (!target.hat && !draggedBlock.cap && !draggedBlock.isBoolean) {
         const snapX = target.x;
         const snapY = target.y - draggedDims.h + 2;
 
@@ -3913,7 +4158,7 @@ const AppModeController = {
       }
 
       // 3. SNAP INSIDE C-BLOCK MOUTH
-      if (target.c_block && !draggedBlock.hat) {
+      if (target.c_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
         const snapX = target.x + 14;
         const snapY = target.y + 32;
 
@@ -3937,7 +4182,7 @@ const AppModeController = {
       }
 
       // 4. SNAP INSIDE DUAL-MOUTH E-BLOCK (IF vs ELSE MOUTHS)
-      if (target.e_block && !draggedBlock.hat) {
+      if (target.e_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
         // Top If-branch mouth
         const snapIfX = target.x + 14;
         const snapIfY = target.y + 32;
@@ -3980,6 +4225,96 @@ const AppModeController = {
           }
         }
       }
+
+      // 5. SNAP INTO CONDITION SOCKET (For if_then, if_else, logical blocks when dragging boolean blocks)
+      const isDraggedBool = !!(draggedBlock.isBoolean || draggedBlock.boolean || draggedBlock.color === "#0284c7" || (draggedBlock.id && draggedBlock.id.startsWith("op_") && (draggedBlock.isBoolean || draggedBlock.opType)));
+      if (isDraggedBool) {
+        if (target.isConditionBlock || target.c_block || target.e_block) {
+          const snapCondX = target.x + 36;
+          const snapCondY = target.y + 2;
+          const dxCond = Math.abs(draggedX - snapCondX);
+          const dyCond = Math.abs(draggedY - snapCondY);
+
+          if (dxCond <= 130 && dyCond <= 45) {
+            const dist = dxCond + dyCond;
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestTarget = {
+                target: target,
+                position: "condition",
+                snapX: snapCondX,
+                snapY: snapCondY,
+                snapW: draggedDims.w,
+                snapH: draggedDims.h
+              };
+            }
+          }
+        } else if (target.isLogical) {
+          if (target.opType === "not") {
+            const snapCondX = target.x + 38;
+            const snapCondY = target.y + 2;
+            const dxCond = Math.abs(draggedX - snapCondX);
+            const dyCond = Math.abs(draggedY - snapCondY);
+
+            if (dxCond <= 80 && dyCond <= 38) {
+              const dist = dxCond + dyCond;
+              if (dist < minDistance) {
+                minDistance = dist;
+                bestTarget = {
+                  target: target,
+                  position: "condition",
+                  snapX: snapCondX,
+                  snapY: snapCondY,
+                  snapW: draggedDims.w,
+                  snapH: draggedDims.h
+                };
+              }
+            }
+          } else {
+            // Left condition socket
+            const snapLeftX = target.x + 10;
+            const snapLeftY = target.y + 2;
+            const dxLeft = Math.abs(draggedX - snapLeftX);
+            const dyLeft = Math.abs(draggedY - snapLeftY);
+
+            if (dxLeft <= 50 && dyLeft <= 38) {
+              const dist = dxLeft + dyLeft;
+              if (dist < minDistance) {
+                minDistance = dist;
+                bestTarget = {
+                  target: target,
+                  position: "left_condition",
+                  snapX: snapLeftX,
+                  snapY: snapLeftY,
+                  snapW: draggedDims.w,
+                  snapH: draggedDims.h
+                };
+              }
+            }
+
+            // Right condition socket
+            const snapRightX = target.x + 65;
+            const snapRightY = target.y + 2;
+            const dxRight = Math.abs(draggedX - snapRightX);
+            const dyRight = Math.abs(draggedY - snapRightY);
+
+            if (dxRight <= 50 && dyRight <= 38) {
+              const dist = dxRight + dyRight;
+              if (dist < minDistance) {
+                minDistance = dist;
+                bestTarget = {
+                  target: target,
+                  position: "right_condition",
+                  snapX: snapRightX,
+                  snapY: snapRightY,
+                  snapW: draggedDims.w,
+                  snapH: draggedDims.h
+                };
+              }
+            }
+          }
+        }
+      }
     }
 
     return bestTarget;
@@ -4015,7 +4350,14 @@ const AppModeController = {
 
     if (snapTarget.target && snapTarget.target.id) {
       const targetEl = this.getBlockElement(snapTarget.target.id);
-      if (targetEl) targetEl.classList.add("snap-target-highlight");
+      if (targetEl) {
+        if (snapTarget.position === "condition") {
+          const slotEl = targetEl.querySelector(".code-condition-slot");
+          if (slotEl) slotEl.classList.add("snap-target-highlight");
+        } else {
+          targetEl.classList.add("snap-target-highlight");
+        }
+      }
     }
   },
 
@@ -4026,9 +4368,11 @@ const AppModeController = {
     else if (block.cap) blockTypeClass = "cap-block";
     else if (block.c_block) blockTypeClass = "c-block";
     else if (block.e_block) blockTypeClass = "e-block";
+    else if (block.isReporter || block.reporter) blockTypeClass = "reporter-block";
+    else if (block.isBoolean || block.boolean || (block.id && block.id.startsWith("op_") && (block.isBoolean || block.opType === ">" || block.opType === "<" || block.opType === "=" || block.opType === "contains" || block.isLogical))) blockTypeClass = "boolean-block";
 
     blockEl.className = `code-block-item ${blockTypeClass}`;
-    blockEl.style.setProperty("--block-bg", block.color);
+    blockEl.style.setProperty("--block-bg", block.color || "#22c55e");
     if (block.id) {
       blockEl.setAttribute("data-block-id", block.id);
     }
@@ -4040,21 +4384,93 @@ const AppModeController = {
     }
     if (!varOptionsHtml) varOptionsHtml = '<option value="score">score</option>';
 
+    // Dynamic objects placed on canvas
+    const activeTargetId = this.getActiveTargetId();
+    const placedObjectNames = [];
+    if (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items) {
+      WorldObjectsManager.items.forEach(it => {
+        if (it.id !== activeTargetId && it.name) {
+          placedObjectNames.push(it.name);
+        }
+      });
+    }
+
     let formattedHtml = block.name;
 
-    if (block.isVarSetter || block.isVarChanger || block.isVarSelector) {
+    if (block.isLogical) {
+      if (block.opType === "and" || block.opType === "or") {
+        formattedHtml = `
+          <span class="code-condition-slot logical-slot left-slot" data-slot="left"></span>
+          <span class="logical-op-text">${block.opType}</span>
+          <span class="code-condition-slot logical-slot right-slot" data-slot="right"></span>
+        `;
+      } else if (block.opType === "not") {
+        formattedHtml = `
+          <span class="logical-op-text">not</span>
+          <span class="code-condition-slot logical-slot" data-slot="condition"></span>
+        `;
+      }
+    } else if (block.isVarSetter || block.isVarChanger || block.isVarSelector) {
       formattedHtml = block.name
         .replace(/\[score\]/g, `<select class="code-block-select">${varOptionsHtml}</select>`)
         .replace(/\[(.*?)\]/g, `<select class="code-block-select">${varOptionsHtml}</select>`)
-        .replace(/\((\d+)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+        .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+    } else if (block.isTouchingSelector) {
+      const touchingOpts = ["edge", "solid", "hero", "mouse-pointer", "any object", ...placedObjectNames];
+      const optsHtml = touchingOpts.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+      formattedHtml = block.name
+        .replace(/\[(.*?)\]/g, `<select class="code-block-select">${optsHtml}</select>`)
+        .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+    } else if (block.isDistanceSelector) {
+      const distOpts = ["hero", "mouse-pointer", "nearest solid", ...placedObjectNames];
+      const optsHtml = distOpts.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+      formattedHtml = block.name
+        .replace(/\[(.*?)\]/g, `<select class="code-block-select">${optsHtml}</select>`)
+        .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+    } else if (block.isPlayableCharSelector) {
+      const charOpts = ["this sprite", "None", ...placedObjectNames];
+      const optsHtml = charOpts.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+      formattedHtml = block.name
+        .replace(/\[(.*?)\]/g, `<select class="code-block-select">${optsHtml}</select>`)
+        .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+    } else if (block.isConditionBlock) {
+      if (block.conditionBlock) {
+        formattedHtml = block.name.replace(/<\s*\[?(.*?)\]?\s*>/g, `<span class="code-condition-slot has-nested-block" data-slot="condition"></span>`);
+      } else {
+        const condOpts = [
+          "touching edge",
+          "touching solid",
+          "touching hero",
+          "touching mouse-pointer",
+          "touching any object",
+          ...placedObjectNames.map(n => `touching ${n}`),
+          "distance to hero < 50",
+          "key space pressed",
+          "key up arrow pressed",
+          "key down arrow pressed",
+          "key left arrow pressed",
+          "key right arrow pressed",
+          "mouse down",
+          "is mobile",
+          "is playable",
+          "score > 5",
+          "health < 20"
+        ];
+        const optsHtml = condOpts.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+        formattedHtml = block.name
+          .replace(/<\s*\[?(.*?)\]?\s*>/g, `<span class="code-condition-slot" data-slot="condition"><select class="code-block-select">${optsHtml}</select></span>`)
+          .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+      }
     } else if (block.options) {
       const optsHtml = block.options.map(opt => `<option value="${opt}">${opt}</option>`).join("");
       formattedHtml = block.name
         .replace(/\[(.*?)\]/g, `<select class="code-block-select">${optsHtml}</select>`)
-        .replace(/\((\d+)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+        .replace(/\((\d*)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
     } else {
       formattedHtml = block.name
-        .replace(/\((\d+)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>')
+        .replace(/^<\s*/, '')
+        .replace(/\s*>$/, '')
+        .replace(/\((.*?)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>')
         .replace(/\[(.*?)\]/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
     }
 
@@ -4088,6 +4504,90 @@ const AppModeController = {
         <span>${formattedHtml}</span>
         ${isWorkspace ? '<button class="code-block-delete-btn" title="Delete Block">✕</button>' : ''}
       `;
+    }
+
+    // Attach condition block (single)
+    if (block.conditionBlock) {
+      const slotEl = blockEl.querySelector('.code-condition-slot[data-slot="condition"], .code-condition-slot:not([data-slot])');
+      if (slotEl) {
+        slotEl.innerHTML = "";
+        const condData = { ...block.conditionBlock, isBoolean: true };
+        const nestedEl = this.createBlockElement(condData, false);
+        nestedEl.classList.add("nested-condition-block", "boolean-block");
+        nestedEl.classList.remove("stack-block");
+        nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
+
+        if (isWorkspace) {
+          const ejectBtn = document.createElement("button");
+          ejectBtn.className = "nested-block-eject-btn";
+          ejectBtn.innerHTML = "✕";
+          ejectBtn.title = "Remove Condition Block";
+          ejectBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            delete block.conditionBlock;
+            this.renderScriptsForActiveTarget();
+            SoundEngine.playAction("delete");
+          });
+          nestedEl.appendChild(ejectBtn);
+        }
+        slotEl.appendChild(nestedEl);
+      }
+    }
+
+    // Attach left condition block (for op_and, op_or)
+    if (block.leftConditionBlock) {
+      const slotEl = blockEl.querySelector('.code-condition-slot[data-slot="left"]');
+      if (slotEl) {
+        slotEl.innerHTML = "";
+        const condData = { ...block.leftConditionBlock, isBoolean: true };
+        const nestedEl = this.createBlockElement(condData, false);
+        nestedEl.classList.add("nested-condition-block", "boolean-block");
+        nestedEl.classList.remove("stack-block");
+        nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
+
+        if (isWorkspace) {
+          const ejectBtn = document.createElement("button");
+          ejectBtn.className = "nested-block-eject-btn";
+          ejectBtn.innerHTML = "✕";
+          ejectBtn.title = "Remove Left Condition";
+          ejectBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            delete block.leftConditionBlock;
+            this.renderScriptsForActiveTarget();
+            SoundEngine.playAction("delete");
+          });
+          nestedEl.appendChild(ejectBtn);
+        }
+        slotEl.appendChild(nestedEl);
+      }
+    }
+
+    // Attach right condition block (for op_and, op_or)
+    if (block.rightConditionBlock) {
+      const slotEl = blockEl.querySelector('.code-condition-slot[data-slot="right"]');
+      if (slotEl) {
+        slotEl.innerHTML = "";
+        const condData = { ...block.rightConditionBlock, isBoolean: true };
+        const nestedEl = this.createBlockElement(condData, false);
+        nestedEl.classList.add("nested-condition-block", "boolean-block");
+        nestedEl.classList.remove("stack-block");
+        nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
+
+        if (isWorkspace) {
+          const ejectBtn = document.createElement("button");
+          ejectBtn.className = "nested-block-eject-btn";
+          ejectBtn.innerHTML = "✕";
+          ejectBtn.title = "Remove Right Condition";
+          ejectBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            delete block.rightConditionBlock;
+            this.renderScriptsForActiveTarget();
+            SoundEngine.playAction("delete");
+          });
+          nestedEl.appendChild(ejectBtn);
+        }
+        slotEl.appendChild(nestedEl);
+      }
     }
 
     // Set saved input values if available
@@ -4178,6 +4678,34 @@ const AppModeController = {
           const raw = e.dataTransfer.getData("text/plain");
           if (raw) {
             const blockTemplate = JSON.parse(raw);
+            const isBool = !!(blockTemplate.isBoolean || blockTemplate.boolean || blockTemplate.color === "#0284c7" || (blockTemplate.id && blockTemplate.id.startsWith("op_") && (blockTemplate.isBoolean || blockTemplate.opType)));
+            const hitEl = document.elementFromPoint(e.clientX, e.clientY);
+            const condSlot = hitEl ? hitEl.closest(".code-condition-slot") : null;
+            const parentBlockEl = hitEl ? (condSlot ? condSlot.closest(".code-block-item") : hitEl.closest(".c-block, .e-block, .boolean-block, .code-block-item")) : null;
+
+            if (isBool && parentBlockEl) {
+              const parentId = parentBlockEl.getAttribute("data-block-id");
+              const scripts = this.getCurrentScripts();
+              const parentBlock = scripts.find(b => b.id === parentId);
+              if (parentBlock) {
+                const condData = {
+                  ...blockTemplate,
+                  id: "cond_" + Date.now() + "_" + Math.floor(Math.random() * 1000)
+                };
+                if (condSlot && condSlot.getAttribute("data-slot") === "left") {
+                  parentBlock.leftConditionBlock = condData;
+                } else if (condSlot && condSlot.getAttribute("data-slot") === "right") {
+                  parentBlock.rightConditionBlock = condData;
+                } else {
+                  parentBlock.conditionBlock = condData;
+                }
+                SoundEngine.playChiptuneTone(880, "triangle", 0.04, 0.15);
+                setTimeout(() => SoundEngine.playChiptuneTone(1174, "triangle", 0.06, 0.15), 40);
+                this.renderScriptsForActiveTarget();
+                return;
+              }
+            }
+
             const rect = dropZone.getBoundingClientRect();
             const worldX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
             const worldY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
@@ -4323,6 +4851,45 @@ const AppModeController = {
             snap.target.childId_else = rootBlock.id;
             rootBlock.parentEBlockId = snap.target.id;
             rootBlock.parentEBranch = "else";
+          } else if (snap.position === "condition") {
+            const target = snap.target;
+            target.conditionBlock = JSON.parse(JSON.stringify(rootBlock));
+            delete target.conditionBlock.x;
+            delete target.conditionBlock.y;
+            delete target.conditionBlock.nextId;
+            delete target.conditionBlock.prevId;
+
+            const scripts = this.getCurrentScripts();
+            const idsToDelete = new Set(stackItems.map(item => item.block.id));
+            const remaining = scripts.filter(b => !idsToDelete.has(b.id));
+            scripts.length = 0;
+            scripts.push(...remaining);
+          } else if (snap.position === "left_condition") {
+            const target = snap.target;
+            target.leftConditionBlock = JSON.parse(JSON.stringify(rootBlock));
+            delete target.leftConditionBlock.x;
+            delete target.leftConditionBlock.y;
+            delete target.leftConditionBlock.nextId;
+            delete target.leftConditionBlock.prevId;
+
+            const scripts = this.getCurrentScripts();
+            const idsToDelete = new Set(stackItems.map(item => item.block.id));
+            const remaining = scripts.filter(b => !idsToDelete.has(b.id));
+            scripts.length = 0;
+            scripts.push(...remaining);
+          } else if (snap.position === "right_condition") {
+            const target = snap.target;
+            target.rightConditionBlock = JSON.parse(JSON.stringify(rootBlock));
+            delete target.rightConditionBlock.x;
+            delete target.rightConditionBlock.y;
+            delete target.rightConditionBlock.nextId;
+            delete target.rightConditionBlock.prevId;
+
+            const scripts = this.getCurrentScripts();
+            const idsToDelete = new Set(stackItems.map(item => item.block.id));
+            const remaining = scripts.filter(b => !idsToDelete.has(b.id));
+            scripts.length = 0;
+            scripts.push(...remaining);
           }
 
           SoundEngine.playChiptuneTone(880, "triangle", 0.04, 0.15);
@@ -4458,8 +5025,8 @@ const AppModeController = {
         if (controlsPane) controlsPane.style.display = "none";
         if (codeToolboxPane) {
           codeToolboxPane.style.display = "flex";
-          const savedWidth = localStorage.getItem("unifive_split_width");
-          if (savedWidth) codeToolboxPane.style.width = savedWidth;
+          const savedCodeWidth = localStorage.getItem("unifive_code_split_width");
+          codeToolboxPane.style.width = savedCodeWidth && parseInt(savedCodeWidth) >= 360 ? savedCodeWidth : "410px";
         }
       }
 
@@ -4560,13 +5127,16 @@ const AppModeController = {
     const catCount = document.getElementById("code-palette-count");
     const blocksList = document.getElementById("code-blocks-list");
 
-    const blocks = this.categories[catKey] || [];
+    const targetInfo = this.getActiveTargetInfo();
+    const allBlocks = this.categories[catKey] || [];
+    const blocks = allBlocks.filter(b => this.isBlockAvailableForTarget(b, targetInfo));
+
     const catBtn = document.querySelector(`.code-cat-btn[data-category="${catKey}"]`);
     const catColor = catBtn ? catBtn.style.getPropertyValue("--cat-color") : "#f59e0b";
 
     if (catDot) catDot.style.backgroundColor = catColor;
     if (catTitle) catTitle.textContent = catKey.toUpperCase();
-    if (catCount) catCount.textContent = `${blocks.length} BLOCKS`;
+    if (catCount) catCount.textContent = `${blocks.length} ${blocks.length === 1 ? 'BLOCK' : 'BLOCKS'}`;
 
     if (!blocksList) return;
     blocksList.innerHTML = "";
@@ -4621,6 +5191,18 @@ const AppModeController = {
       });
 
       blocksList.appendChild(varsSection);
+    }
+
+    if (blocks.length === 0 && catKey !== "variables") {
+      const emptyDiv = document.createElement("div");
+      emptyDiv.className = "code-palette-empty-category";
+      emptyDiv.innerHTML = `
+        <i class="ph ph-prohibit"></i>
+        <span>NO <strong>${catKey.toUpperCase()}</strong> BLOCKS</span>
+        <small>${targetInfo.isStage ? "Motion & character blocks are not applicable to the global stage backdrop. Select an object or character on the canvas to use them." : "These blocks are only available for animated character sprites."}</small>
+      `;
+      blocksList.appendChild(emptyDiv);
+      return;
     }
 
     blocks.forEach(block => {
@@ -4711,13 +5293,22 @@ const AppModeController = {
     const scripts = this.getCurrentScripts();
     const placedBlock = {
       id: "block_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
-      blockId: blockTemplate.id,
+      blockId: blockTemplate.id || blockTemplate.blockId,
       name: blockTemplate.name,
       hat: !!blockTemplate.hat,
       cap: !!blockTemplate.cap,
       c_block: !!blockTemplate.c_block,
       e_block: !!blockTemplate.e_block,
-      options: blockTemplate.options || null,
+      isReporter: !!(blockTemplate.isReporter || blockTemplate.reporter),
+      isBoolean: !!(blockTemplate.isBoolean || blockTemplate.boolean || blockTemplate.color === "#0284c7" || (blockTemplate.id && blockTemplate.id.startsWith("op_") && (blockTemplate.isBoolean || blockTemplate.opType === ">" || blockTemplate.opType === "<" || blockTemplate.opType === "=" || blockTemplate.opType === "contains" || blockTemplate.isLogical))),
+      isLogical: !!blockTemplate.isLogical,
+      opType: blockTemplate.opType || null,
+      isRandom: !!blockTemplate.isRandom,
+      isConditionBlock: !!blockTemplate.isConditionBlock,
+      isTouchingSelector: !!blockTemplate.isTouchingSelector,
+      isDistanceSelector: !!blockTemplate.isDistanceSelector,
+      isPlayableCharSelector: !!blockTemplate.isPlayableCharSelector,
+      options: blockTemplate.options ? [...blockTemplate.options] : null,
       isVarSetter: !!blockTemplate.isVarSetter,
       isVarChanger: !!blockTemplate.isVarChanger,
       isVarSelector: !!blockTemplate.isVarSelector,
@@ -4725,7 +5316,7 @@ const AppModeController = {
       icon: blockTemplate.icon,
       x: x,
       y: y,
-      inputs: [],
+      inputs: blockTemplate.inputs ? [...blockTemplate.inputs] : [],
       nextId: null,
       prevId: null,
       childId: null,
@@ -4734,6 +5325,33 @@ const AppModeController = {
     };
 
     if (snapTarget && snapTarget.target) {
+      if (snapTarget.position === "condition") {
+        snapTarget.target.conditionBlock = JSON.parse(JSON.stringify(placedBlock));
+        delete snapTarget.target.conditionBlock.x;
+        delete snapTarget.target.conditionBlock.y;
+        delete snapTarget.target.conditionBlock.nextId;
+        delete snapTarget.target.conditionBlock.prevId;
+        this.renderScriptsForActiveTarget();
+        return;
+      }
+      if (snapTarget.position === "left_condition") {
+        snapTarget.target.leftConditionBlock = JSON.parse(JSON.stringify(placedBlock));
+        delete snapTarget.target.leftConditionBlock.x;
+        delete snapTarget.target.leftConditionBlock.y;
+        delete snapTarget.target.leftConditionBlock.nextId;
+        delete snapTarget.target.leftConditionBlock.prevId;
+        this.renderScriptsForActiveTarget();
+        return;
+      }
+      if (snapTarget.position === "right_condition") {
+        snapTarget.target.rightConditionBlock = JSON.parse(JSON.stringify(placedBlock));
+        delete snapTarget.target.rightConditionBlock.x;
+        delete snapTarget.target.rightConditionBlock.y;
+        delete snapTarget.target.rightConditionBlock.nextId;
+        delete snapTarget.target.rightConditionBlock.prevId;
+        this.renderScriptsForActiveTarget();
+        return;
+      }
       if (snapTarget.position === "bottom") {
         const target = snapTarget.target;
         const oldNextId = target.nextId;
@@ -4942,6 +5560,7 @@ const AppModeController = {
     }
 
     this.renderScriptsForActiveTarget();
+    this.selectCategory(this.activeCategory || "events");
   },
 
   renderObjectsList() {
@@ -4969,6 +5588,35 @@ const AppModeController = {
     }
 
     listEl.innerHTML = "";
+
+    // 1. Stage Card (Global Target)
+    const isStageSelected = !WorldObjectsManager.selectedId;
+    const stageCard = document.createElement("div");
+    stageCard.className = `code-object-card ${isStageSelected ? 'active' : ''}`;
+    stageCard.innerHTML = `
+      <div class="code-obj-thumb-box" style="background-color: #1e1b4b; display: flex; align-items: center; justify-content: center;">
+        <i class="ph ph-globe" style="font-size: 1.3rem; color: #a5b4fc;"></i>
+      </div>
+      <div class="code-obj-info">
+        <div class="code-obj-title-row">
+          <span class="code-obj-name">GLOBAL STAGE</span>
+          <span class="code-obj-type-tag" style="background-color: #312e81; color: #c7d2fe; border-color: #4338ca;">BACKDROP</span>
+        </div>
+        <div class="code-obj-coords-row">
+          <span class="code-obj-coord">World: <strong>5760x1080</strong></span>
+          <span class="code-obj-coord">Global Scripts</span>
+        </div>
+      </div>
+    `;
+    stageCard.addEventListener("click", () => {
+      WorldObjectsManager.selectedId = null;
+      this.renderObjectsList();
+      this.updateTargetBadge();
+      SoundEngine.playAction("select");
+    });
+    listEl.appendChild(stageCard);
+
+    // 2. Placed Canvas Items (Sprites & Props)
     items.forEach((item, index) => {
       const card = document.createElement("div");
       card.className = `code-object-card ${item.id === WorldObjectsManager.selectedId ? 'active' : ''}`;
@@ -4984,6 +5632,8 @@ const AppModeController = {
         <div class="code-obj-info">
           <div class="code-obj-title-row">
             <span class="code-obj-name" title="${item.name}">${item.name}</span>
+            ${item.isPlayable ? '<span class="code-obj-hero-badge" title="Designated Playable Character"><i class="ph ph-crown"></i> HERO</span>' : ''}
+            ${item.isSolid ? '<span class="code-obj-solid-badge" title="Solid Obstacle"><i class="ph ph-shield"></i> SOLID</span>' : ''}
             <span class="code-obj-type-tag">${typeLabel}</span>
           </div>
           <div class="code-obj-coords-row">
@@ -4995,7 +5645,11 @@ const AppModeController = {
       `;
 
       card.addEventListener("click", () => {
-        WorldObjectsManager.selectItem(item.id);
+        if (WorldObjectsManager.selectedId === item.id) {
+          WorldObjectsManager.selectedId = null;
+        } else {
+          WorldObjectsManager.selectItem(item.id);
+        }
         this.renderObjectsList();
         this.updateTargetBadge();
         SoundEngine.playAction("select");
@@ -5085,12 +5739,12 @@ const CodeRuntimeEngine = {
     }
   },
 
-  triggerEvent(triggerType, eventArg = null) {
+  triggerEvent(triggerType, eventArg = null, specificTargetId = null) {
     if (!this.isRunning) return;
 
-    const allTargets = Object.keys(AppModeController.objectScripts || {});
+    const allTargets = specificTargetId ? [specificTargetId] : Object.keys(AppModeController.objectScripts || {});
     const activeTargetId = AppModeController.getActiveTargetId();
-    if (!allTargets.includes(activeTargetId)) allTargets.push(activeTargetId);
+    if (!specificTargetId && !allTargets.includes(activeTargetId)) allTargets.push(activeTargetId);
 
     allTargets.forEach(targetId => {
       const scripts = AppModeController.objectScripts[targetId] || [];
@@ -5109,6 +5763,7 @@ const CodeRuntimeEngine = {
   isEventHatMatch(block, triggerType, eventArg) {
     if (triggerType === "when_flag" && block.blockId === "when_flag") return true;
     if (triggerType === "when_clicked" && block.blockId === "when_clicked") return true;
+    if (triggerType === "when_became_playable" && block.blockId === "when_became_playable") return true;
     if (triggerType === "when_key" && block.blockId === "when_key") {
       const inputVal = this.getBlockInput(block, 0) || "space";
       if (inputVal.toLowerCase() === (eventArg || "").toLowerCase() || inputVal.toLowerCase() === "any") return true;
@@ -5322,6 +5977,34 @@ const CodeRuntimeEngine = {
           await this.sleep(16);
           break;
         }
+        case "move_layer_front": {
+          const count = Math.max(1, Math.floor(Number(this.evalBlockInput(block, 0, targetItem, 1)) || 1));
+          if (targetItem && typeof WorldObjectsManager !== "undefined") {
+            WorldObjectsManager.moveLayerFront(targetItem.id, count);
+          }
+          await this.sleep(16);
+          break;
+        }
+        case "move_layer_back": {
+          const count = Math.max(1, Math.floor(Number(this.evalBlockInput(block, 0, targetItem, 1)) || 1));
+          if (targetItem && typeof WorldObjectsManager !== "undefined") {
+            WorldObjectsManager.moveLayerBack(targetItem.id, count);
+          }
+          await this.sleep(16);
+          break;
+        }
+        case "go_to_layer": {
+          const dest = String(this.evalBlockInput(block, 0, targetItem, "front")).toLowerCase();
+          if (targetItem && typeof WorldObjectsManager !== "undefined") {
+            if (dest === "back") {
+              WorldObjectsManager.sendToBack(targetItem.id);
+            } else {
+              WorldObjectsManager.bringToFront(targetItem.id);
+            }
+          }
+          await this.sleep(16);
+          break;
+        }
         case "show": {
           if (targetItem) targetItem.hidden = false;
           await this.sleep(16);
@@ -5329,6 +6012,26 @@ const CodeRuntimeEngine = {
         }
         case "hide": {
           if (targetItem) targetItem.hidden = true;
+          await this.sleep(16);
+          break;
+        }
+
+        // ================= SENSING =================
+        case "touching_object": {
+          const objTarget = String(this.evalBlockInput(block, 0, targetItem, "edge"));
+          this.evaluateCondition(`touching ${objTarget}`, targetItem);
+          await this.sleep(16);
+          break;
+        }
+        case "touching_solid": {
+          this.evaluateCondition("touching solid", targetItem);
+          await this.sleep(16);
+          break;
+        }
+        case "distance_to_object": {
+          const objTarget = String(this.evalBlockInput(block, 0, targetItem, "hero"));
+          const distVal = Number(this.evalBlockInput(block, 1, targetItem, 50)) || 50;
+          this.evaluateCondition(`distance to ${objTarget} < ${distVal}`, targetItem);
           await this.sleep(16);
           break;
         }
@@ -5394,8 +6097,13 @@ const CodeRuntimeEngine = {
           break;
         }
         case "if_then": {
-          const condRaw = String(this.evalBlockInput(block, 0, targetItem, "touching edge"));
-          const isTrue = this.evaluateCondition(condRaw, targetItem);
+          let isTrue = false;
+          if (block.conditionBlock) {
+            isTrue = this.evaluateConditionBlock(block.conditionBlock, targetItem);
+          } else {
+            const condRaw = String(this.evalBlockInput(block, 0, targetItem, "touching edge"));
+            isTrue = this.evaluateCondition(condRaw, targetItem);
+          }
           if (isTrue && block.childId) {
             const scripts = AppModeController.getCurrentScripts();
             const childBlock = scripts.find(b => b.id === block.childId);
@@ -5405,8 +6113,13 @@ const CodeRuntimeEngine = {
           break;
         }
         case "if_else": {
-          const condRaw = String(this.evalBlockInput(block, 0, targetItem, "touching edge"));
-          const isTrue = this.evaluateCondition(condRaw, targetItem);
+          let isTrue = false;
+          if (block.conditionBlock) {
+            isTrue = this.evaluateConditionBlock(block.conditionBlock, targetItem);
+          } else {
+            const condRaw = String(this.evalBlockInput(block, 0, targetItem, "touching edge"));
+            isTrue = this.evaluateCondition(condRaw, targetItem);
+          }
           const scripts = AppModeController.getCurrentScripts();
           if (isTrue && block.childId_if) {
             const childIf = scripts.find(b => b.id === block.childId_if);
@@ -5414,6 +6127,28 @@ const CodeRuntimeEngine = {
           } else if (!isTrue && block.childId_else) {
             const childElse = scripts.find(b => b.id === block.childId_else);
             if (childElse) await this.runScriptThread(childElse, targetItem, targetItem ? targetItem.id : "global_stage");
+          }
+          await this.sleep(16);
+          break;
+        }
+        case "set_playable_char": {
+          const chosen = String(this.evalBlockInput(block, 0, targetItem, "this sprite"));
+          if (typeof GamePlayerEngine !== "undefined") {
+            if (chosen === "this sprite" || !chosen) {
+              if (targetItem) GamePlayerEngine.setPlayableCharacter(targetItem.id);
+            } else if (chosen === "None" || chosen === "none") {
+              GamePlayerEngine.setPlayableCharacter(null);
+            } else {
+              GamePlayerEngine.setPlayableCharacter(chosen);
+            }
+          }
+          await this.sleep(16);
+          break;
+        }
+        case "set_player_control": {
+          const modeVal = String(this.evalBlockInput(block, 0, targetItem, "enabled"));
+          if (typeof GamePlayerEngine !== "undefined") {
+            GamePlayerEngine.setPlayerControlEnabled(modeVal.toLowerCase() === "enabled");
           }
           await this.sleep(16);
           break;
@@ -5492,19 +6227,179 @@ const CodeRuntimeEngine = {
     return trimmed;
   },
 
-  evaluateCondition(conditionStr, targetItem) {
-    const cond = (conditionStr || "").toLowerCase().trim();
-    if (cond === "true" || cond === "") return true;
-    if (cond === "false") return false;
+  checkOverlap(a, b) {
+    if (!a || !b) return false;
+    const pad = 2;
+    return (
+      a.x < b.x + b.w - pad &&
+      a.x + a.w > b.x + pad &&
+      a.y < b.y + b.h - pad &&
+      a.y + a.h > b.y + pad
+    );
+  },
 
-    if (cond.includes("touching edge") || cond.includes("edge")) {
-      if (!targetItem) return false;
-      return targetItem.x <= 10 || targetItem.x + targetItem.w >= WorldConfig.worldWidth - 10 ||
-             targetItem.y <= 10 || targetItem.y + targetItem.h >= WorldConfig.worldHeight - 10;
+  evaluateCondition(conditionStr, targetItem) {
+    const cond = (conditionStr || "").trim();
+    const condLower = cond.toLowerCase();
+    if (condLower === "true" || condLower === "") return true;
+    if (condLower === "false") return false;
+
+    // Mobile sensing
+    if (condLower.includes("is mobile") || condLower.includes("mobile device")) {
+      return typeof MobileControlsManager !== "undefined" ? MobileControlsManager.isMobile() : false;
     }
 
-    if (cond.includes("key space pressed")) {
-      return isSpacePressed;
+    // Playable hero sensing
+    if (condLower.includes("is playable") || condLower.includes("playable hero")) {
+      if (typeof GamePlayerEngine !== "undefined" && targetItem) {
+        return GamePlayerEngine.activePlayableId === targetItem.id;
+      }
+      return targetItem ? !!targetItem.isPlayable : false;
+    }
+
+    // Mouse down sensing
+    if (condLower.includes("mouse down") || condLower === "mouse down?") {
+      return (typeof mouseIsPressed !== "undefined" && mouseIsPressed) ||
+             (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isMouseDown);
+    }
+
+    // Key pressed sensing
+    if (condLower.includes("key") && condLower.includes("pressed")) {
+      const matchKey = condLower.match(/key\s*\[?([a-zA-Z0-9_\s-]+)\]?\s*pressed/);
+      let keyName = matchKey ? matchKey[1].trim() : "space";
+      if (keyName === "space") {
+        return (typeof isSpacePressed !== "undefined" && isSpacePressed) ||
+               (typeof keyIsDown !== "undefined" && keyIsDown(32)) ||
+               (typeof GamePlayerEngine !== "undefined" && (GamePlayerEngine.keysPressed?.[" "] || GamePlayerEngine.keysPressed?.["space"]));
+      }
+      if (keyName === "up arrow" || keyName === "up") {
+        return (typeof keyIsDown !== "undefined" && (keyIsDown(38) || keyIsDown(87))) ||
+               (typeof GamePlayerEngine !== "undefined" && (GamePlayerEngine.keysPressed?.["ArrowUp"] || GamePlayerEngine.keysPressed?.["w"] || GamePlayerEngine.keysPressed?.["W"]));
+      }
+      if (keyName === "down arrow" || keyName === "down") {
+        return (typeof keyIsDown !== "undefined" && (keyIsDown(40) || keyIsDown(83))) ||
+               (typeof GamePlayerEngine !== "undefined" && (GamePlayerEngine.keysPressed?.["ArrowDown"] || GamePlayerEngine.keysPressed?.["s"] || GamePlayerEngine.keysPressed?.["S"]));
+      }
+      if (keyName === "left arrow" || keyName === "left") {
+        return (typeof keyIsDown !== "undefined" && (keyIsDown(37) || keyIsDown(65))) ||
+               (typeof GamePlayerEngine !== "undefined" && (GamePlayerEngine.keysPressed?.["ArrowLeft"] || GamePlayerEngine.keysPressed?.["a"] || GamePlayerEngine.keysPressed?.["A"]));
+      }
+      if (keyName === "right arrow" || keyName === "right") {
+        return (typeof keyIsDown !== "undefined" && (keyIsDown(39) || keyIsDown(68))) ||
+               (typeof GamePlayerEngine !== "undefined" && (GamePlayerEngine.keysPressed?.["ArrowRight"] || GamePlayerEngine.keysPressed?.["d"] || GamePlayerEngine.keysPressed?.["D"]));
+      }
+      if (keyName === "any") {
+        return (typeof keyIsPressed !== "undefined" && keyIsPressed) ||
+               (typeof GamePlayerEngine !== "undefined" && Object.values(GamePlayerEngine.keysPressed || {}).some(Boolean));
+      }
+    }
+
+    // Touching sensing
+    if (condLower.startsWith("touching") || condLower.includes("touching")) {
+      if (!targetItem) return false;
+      const targetSpec = condLower.replace(/^touching\s*/, "").replace(/\?$/, "").replace(/[\[\]]/g, "").trim();
+
+      if (targetSpec === "edge") {
+        return targetItem.x <= 10 || targetItem.x + targetItem.w >= WorldConfig.worldWidth - 10 ||
+               targetItem.y <= 10 || targetItem.y + targetItem.h >= WorldConfig.worldHeight - 10;
+      }
+
+      if (targetSpec === "mouse-pointer" || targetSpec === "mouse") {
+        const mx = (typeof mouseX !== "undefined" ? mouseX : 0);
+        const my = (typeof mouseY !== "undefined" ? mouseY : 0);
+        const wx = (mx - WorldConfig.panX) / WorldConfig.zoom;
+        const wy = (my - WorldConfig.panY) / WorldConfig.zoom;
+        return wx >= targetItem.x && wx <= targetItem.x + targetItem.w &&
+               wy >= targetItem.y && wy <= targetItem.y + targetItem.h;
+      }
+
+      if (targetSpec === "solid" || targetSpec === "solid object") {
+        if (typeof WorldObjectsManager === "undefined") return false;
+        return WorldObjectsManager.items.some(other => {
+          if (other.id === targetItem.id || other.hidden || !other.isSolid) return false;
+          return this.checkOverlap(targetItem, other);
+        });
+      }
+
+      if (targetSpec === "hero") {
+        let hero = null;
+        if (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.getActivePlayableItem) {
+          hero = GamePlayerEngine.getActivePlayableItem();
+        }
+        if (!hero && typeof WorldObjectsManager !== "undefined") {
+          hero = WorldObjectsManager.items.find(it => it.isPlayable);
+        }
+        if (hero && hero.id !== targetItem.id) {
+          return this.checkOverlap(targetItem, hero);
+        }
+        return false;
+      }
+
+      if (targetSpec === "any" || targetSpec === "any object") {
+        if (typeof WorldObjectsManager === "undefined") return false;
+        return WorldObjectsManager.items.some(other => {
+          if (other.id === targetItem.id || other.hidden) return false;
+          return this.checkOverlap(targetItem, other);
+        });
+      }
+
+      // Check specific object name or id
+      if (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items) {
+        return WorldObjectsManager.items.some(other => {
+          if (other.id === targetItem.id || other.hidden) return false;
+          const otherName = (other.name || "").toLowerCase();
+          if (other.id === targetSpec || otherName === targetSpec || otherName.includes(targetSpec) || targetSpec.includes(otherName)) {
+            return this.checkOverlap(targetItem, other);
+          }
+          return false;
+        });
+      }
+    }
+
+    // Distance to sensing
+    if (condLower.startsWith("distance to") || condLower.includes("distance to")) {
+      if (!targetItem) return false;
+      const matchDist = condLower.match(/distance\s*to\s*\[?([a-zA-Z0-9_\s-]+)\]?\s*(<|>|<=|>=|==|=)\s*(\d+)/);
+      if (matchDist) {
+        const targetSpec = matchDist[1].trim();
+        const op = matchDist[2];
+        const threshold = Number(matchDist[3]);
+
+        let otherX = 0, otherY = 0, found = false;
+        if (targetSpec === "mouse-pointer" || targetSpec === "mouse") {
+          const mx = (typeof mouseX !== "undefined" ? mouseX : 0);
+          const my = (typeof mouseY !== "undefined" ? mouseY : 0);
+          otherX = (mx - WorldConfig.panX) / WorldConfig.zoom;
+          otherY = (my - WorldConfig.panY) / WorldConfig.zoom;
+          found = true;
+        } else if (targetSpec === "hero") {
+          let hero = (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.getActivePlayableItem()) ||
+                     (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items.find(it => it.isPlayable));
+          if (hero && hero.id !== targetItem.id) {
+            otherX = hero.x + hero.w / 2;
+            otherY = hero.y + hero.h / 2;
+            found = true;
+          }
+        } else if (typeof WorldObjectsManager !== "undefined") {
+          const other = WorldObjectsManager.items.find(it => it.id !== targetItem.id && (it.id === targetSpec || (it.name && it.name.toLowerCase().includes(targetSpec))));
+          if (other) {
+            otherX = other.x + other.w / 2;
+            otherY = other.y + other.h / 2;
+            found = true;
+          }
+        }
+
+        if (found) {
+          const cx = targetItem.x + targetItem.w / 2;
+          const cy = targetItem.y + targetItem.h / 2;
+          const dist = Math.hypot(cx - otherX, cy - otherY);
+          if (op === "<") return dist < threshold;
+          if (op === ">") return dist > threshold;
+          if (op === "<=") return dist <= threshold;
+          if (op === ">=") return dist >= threshold;
+          if (op === "==" || op === "=") return Math.abs(dist - threshold) < 5;
+        }
+      }
     }
 
     const match = cond.match(/^([a-zA-Z0-9_-]+)\s*(>|<|>=|<=|==|=)\s*([a-zA-Z0-9_.-]+)$/);
@@ -5530,10 +6425,147 @@ const CodeRuntimeEngine = {
     return true;
   },
 
+  evaluateConditionBlock(condBlock, targetItem) {
+    if (!condBlock) return false;
+    const bid = condBlock.blockId || condBlock.id;
+    const inputs = condBlock.inputs || [];
+
+    // 1. SENSING BOOLEANS
+    if (bid === "touching_object") {
+      const target = inputs[0] || "edge";
+      return this.evaluateCondition(`touching ${target}`, targetItem);
+    }
+    if (bid === "touching_solid") {
+      return this.evaluateCondition("touching solid", targetItem);
+    }
+    if (bid === "distance_to_object") {
+      const target = inputs[0] || "hero";
+      const dist = inputs[1] || 50;
+      return this.evaluateCondition(`distance to ${target} < ${dist}`, targetItem);
+    }
+    if (bid === "key_pressed_check") {
+      const keyName = inputs[0] || "space";
+      return this.evaluateCondition(`key ${keyName} pressed`, targetItem);
+    }
+    if (bid === "mouse_down_check") {
+      return this.evaluateCondition("mouse down", targetItem);
+    }
+    if (bid === "is_mobile_sensing") {
+      return this.evaluateCondition("is mobile", targetItem);
+    }
+    if (bid === "is_playable_sensing") {
+      return this.evaluateCondition("is playable", targetItem);
+    }
+
+    // 2. LOGICAL OPERATOR BOOLEANS (and, or, not)
+    if (bid === "op_and" || condBlock.opType === "and") {
+      const leftVal = condBlock.leftConditionBlock ? this.evaluateConditionBlock(condBlock.leftConditionBlock, targetItem) : false;
+      const rightVal = condBlock.rightConditionBlock ? this.evaluateConditionBlock(condBlock.rightConditionBlock, targetItem) : false;
+      return leftVal && rightVal;
+    }
+    if (bid === "op_or" || condBlock.opType === "or") {
+      const leftVal = condBlock.leftConditionBlock ? this.evaluateConditionBlock(condBlock.leftConditionBlock, targetItem) : false;
+      const rightVal = condBlock.rightConditionBlock ? this.evaluateConditionBlock(condBlock.rightConditionBlock, targetItem) : false;
+      return leftVal || rightVal;
+    }
+    if (bid === "op_not" || condBlock.opType === "not") {
+      const innerVal = condBlock.conditionBlock ? this.evaluateConditionBlock(condBlock.conditionBlock, targetItem) : false;
+      return !innerVal;
+    }
+
+    // 3. COMPARISON OPERATOR BOOLEANS (>, <, =, contains)
+    if (bid === "op_gt" || condBlock.opType === ">") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 50, targetItem)) || 0;
+      return l > r;
+    }
+    if (bid === "op_lt" || condBlock.opType === "<") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 50, targetItem)) || 0;
+      return l < r;
+    }
+    if (bid === "op_eq" || condBlock.opType === "=") {
+      const l = this.resolveValue(inputs[0] !== undefined ? inputs[0] : "", targetItem);
+      const r = this.resolveValue(inputs[1] !== undefined ? inputs[1] : 50, targetItem);
+      return String(l) === String(r);
+    }
+    if (bid === "op_contains" || condBlock.opType === "contains") {
+      const l = String(this.resolveValue(inputs[0] !== undefined ? inputs[0] : "apple", targetItem));
+      const r = String(this.resolveValue(inputs[1] !== undefined ? inputs[1] : "a", targetItem));
+      return l.includes(r);
+    }
+
+    const fallbackCond = inputs[0] || condBlock.name || "true";
+    return this.evaluateCondition(fallbackCond, targetItem);
+  },
+
+  evaluateReporterBlock(repBlock, targetItem) {
+    if (!repBlock) return 0;
+    const bid = repBlock.blockId || repBlock.id;
+    const inputs = repBlock.inputs || [];
+
+    if (bid === "op_add" || repBlock.opType === "+") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 0, targetItem)) || 0;
+      return l + r;
+    }
+    if (bid === "op_subtract" || repBlock.opType === "-") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 0, targetItem)) || 0;
+      return l - r;
+    }
+    if (bid === "op_multiply" || repBlock.opType === "*") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 0, targetItem)) || 0;
+      return l * r;
+    }
+    if (bid === "op_divide" || repBlock.opType === "/") {
+      const l = Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 0, targetItem)) || 0;
+      const r = Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 1, targetItem)) || 0;
+      return r !== 0 ? l / r : 0;
+    }
+    if (bid === "op_random" || repBlock.isRandom) {
+      const min = Math.ceil(Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 1, targetItem)) || 1);
+      const max = Math.floor(Number(this.resolveValue(inputs[1] !== undefined ? inputs[1] : 10, targetItem)) || 10);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    if (bid === "op_join") {
+      const l = String(this.resolveValue(inputs[0] !== undefined ? inputs[0] : "apple", targetItem));
+      const r = String(this.resolveValue(inputs[1] !== undefined ? inputs[1] : "banana", targetItem));
+      return l + r;
+    }
+    if (bid === "op_letter_of") {
+      const idx = (Number(this.resolveValue(inputs[0] !== undefined ? inputs[0] : 1, targetItem)) || 1) - 1;
+      const str = String(this.resolveValue(inputs[1] !== undefined ? inputs[1] : "apple", targetItem));
+      return str[idx] || "";
+    }
+    if (bid === "op_length_of") {
+      const str = String(this.resolveValue(inputs[0] !== undefined ? inputs[0] : "apple", targetItem));
+      return str.length;
+    }
+
+    return 0;
+  },
+
   resolveValue(identifier, targetItem) {
-    const v = VariableManager.getVariable(identifier, targetItem ? targetItem.id : null);
-    if (v) return v.value;
-    return identifier;
+    if (identifier === null || identifier === undefined) return "";
+    if (typeof identifier === "object" && identifier.isReporter) {
+      return this.evaluateReporterBlock(identifier, targetItem);
+    }
+    const str = String(identifier).trim();
+    if (targetItem) {
+      if (str === "x position" || str === "x") return targetItem.x;
+      if (str === "y position" || str === "y") return targetItem.y;
+      if (str === "width") return targetItem.w;
+      if (str === "height") return targetItem.h;
+      if (str === "direction") return targetItem.rotation || 0;
+      if (str === "size") return targetItem.scale || 100;
+    }
+    const v = typeof VariableManager !== "undefined" ? VariableManager.getVariable(str, targetItem ? targetItem.id : null) : null;
+    if (v !== null && v !== undefined) return v.value;
+    const num = Number(str);
+    if (!isNaN(num) && str !== "") return num;
+    return str;
   }
 };
 
@@ -6442,6 +7474,17 @@ function setup() {
   canvasEl.addEventListener("mousedown", (e) => {
     const cam = getActiveStageCamera();
 
+    // 0. GAME PLAYER Click-to-Broadcast / Touch Controls
+    if (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying) {
+      const rect = canvasEl.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const wx = cam.panX + (sx - width / 2) / cam.zoom;
+      const wy = cam.panY + (sy - height / 2) / cam.zoom;
+      PlayerInputManager.handleCanvasClick(wx, wy);
+      return;
+    }
+
     // 0. CROP MODE Interaction
     if (e.button === 0 && CropController.isActive && !isSpacePressed) {
       const rect = canvasEl.getBoundingClientRect();
@@ -6844,9 +7887,14 @@ function setup() {
 
 function draw() {
   const isCode = typeof AppModeController !== "undefined" && AppModeController.isCodeMode();
+  const isPlay = typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying;
+
+  if (isPlay) {
+    GamePlayerEngine.updateGameLoop();
+  }
 
   // 1. Dark outer void canvas background
-  background(isCode ? 10 : 18, isCode ? 3 : 4, isCode ? 5 : 9);
+  background(isPlay ? 6 : (isCode ? 10 : 18), isPlay ? 2 : (isCode ? 3 : 4), isPlay ? 4 : (isCode ? 5 : 9));
 
   const cam = getActiveStageCamera();
 
@@ -6858,12 +7906,16 @@ function draw() {
 
   // 3. Draw World Canvas Background
   fill(WorldConfig.bgColor);
-  stroke(46, 8, 20);
-  strokeWeight(3);
+  if (isPlay) {
+    noStroke();
+  } else {
+    stroke(46, 8, 20);
+    strokeWeight(3);
+  }
   rect(0, 0, WorldConfig.worldWidth, WorldConfig.worldHeight);
 
-  // 4. Subtle World Grid (if Grid Toggle is ON and not in Code Mode preview)
-  if (MouseToolController.showGrid && !isCode) {
+  // 4. Subtle World Grid (if Grid Toggle is ON and not in Code Mode preview or Play mode)
+  if (MouseToolController.showGrid && !isCode && !isPlay) {
     stroke(200, 200, 210, 45);
     strokeWeight(1);
     const gridSize = 64;
@@ -6879,19 +7931,21 @@ function draw() {
   WorldObjectsManager.draw();
 
   // 6. World Origin Axes / Bounds Accent
-  stroke(173, 32, 77);
-  strokeWeight(isCode ? 1.5 : 2);
-  noFill();
-  rect(0, 0, WorldConfig.worldWidth, WorldConfig.worldHeight);
+  if (!isPlay) {
+    stroke(173, 32, 77);
+    strokeWeight(isCode ? 1.5 : 2);
+    noFill();
+    rect(0, 0, WorldConfig.worldWidth, WorldConfig.worldHeight);
+  }
 
   pop();
 
   // 7. HUD Coordinates Overlay (Bottom Right - only in main Canvas mode)
-  if (!isCode) {
+  if (!isCode && !isPlay) {
     drawHUD();
   }
 
-  // 8. Live Variable Watcher HUD Badges (Top-Left of stage canvas)
+  // 8. Live Dynamic Variable Watcher HUD Badges (Top-Left of stage canvas)
   if (typeof VariableManager !== "undefined") {
     VariableManager.drawWatchers();
   }
