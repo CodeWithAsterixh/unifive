@@ -136,6 +136,18 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gu
 
 ---
 
+## Author & Creator
+
+**Paul Peter** (`@asterixh` / `Asterixh`)  
+*Fullstack Software Engineer*
+
+- 🌐 **Portfolio & Contact**: [asterixh.vercel.app/contact](https://asterixh.vercel.app/contact)
+- 🐙 **GitHub**: [@CodeWithAsterixh](https://github.com/CodeWithAsterixh)
+- 💼 **LinkedIn**: [Paul Peter Eyinnaya](https://linkedin.com/in/paul-peter-eyinnaya)
+- 🐦 **X (Twitter)**: [@paul_peter](https://twitter.com/paul_peter)
+
+---
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).

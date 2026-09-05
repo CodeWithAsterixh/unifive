@@ -64,60 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {}
   };
 
-  const soundToggleBtn = document.getElementById("btn-sound-toggle");
-  const soundIcon = document.getElementById("sound-icon");
-  const soundLabel = document.getElementById("sound-label");
-  const mobileSoundToggleBtn = document.getElementById("btn-sound-toggle-mobile");
-  const mobileSoundIcon = document.getElementById("mobile-sound-icon");
-  const mobileSoundLabel = document.getElementById("mobile-sound-label");
 
-  const updateSoundUI = () => {
-    if (isSoundOn) {
-      if (soundToggleBtn) {
-        soundToggleBtn.classList.add("sound-on");
-        soundToggleBtn.setAttribute("aria-pressed", "true");
-        soundToggleBtn.setAttribute("aria-label", "Toggle 8-bit retro sound effects, currently enabled");
-      }
-      if (soundIcon) soundIcon.className = "ph ph-speaker-high-fill";
-      if (soundLabel) soundLabel.textContent = "SOUND ON";
-
-      if (mobileSoundToggleBtn) {
-        mobileSoundToggleBtn.classList.add("sound-on");
-        mobileSoundToggleBtn.setAttribute("aria-pressed", "true");
-      }
-      if (mobileSoundIcon) mobileSoundIcon.className = "ph ph-speaker-high-fill";
-      if (mobileSoundLabel) mobileSoundLabel.textContent = "SOUND: ON";
-
-      playRetroSound("click");
-    } else {
-      if (soundToggleBtn) {
-        soundToggleBtn.classList.remove("sound-on");
-        soundToggleBtn.setAttribute("aria-pressed", "false");
-        soundToggleBtn.setAttribute("aria-label", "Toggle 8-bit retro sound effects, currently muted");
-      }
-      if (soundIcon) soundIcon.className = "ph ph-speaker-slash";
-      if (soundLabel) soundLabel.textContent = "MUTED";
-
-      if (mobileSoundToggleBtn) {
-        mobileSoundToggleBtn.classList.remove("sound-on");
-        mobileSoundToggleBtn.setAttribute("aria-pressed", "false");
-      }
-      if (mobileSoundIcon) mobileSoundIcon.className = "ph ph-speaker-slash";
-      if (mobileSoundLabel) mobileSoundLabel.textContent = "SOUND: MUTED";
-    }
-  };
-
-  const toggleSound = () => {
-    isSoundOn = !isSoundOn;
-    updateSoundUI();
-  };
-
-  if (soundToggleBtn) {
-    soundToggleBtn.addEventListener("click", toggleSound);
-  }
-  if (mobileSoundToggleBtn) {
-    mobileSoundToggleBtn.addEventListener("click", toggleSound);
-  }
 
   // ========================================================================
   // 3. STICKY MULTI-CHAPTER SCROLL ENGINE (WorldLoadingScreen Architecture)

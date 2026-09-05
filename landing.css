@@ -154,11 +154,12 @@ body.sticky-scroll-body {
 .nav-inner {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 8px 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  flex-wrap: nowrap;
+  gap: 12px;
 }
 
 .brand-wrap {
@@ -166,6 +167,8 @@ body.sticky-scroll-body {
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .brand-icon-box {
@@ -177,6 +180,7 @@ body.sticky-scroll-body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .brand-icon-box img {
@@ -188,6 +192,7 @@ body.sticky-scroll-body {
 .brand-titles {
   display: flex;
   flex-direction: column;
+  white-space: nowrap;
 }
 
 .brand-name {
@@ -196,19 +201,25 @@ body.sticky-scroll-body {
   color: var(--gold-bright);
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 0px #000000;
+  white-space: nowrap;
 }
 
 .brand-tag {
   font-family: var(--font-pixel);
   font-size: 0.6rem;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 14px;
+  flex-wrap: nowrap;
+  gap: 10px;
   list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .nav-link-btn {
@@ -216,11 +227,13 @@ body.sticky-scroll-body {
   border: none;
   color: var(--text-secondary);
   font-family: var(--font-pixel);
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
   padding: 4px 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: color 0.15s ease;
   position: relative;
 }
@@ -243,7 +256,10 @@ body.sticky-scroll-body {
 .nav-actions {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .btn-icon-social {
@@ -257,6 +273,8 @@ body.sticky-scroll-body {
   background-color: var(--burgundy-dark);
   color: var(--text-secondary);
   border-color: var(--burgundy-darkest);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .btn-icon-social:hover {
@@ -266,11 +284,16 @@ body.sticky-scroll-body {
 }
 
 .btn-coffee-nav {
-  padding: 6px 12px;
-  font-size: 0.74rem;
+  padding: 6px 10px;
+  font-size: 0.72rem;
   background-color: var(--burgundy-dark);
   color: var(--gold-bright);
   border-color: var(--burgundy-mid);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   box-shadow: 
     inset 1px 1px 0px var(--gold-dark),
     inset -1px -1px 0px var(--burgundy-darkest),
@@ -283,37 +306,35 @@ body.sticky-scroll-body {
   border-color: var(--gold-bright);
 }
 
-.btn-sound {
-  padding: 6px 10px;
-  font-size: 0.74rem;
-}
-
-.btn-sound.sound-on {
-  background-color: var(--burgundy-mid);
-  color: var(--gold-bright);
-  border-color: var(--gold-bright);
-}
-
 .btn-launch-nav {
   padding: 6px 12px;
   font-size: 0.76rem;
-}
-
-/* Visibility toggles for Desktop vs Mobile Header */
-.desktop-only {
+  white-space: nowrap;
+  flex-shrink: 0;
   display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.mobile-only {
-  display: none;
+/* ========================================================================
+   HEADER RESPONSIVE VISIBILITY
+   ======================================================================== */
+.desktop-only {
+  display: inline-flex !important;
 }
 
-/* Compact Mobile Header Action Buttons */
+.mobile-only,
+.btn-coffee-mobile,
+.btn-launch-mobile,
+.btn-mobile-menu {
+  display: none !important;
+}
+
+/* Compact Mobile Header Action Buttons (Applied when shown in mobile media query) */
 .btn-coffee-mobile {
   width: 34px;
   height: 34px;
   padding: 0;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
@@ -332,7 +353,6 @@ body.sticky-scroll-body {
   width: 34px;
   height: 34px;
   padding: 0;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1.15rem;
@@ -342,7 +362,6 @@ body.sticky-scroll-body {
   width: 34px;
   height: 34px;
   padding: 0;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
@@ -497,16 +516,6 @@ body.sticky-scroll-body {
   border-top: 2px solid var(--burgundy-darkest);
 }
 
-.mobile-sound-btn {
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 0.74rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
 .mobile-coffee-action {
   width: 100%;
   padding: 10px 14px;
@@ -645,6 +654,8 @@ body.sticky-scroll-body {
   transition: transform 0.1s ease;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-pixel:active {
@@ -1175,6 +1186,128 @@ body.sticky-scroll-body {
 }
 
 /* ------------------------------------------------------------------------
+   AUTHOR PROFILE CARD IN CHAPTER 6
+   ------------------------------------------------------------------------ */
+.author-profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px 18px;
+  width: 100%;
+  max-width: 540px;
+  background-color: rgba(14, 2, 7, 0.75);
+  border: 2px solid var(--burgundy-mid);
+  box-shadow: inset 1px 1px 0px var(--burgundy-darkest), 3px 3px 0px #000000;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar-badge {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--burgundy-darkest);
+  border: 2px solid var(--gold-bright);
+  box-shadow: 2px 2px 0px #000000;
+  color: var(--gold-bright);
+  font-size: 1.1rem;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.author-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.author-name {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  color: var(--text-white);
+  letter-spacing: 0.04em;
+}
+
+.author-handle {
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  color: var(--gold-bright);
+  background-color: rgba(255, 197, 39, 0.1);
+  padding: 1px 6px;
+  border: 1px solid var(--gold-dark);
+}
+
+.author-role {
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  color: var(--emerald-bright);
+  font-weight: 700;
+}
+
+.author-bio {
+  font-size: 0.78rem !important;
+  color: var(--text-secondary) !important;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0 !important;
+}
+
+.author-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------------
+   FOOTER TECH CREDITS
+   ------------------------------------------------------------------------ */
+.footer-tech-credit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.footer-tech-credit a {
+  color: var(--gold-bright);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.footer-tech-credit a:hover {
+  color: var(--text-white);
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .footer-tech-credit {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------------
    STICKY FOOTER & CHAPTER INDICATOR DOTS
    ------------------------------------------------------------------------ */
 .sticky-footer {
@@ -1648,12 +1781,15 @@ button:focus-visible,
   color: #ffffff;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1180px) {
   .desktop-only {
     display: none !important;
   }
   
-  .mobile-only {
+  .mobile-only,
+  .btn-coffee-mobile,
+  .btn-launch-mobile,
+  .btn-mobile-menu {
     display: inline-flex !important;
   }
 
