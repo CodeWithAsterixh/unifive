@@ -2502,15 +2502,20 @@ const SpritePosesController = {
           item.p5Img = cacheEntry.img;
           item.loaded = true;
           
-          const oldNatH = item.naturalH || item.h;
+          const oldNatH = item.naturalH || item.h || 70;
+          const currentScale = (oldNatH > 0 && item.h > 0) ? (item.h / oldNatH) : 1.5;
+
           item.naturalW = cacheEntry.naturalW;
           item.naturalH = cacheEntry.naturalH;
 
-          // Preserve character height while adapting width to new pose's aspect ratio
-          if (oldNatH > 0 && cacheEntry.naturalH > 0 && item.h > 0) {
-            const currentScale = item.h / oldNatH;
-            item.w = Math.max(20, Math.round(cacheEntry.naturalW * currentScale));
-          }
+          // Preserve exact character pixel scale and keep feet grounded at the bottom
+          const newH = Math.max(20, Math.round(cacheEntry.naturalH * currentScale));
+          const newW = Math.max(20, Math.round(cacheEntry.naturalW * currentScale));
+          
+          const oldBottomY = item.y + item.h;
+          item.y = oldBottomY - newH;
+          item.w = newW;
+          item.h = newH;
 
           if (!item.crop || !item.crop.isCropped) {
             item.crop = { x: 0, y: 0, w: cacheEntry.naturalW, h: cacheEntry.naturalH, isCropped: false };
@@ -2720,10 +2725,15 @@ const WorldObjectsManager = {
         let nh = cacheEntry.naturalH;
 
         if (newItem.type === "sprite" || (newItem.assetId && newItem.assetId.startsWith("sprite_")) || newItem.poses) {
-          const targetSpriteH = (nh <= 48) ? 128 : ((nh <= 64) ? 160 : 200);
-          const scale = targetSpriteH / nh;
-          nw = Math.max(20, Math.round(nw * scale));
-          nh = targetSpriteH;
+          // Standard crisp pixel scaling: 1.5x of natural character size (or appropriate scale for hi-res)
+          let spriteScale = 1.5;
+          if (nh > 600) {
+            spriteScale = 140 / nh;
+          } else if (nh <= 32) {
+            spriteScale = 2.5;
+          }
+          nw = Math.max(20, Math.round(nw * spriteScale));
+          nh = Math.max(20, Math.round(nh * spriteScale));
         } else {
           const maxDim = 640;
           if (nw > maxDim || nh > maxDim) {
@@ -3231,18 +3241,30 @@ const WorldObjectsManager = {
             const fw = item.frameWidth || 128;
             const fh = item.frameHeight || 128;
             const sx = frameIdx * fw;
-            const srcAspect = fw / fh;
-            let drawW, drawH;
-            if (srcAspect > item.w / item.h) {
-              drawW = item.w;
-              drawH = item.w / srcAspect;
+            const charNatH = item.naturalH || item.h || 70;
+            
+            // If sprite sheet frame has transparent headroom (e.g. 128px frame for ~70px character), scale the full frame so character matches bounding box
+            if (fh > charNatH && charNatH > 20) {
+              const scale = item.h / charNatH;
+              const drawW = fw * scale;
+              const drawH = fh * scale;
+              const drawX = -drawW / 2;
+              const drawY = item.h / 2 - drawH; // Ground feet at bottom of bounding box
+              image(item.p5SheetImg, drawX, drawY, drawW, drawH, sx, 0, fw, fh);
             } else {
-              drawH = item.h;
-              drawW = item.h * srcAspect;
+              const srcAspect = fw / fh;
+              let drawW, drawH;
+              if (srcAspect > item.w / item.h) {
+                drawW = item.w;
+                drawH = item.w / srcAspect;
+              } else {
+                drawH = item.h;
+                drawW = item.h * srcAspect;
+              }
+              const drawX = -drawW / 2;
+              const drawY = item.h / 2 - drawH;
+              image(item.p5SheetImg, drawX, drawY, drawW, drawH, sx, 0, fw, fh);
             }
-            const drawX = -drawW / 2;
-            const drawY = item.h / 2 - drawH;
-            image(item.p5SheetImg, drawX, drawY, drawW, drawH, sx, 0, fw, fh);
           } else if (item.p5Img) {
             image(item.p5Img, -item.w / 2, -item.h / 2, item.w, item.h);
           }
