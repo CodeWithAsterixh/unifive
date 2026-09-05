@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "presets": [
+    {
+      "id": "sidefacing_desert_oasis_expanse",
+      "name": "The Great Desert Oasis Expanse",
+      "perspective": "sidefacing",
+      "file": "assets/presets/sidefacing_desert_oasis_expanse.json",
+      "thumbnail": "assets/presets/desert_oasis_preview.png",
+      "author": "Paul Peter (@asterixh)",
+      "assetCount": 21,
+      "description": "A vast 5760x1080 panoramic desert world featuring golden rolling dunes, lush palm oases, crystal mountain springs, nomad traders, and patrolling dune raiders."
+    }
+  ]
+}

@@ -5458,63 +5458,75 @@ const U5Compiler = {
   isLoading: false,
 
   init() {
-    // 1. Header Export Dropdown & Load Buttons
-    const btnExportMenu = document.getElementById("btn-export-menu");
-    const dropdownMenu = document.getElementById("export-dropdown-menu");
-    const btnExportU5Opt = document.getElementById("btn-export-u5-opt");
-    const btnExportPngOpt = document.getElementById("btn-export-png-opt");
-    const btnHeaderImport = document.getElementById("btn-import-u5");
+    // 1. Unified Header File Dropdown (SAVE & LOAD)
+    const btnFileMenu = document.getElementById("btn-file-menu");
+    const fileDropdownMenu = document.getElementById("file-dropdown-menu");
+    const btnFileSaveU5 = document.getElementById("btn-file-save-u5");
+    const btnFileExportPng = document.getElementById("btn-file-export-png");
+    const btnFileLoadPreset = document.getElementById("btn-file-load-preset");
+    const btnFileLoadFile = document.getElementById("btn-file-load-file");
     const inputLoad = document.getElementById("input-load-u5");
 
-    const toggleExportMenu = (show = null) => {
-      if (!dropdownMenu) return;
-      const willShow = show !== null ? show : dropdownMenu.style.display === "none";
-      dropdownMenu.style.display = willShow ? "flex" : "none";
-      if (btnExportMenu) btnExportMenu.classList.toggle("active", willShow);
+    const toggleFileMenu = (show = null) => {
+      if (!fileDropdownMenu) return;
+      const willShow = show !== null ? show : fileDropdownMenu.style.display === "none";
+      fileDropdownMenu.style.display = willShow ? "flex" : "none";
+      if (btnFileMenu) btnFileMenu.classList.toggle("active", willShow);
       if (willShow) SoundEngine.playChiptuneTone(540, "square", 0.04, 0.08);
     };
 
-    if (btnExportMenu) {
-      btnExportMenu.addEventListener("click", (e) => {
+    if (btnFileMenu) {
+      btnFileMenu.addEventListener("click", (e) => {
         e.stopPropagation();
-        toggleExportMenu();
+        toggleFileMenu();
       });
     }
 
-    if (btnExportU5Opt) {
-      btnExportU5Opt.addEventListener("click", (e) => {
+    if (btnFileSaveU5) {
+      btnFileSaveU5.addEventListener("click", (e) => {
         e.stopPropagation();
-        toggleExportMenu(false);
+        toggleFileMenu(false);
         this.openExportModal();
       });
     }
 
-    if (btnExportPngOpt) {
-      btnExportPngOpt.addEventListener("click", (e) => {
+    if (btnFileExportPng) {
+      btnFileExportPng.addEventListener("click", (e) => {
         e.stopPropagation();
-        toggleExportMenu(false);
+        toggleFileMenu(false);
         if (typeof saveWorkspace === "function") saveWorkspace();
       });
     }
 
-    // Close export dropdown when clicking outside
-    window.addEventListener("click", (e) => {
-      if (dropdownMenu && dropdownMenu.style.display !== "none") {
-        if (!e.target.closest("#export-dropdown-wrapper")) {
-          toggleExportMenu(false);
-        }
-      }
-    });
+    if (btnFileLoadPreset) {
+      btnFileLoadPreset.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleFileMenu(false);
+        this.openPresetsModal();
+      });
+    }
 
-    if (btnHeaderImport) {
-      btnHeaderImport.addEventListener("click", () => {
+    if (btnFileLoadFile) {
+      btnFileLoadFile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleFileMenu(false);
         if (inputLoad) inputLoad.click();
       });
     }
 
-    // 2. Config Tab Compile & Load Buttons
+    // Close file dropdown when clicking outside
+    window.addEventListener("click", (e) => {
+      if (fileDropdownMenu && fileDropdownMenu.style.display !== "none") {
+        if (!e.target.closest("#file-dropdown-wrapper")) {
+          toggleFileMenu(false);
+        }
+      }
+    });
+
+    // 2. Config Tab Compile, Load & Presets Buttons
     const btnCfgExport = document.getElementById("btn-cfg-export-u5");
     const btnCfgImport = document.getElementById("btn-cfg-import-u5");
+    const btnCfgPreset = document.getElementById("btn-cfg-load-preset");
 
     if (btnCfgExport) {
       btnCfgExport.addEventListener("click", () => this.openExportModal());
@@ -5524,8 +5536,17 @@ const U5Compiler = {
         if (inputLoad) inputLoad.click();
       });
     }
+    if (btnCfgPreset) {
+      btnCfgPreset.addEventListener("click", () => this.openPresetsModal());
+    }
 
-    // 3. Export Modal Controls
+    // 3. Presets Browser Modal Controls
+    const btnClosePresets = document.getElementById("btn-close-presets-modal");
+    const btnCancelPresets = document.getElementById("btn-cancel-presets-modal");
+    if (btnClosePresets) btnClosePresets.addEventListener("click", () => this.closePresetsModal());
+    if (btnCancelPresets) btnCancelPresets.addEventListener("click", () => this.closePresetsModal());
+
+    // 4. Export Modal Controls
     const modalExport = document.getElementById("modal-export-u5");
     const btnCloseModal = document.getElementById("btn-close-export-modal");
     const btnCancelModal = document.getElementById("btn-cancel-export-modal");
@@ -5675,6 +5696,114 @@ const U5Compiler = {
     if (this.isCompiling) return;
     const modal = document.getElementById("modal-export-u5");
     if (modal) modal.style.display = "none";
+  },
+
+  async openPresetsModal() {
+    const modal = document.getElementById("modal-presets-browser");
+    const gridEl = document.getElementById("presets-cards-grid");
+    const statusEl = document.getElementById("presets-loading-status");
+    if (!modal) return;
+
+    modal.style.display = "flex";
+    if (statusEl) statusEl.style.display = "none";
+    SoundEngine.playChiptuneTone(520, "square", 0.05, 0.08);
+
+    if (gridEl) {
+      gridEl.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gold-bright); font-family: var(--font-pixel);"><i class="ph ph-spinner ph-spin"></i> Loading presets catalog...</div>';
+
+      let presetsList = [];
+      try {
+        let resp = await fetch("assets/presets/index.json");
+        if (!resp.ok) resp = await fetch("../assets/presets/index.json");
+        if (resp.ok) {
+          const indexData = await resp.json();
+          presetsList = indexData.presets || [];
+        }
+      } catch (e) {
+        console.warn("Could not fetch assets/presets/index.json:", e);
+      }
+
+      if (!presetsList || presetsList.length === 0) {
+        presetsList = [
+          {
+            id: "sidefacing_metropolis_quest",
+            name: "Cyberpunk Metropolis Quest",
+            perspective: "sidefacing",
+            file: "assets/presets/sidefacing_metropolis_quest.json",
+            thumbnail: "assets/sidefacing-assets/city-backgrounds/city_1_layer2_distant_skyline.png",
+            author: "Paul Peter (@asterixh)",
+            assetCount: 68,
+            description: "A sprawling 3840x2160 cyberpunk city platformer preset with parallax towers, street traffic, vendors, police enforcers, and animated fantasy heroes."
+          }
+        ];
+      }
+
+      gridEl.innerHTML = "";
+      presetsList.forEach(preset => {
+        const card = document.createElement("div");
+        card.className = "preset-card";
+        const isSide = preset.perspective === "sidefacing";
+
+        card.innerHTML = `
+          <div class="preset-thumb-wrap">
+            <img src="${preset.thumbnail || 'favicon-32x32.png'}" alt="${preset.name}" class="preset-thumb-img" onerror="this.src='favicon-32x32.png'" />
+            <span class="preset-badge-tag">${isSide ? 'SIDE' : 'TOP'}</span>
+          </div>
+          <div class="preset-card-content">
+            <span class="preset-card-title">${preset.name}</span>
+            <span class="preset-card-desc">${preset.description || 'Pre-configured world template with multi-layered assets.'}</span>
+            <div class="preset-card-pills">
+              <span class="preset-pill"><i class="ph ph-stack"></i> ${preset.assetCount || 68} Assets</span>
+              <span class="preset-pill"><i class="ph ph-compass"></i> ${isSide ? 'Side-Facing' : 'Top-Down'}</span>
+              <span class="preset-pill"><i class="ph ph-user"></i> ${preset.author || 'Paul Peter'}</span>
+            </div>
+          </div>
+          <button class="btn btn-pixel btn-load-preset" data-preset-file="${preset.file}">
+            <i class="ph ph-rocket-launch"></i>
+            <span>LOAD PRESET</span>
+          </button>
+        `;
+
+        const btnLoad = card.querySelector(".btn-load-preset");
+        if (btnLoad) {
+          btnLoad.addEventListener("click", () => {
+            this.loadPresetFile(preset.file || "assets/presets/sidefacing_metropolis_quest.json");
+          });
+        }
+
+        gridEl.appendChild(card);
+      });
+    }
+  },
+
+  closePresetsModal() {
+    const modal = document.getElementById("modal-presets-browser");
+    if (modal) modal.style.display = "none";
+  },
+
+  async loadPresetFile(presetFilePath) {
+    const statusEl = document.getElementById("presets-loading-status");
+    const statusText = document.getElementById("presets-loading-text");
+    if (statusEl) statusEl.style.display = "flex";
+    if (statusText) statusText.textContent = "Fetching preset scene data...";
+    SoundEngine.playAction("save");
+
+    try {
+      let resp = await fetch(presetFilePath);
+      if (!resp.ok) resp = await fetch("../" + presetFilePath);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const blob = await resp.blob();
+
+      if (statusText) statusText.textContent = "Unpacking layers & code scripts...";
+      await this.decompressAndLoad(blob);
+      this.closePresetsModal();
+      SoundEngine.playChiptuneTone(1046, "triangle", 0.1, 0.2);
+      setTimeout(() => SoundEngine.playChiptuneTone(1318, "triangle", 0.15, 0.2), 80);
+    } catch (err) {
+      console.error("Failed to load preset:", err);
+      alert("Failed to load preset: " + err.message);
+      if (statusEl) statusEl.style.display = "none";
+    }
   },
 
   updateStats(customSizeText = null) {

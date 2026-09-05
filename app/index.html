@@ -82,37 +82,63 @@
         <i class="ph ph-arrow-u-up-right"></i>
       </button>
 
-      <button id="btn-import-u5" class="btn btn-pixel btn-header-icon" title="Open .U5 Project" aria-label="Open .U5">
-        <i class="ph ph-folder-open"></i>
-      </button>
-
-      <input type="file" id="input-load-u5" accept=".u5" style="display: none;" />
-
-      <!-- EXPORT DROPDOWN MENU -->
-      <div class="export-dropdown-wrapper" id="export-dropdown-wrapper">
-        <button id="btn-export-menu" class="btn btn-pixel btn-header-export" title="Export Project" aria-label="Export Menu">
-          <i class="ph ph-export"></i>
-          <span>EXPORT</span>
-          <i class="ph ph-caret-down export-caret"></i>
+      <!-- UNIFIED FILE DROPDOWN MENU (SAVE & LOAD) -->
+      <div class="file-dropdown-wrapper" id="file-dropdown-wrapper">
+        <button id="btn-file-menu" class="btn btn-pixel btn-header-file" title="File Menu (Save / Load)" aria-label="File Menu">
+          <i class="ph ph-folder-notch-open"></i>
+          <span class="file-btn-label">FILE</span>
+          <i class="ph ph-caret-down file-caret"></i>
         </button>
-        <div class="export-dropdown-menu" id="export-dropdown-menu" style="display: none;">
-          <button id="btn-export-u5-opt" class="export-dropdown-item" title="Compile and export entire project into a .U5 file">
-            <i class="ph ph-package"></i>
-            <div class="export-item-texts">
-              <span class="export-item-title">EXPORT (.U5)</span>
-              <span class="export-item-desc">Full project (Layers, Code & Assets)</span>
+        <div class="file-dropdown-menu" id="file-dropdown-menu" style="display: none;">
+          <!-- PARTITION 1: SAVE -->
+          <div class="file-dropdown-section">
+            <div class="file-dropdown-section-title">
+              <i class="ph ph-floppy-disk"></i>
+              <span>SAVE</span>
             </div>
-          </button>
-          <div class="export-menu-divider"></div>
-          <button id="btn-export-png-opt" class="export-dropdown-item" title="Export canvas as a PNG image">
-            <i class="ph ph-image"></i>
-            <div class="export-item-texts">
-              <span class="export-item-title">EXPORT PNG</span>
-              <span class="export-item-desc">High-resolution image snapshot</span>
+            <button id="btn-file-save-u5" class="file-dropdown-item" title="Save and compile entire project to .U5">
+              <i class="ph ph-package"></i>
+              <div class="file-item-texts">
+                <span class="file-item-title">SAVE PROJECT (.U5)</span>
+                <span class="file-item-desc">Project package (Layers, Code & Assets)</span>
+              </div>
+            </button>
+            <button id="btn-file-export-png" class="file-dropdown-item" title="Export canvas as a PNG image">
+              <i class="ph ph-image"></i>
+              <div class="file-item-texts">
+                <span class="file-item-title">EXPORT IMAGE (PNG)</span>
+                <span class="file-item-desc">High-resolution canvas snapshot</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="file-menu-divider"></div>
+
+          <!-- PARTITION 2: LOAD -->
+          <div class="file-dropdown-section">
+            <div class="file-dropdown-section-title">
+              <i class="ph ph-folder-open"></i>
+              <span>LOAD</span>
             </div>
-          </button>
+            <button id="btn-file-load-preset" class="file-dropdown-item" title="Browse and load pre-built world presets">
+              <i class="ph ph-sparkle"></i>
+              <div class="file-item-texts">
+                <span class="file-item-title">LOAD FROM PRESETS</span>
+                <span class="file-item-desc">Browse pre-built worlds & templates</span>
+              </div>
+            </button>
+            <button id="btn-file-load-file" class="file-dropdown-item" title="Select a .U5 file from your device">
+              <i class="ph ph-upload-simple"></i>
+              <div class="file-item-texts">
+                <span class="file-item-title">LOAD FROM FILE</span>
+                <span class="file-item-desc">Open .U5 file from your device</span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
+
+      <input type="file" id="input-load-u5" accept=".u5,.json" style="display: none;" />
 
       <button id="btn-sound" class="btn btn-pixel btn-header-icon active" title="Toggle Sound (M)" aria-label="Toggle Sound">
         <i id="sound-icon" class="ph ph-speaker-high"></i>
@@ -530,6 +556,10 @@
                     <i class="ph ph-folder-open"></i>
                     <span>OPEN .U5 FILE</span>
                   </button>
+                  <button id="btn-cfg-load-preset" class="btn btn-pixel btn-load-preset-cfg" title="Browse world presets gallery" style="grid-column: 1 / -1;">
+                    <i class="ph ph-sparkle"></i>
+                    <span>BROWSE WORLD PRESETS</span>
+                  </button>
                 </div>
 
                 <div class="u5-stats-pill" id="u5-stats-pill">
@@ -937,6 +967,40 @@
           <i class="ph ph-file-arrow-down"></i>
           <span>EXPORT .U5</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Presets Gallery Browser -->
+  <div id="modal-presets-browser" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box presets-browser-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-sparkle"></i>
+          <span>WORLD PRESETS GALLERY</span>
+        </div>
+        <button id="btn-close-presets-modal" class="btn-icon-pixel" title="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="pixel-modal-body presets-modal-body">
+        <div class="presets-modal-intro">
+          <span class="presets-intro-text">Choose a pre-built side-facing or top-down world template to load into UNIFIVE:</span>
+        </div>
+        
+        <div id="presets-cards-grid" class="presets-cards-grid">
+          <!-- Dynamically populated from assets/presets/index.json -->
+        </div>
+
+        <div id="presets-loading-status" class="presets-loading-status" style="display: none;">
+          <div class="presets-spinner-box">
+            <i class="ph ph-spinner ph-spin"></i>
+          </div>
+          <span id="presets-loading-text">Loading world preset...</span>
+        </div>
+      </div>
+      <div class="pixel-modal-footer">
+        <button id="btn-cancel-presets-modal" class="btn btn-pixel btn-modal-cancel">CLOSE</button>
       </div>
     </div>
   </div>
