@@ -3081,17 +3081,18 @@ body.resizing {
   background-color: #120308;
 }
 
-/* 2. BOTTOM PUZZLE TAB (Hat, Stack, C-Block) */
+/* 2. BOTTOM PUZZLE TAB (Hat, Stack, C-Block, E-Block) */
 .code-block-item.hat-block::after,
 .code-block-item.stack-block::after,
-.code-block-item.c-block .c-block-footer::after {
+.code-block-item.c-block .c-block-footer::after,
+.code-block-item.e-block .e-block-footer::after {
   content: '';
   position: absolute;
   bottom: -6px;
   left: 14px;
   width: 16px;
   height: 5px;
-  background-color: inherit;
+  background-color: var(--block-bg, #2563eb);
   border-left: 2px solid #0f172a;
   border-right: 2px solid #0f172a;
   border-bottom: 2px solid #0f172a;
@@ -3121,7 +3122,7 @@ body.resizing {
   display: none !important;
 }
 
-/* 5. C-BLOCKS / LOOPS (C-Shape with Inner Slot & Bottom Wrap) */
+/* 5. C-BLOCKS / LOOPS (Seamless C-Shape with Inner Mouth) */
 .code-block-item.c-block {
   display: inline-flex;
   flex-direction: column;
@@ -3140,7 +3141,7 @@ body.resizing {
   background-color: var(--block-bg, #059669);
   color: #ffffff;
   border: 2px solid #0f172a;
-  border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 4px 0;
   box-shadow: 
     inset 1px 1px 0px rgba(255, 255, 255, 0.4),
     inset -1px -1px 0px rgba(0, 0, 0, 0.4),
@@ -3148,6 +3149,7 @@ body.resizing {
   width: 100%;
   position: relative;
   min-height: 32px;
+  z-index: 2;
 }
 
 /* Inner tab inside loop mouth */
@@ -3155,10 +3157,10 @@ body.resizing {
   content: '';
   position: absolute;
   bottom: -6px;
-  left: 28px;
+  left: 32px;
   width: 16px;
   height: 5px;
-  background-color: inherit;
+  background-color: var(--block-bg, #059669);
   border-left: 2px solid #0f172a;
   border-right: 2px solid #0f172a;
   border-bottom: 2px solid #0f172a;
@@ -3170,21 +3172,40 @@ body.resizing {
 .code-block-item.c-block .c-block-body {
   width: 100%;
   min-height: 24px;
-  border-left: 16px solid var(--block-bg, #059669);
-  margin-left: 0;
+  background-color: transparent;
   position: relative;
-  box-shadow: -2px 0 0px #0f172a inset;
+  box-sizing: border-box;
+  margin-top: -2px;
+  margin-bottom: -2px;
+  z-index: 1;
+}
+
+.code-block-item.c-block .c-block-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 16px;
+  background-color: var(--block-bg, #059669);
+  border-left: 2px solid #0f172a;
+  border-right: 2px solid #0f172a;
+  box-shadow: inset 1px 0 0px rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
 }
 
 .code-block-item.c-block .c-block-footer {
-  width: 80px;
-  height: 12px;
+  width: 90px;
+  height: 14px;
   background-color: var(--block-bg, #059669);
   border: 2px solid #0f172a;
-  border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 4px 4px 4px;
   position: relative;
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    2px 2px 0px #000000;
+  z-index: 2;
 }
 
 /* 5b. DUAL-MOUTH E-BLOCKS (if ... else) */
@@ -3206,11 +3227,15 @@ body.resizing {
   background-color: var(--block-bg, #059669);
   color: #ffffff;
   border: 2px solid #0f172a;
-  border-radius: 4px 4px 0 0;
-  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.4), inset -1px -1px 0px rgba(0, 0, 0, 0.4), 2px 2px 0px #000000;
+  border-radius: 4px 4px 4px 0;
+  box-shadow: 
+    inset 1px 1px 0px rgba(255, 255, 255, 0.4),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.4),
+    2px 2px 0px #000000;
   width: 100%;
   position: relative;
   min-height: 32px;
+  z-index: 3;
 }
 
 .code-block-item.e-block .e-block-header::after,
@@ -3218,10 +3243,10 @@ body.resizing {
   content: '';
   position: absolute;
   bottom: -6px;
-  left: 28px;
+  left: 32px;
   width: 16px;
   height: 5px;
-  background-color: inherit;
+  background-color: var(--block-bg, #059669);
   border-left: 2px solid #0f172a;
   border-right: 2px solid #0f172a;
   border-bottom: 2px solid #0f172a;
@@ -3234,38 +3259,61 @@ body.resizing {
 .code-block-item.e-block .e-block-body-else {
   width: 100%;
   min-height: 24px;
-  border-left: 16px solid var(--block-bg, #059669);
-  margin-left: 0;
+  background-color: transparent;
   position: relative;
-  box-shadow: -2px 0 0px #0f172a inset;
+  box-sizing: border-box;
+  margin-top: -2px;
+  margin-bottom: -2px;
+  z-index: 1;
+}
+
+.code-block-item.e-block .e-block-body-if::before,
+.code-block-item.e-block .e-block-body-else::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 16px;
+  background-color: var(--block-bg, #059669);
+  border-left: 2px solid #0f172a;
+  border-right: 2px solid #0f172a;
+  box-shadow: inset 1px 0 0px rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
 }
 
 .code-block-item.e-block .e-block-divider {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 4px 12px 4px 10px;
   background-color: var(--block-bg, #059669);
   color: #ffffff;
-  border-top: 2px solid #0f172a;
-  border-bottom: 2px solid #0f172a;
+  border: 2px solid #0f172a;
   width: 100%;
   position: relative;
   min-height: 26px;
   font-size: 0.72rem;
   font-weight: 700;
-  box-shadow: inset 1px 0 0 rgba(255,255,255,0.3);
+  box-shadow: 
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    2px 2px 0px #000000;
+  z-index: 2;
 }
 
 .code-block-item.e-block .e-block-footer {
-  width: 80px;
-  height: 12px;
+  width: 90px;
+  height: 14px;
   background-color: var(--block-bg, #059669);
   border: 2px solid #0f172a;
-  border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 4px 4px 4px;
   position: relative;
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3),
+    2px 2px 0px #000000;
+  z-index: 3;
 }
 
 /* 6. INPUT CHIPS & DROPDOWNS */

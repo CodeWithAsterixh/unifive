@@ -3765,8 +3765,8 @@ const AppModeController = {
       { id: "wait_secs", name: "wait (1) seconds", color: "#10b981", icon: "ph-timer" },
       { id: "repeat", name: "repeat (10) times", c_block: true, color: "#10b981", icon: "ph-repeat" },
       { id: "forever", name: "forever", c_block: true, color: "#10b981", icon: "ph-infinity" },
-      { id: "if_then", name: "if <touching [edge]?> then", c_block: true, color: "#10b981", icon: "ph-git-fork", options: ["touching edge", "key space pressed", "score > 5"] },
-      { id: "if_else", name: "if <touching edge> then", e_block: true, color: "#10b981", icon: "ph-git-branch", options: ["touching edge", "key space pressed", "score > 5"] },
+      { id: "if_then", name: "if <[touching edge]> then", c_block: true, color: "#10b981", icon: "ph-git-fork", options: ["touching edge", "key space pressed", "score > 5"] },
+      { id: "if_else", name: "if <[touching edge]> then", e_block: true, color: "#10b981", icon: "ph-git-branch", options: ["touching edge", "key space pressed", "score > 5"] },
       { id: "stop_all", name: "stop [all scripts]", cap: true, color: "#10b981", icon: "ph-stop-circle" }
     ],
     variables: [
@@ -4853,6 +4853,71 @@ const AppModeController = {
       });
 
       workspace.appendChild(blockEl);
+    });
+
+    // Automatically align all connected block chains and nested C/E loops flush
+    this.layoutConnectedStacks();
+    requestAnimationFrame(() => this.layoutConnectedStacks());
+  },
+
+  layoutConnectedStacks() {
+    const scripts = this.getCurrentScripts();
+    if (!scripts || scripts.length === 0) return;
+
+    const map = new Map(scripts.map(b => [b.id, b]));
+    const visited = new Set();
+
+    // Find root blocks (blocks with no parent above or enclosing them)
+    const roots = scripts.filter(b => !b.prevId && !b.parentCBlockId && !b.parentEBlockId);
+
+    const layoutNode = (node, curX, curY) => {
+      if (!node || visited.has(node.id)) return;
+      visited.add(node.id);
+
+      node.x = curX;
+      node.y = curY;
+
+      const el = this.getBlockElement(node.id);
+      if (el) {
+        el.style.left = `${node.x}px`;
+        el.style.top = `${node.y}px`;
+      }
+
+      const nodeDims = this.getBlockDimensions(node);
+
+      // Layout inner C-block children
+      if (node.c_block && node.childId && map.has(node.childId)) {
+        layoutNode(map.get(node.childId), curX + 16, curY + 32);
+      }
+
+      // Layout inner E-block children
+      if (node.e_block) {
+        if (node.childId_if && map.has(node.childId_if)) {
+          layoutNode(map.get(node.childId_if), curX + 16, curY + 32);
+        }
+        if (node.childId_else && map.has(node.childId_else)) {
+          layoutNode(map.get(node.childId_else), curX + 16, curY + 70);
+        }
+      }
+
+      // Layout downstream connected next block
+      if (node.nextId && map.has(node.nextId)) {
+        const nextNode = map.get(node.nextId);
+        // Overlap 2px for seamless puzzle tab lock
+        const nextY = curY + nodeDims.h - 2;
+        layoutNode(nextNode, curX, nextY);
+      }
+    };
+
+    roots.forEach(root => {
+      layoutNode(root, root.x, root.y);
+    });
+
+    // Fallback for any unvisited blocks
+    scripts.forEach(b => {
+      if (!visited.has(b.id)) {
+        layoutNode(b, b.x, b.y);
+      }
     });
   },
 
@@ -6260,12 +6325,24 @@ const U5Compiler = {
       }
 
       // 7. Restore Code Scripts & Variables
-      if (payload.code) {
-        if (payload.code.objectScripts && typeof AppModeController !== "undefined") {
-          AppModeController.objectScripts = payload.code.objectScripts;
-        }
-        if (Array.isArray(payload.code.variables) && typeof VariableManager !== "undefined") {
-          VariableManager.variables = payload.code.variables;
+      const scriptsObj = (payload.code && payload.code.objectScripts) || payload.codeScripts || payload.objectScripts;
+      if (scriptsObj && typeof AppModeController !== "undefined") {
+        AppModeController.objectScripts = JSON.parse(JSON.stringify(scriptsObj));
+      }
+
+      if (typeof VariableManager !== "undefined") {
+        const rawVars = (payload.code && payload.code.variables) || payload.variables;
+        if (Array.isArray(rawVars)) {
+          VariableManager.variables = rawVars;
+        } else if (rawVars && typeof rawVars === "object") {
+          VariableManager.variables = Object.entries(rawVars).map(([vName, vVal]) => ({
+            id: "var_" + vName.toLowerCase().replace(/[^a-z0-9]/g, "_"),
+            name: vName,
+            scope: "global",
+            targetId: null,
+            value: Number(vVal) || vVal,
+            showWatcher: true
+          }));
         }
       }
 
