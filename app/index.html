@@ -46,14 +46,14 @@
       </a>
     </div>
 
-    <!-- Center View Switcher & Editor Mode Switcher -->
-    <div class="header-center">
+    <!-- Center View Switcher & Editor Mode Switcher (Desktop Only) -->
+    <div class="header-center desktop-only">
       <div class="view-switch-group" role="group" aria-label="Perspective View Switcher">
-        <button id="btn-view-sidefacing" class="btn btn-pixel btn-view-mode active" data-view="sidefacing" title="Side-Facing View (V)" aria-label="Side-Facing View">
+        <button id="btn-view-sidefacing" class="btn btn-pixel btn-view-mode btn-view-sidefacing active" data-view="sidefacing" title="Side-Facing View (V)" aria-label="Side-Facing View">
           <i class="ph ph-panorama"></i>
           <span>SIDE</span>
         </button>
-        <button id="btn-view-topdown" class="btn btn-pixel btn-view-mode" data-view="topdown" title="Top-Down View (V)" aria-label="Top-Down View">
+        <button id="btn-view-topdown" class="btn btn-pixel btn-view-mode btn-view-topdown" data-view="topdown" title="Top-Down View (V)" aria-label="Top-Down View">
           <i class="ph ph-arrows-out-cardinal"></i>
           <span>TOP</span>
         </button>
@@ -142,6 +142,24 @@
         <button id="btn-close-controls-drawer" class="btn-icon-pixel btn-close-drawer" title="Close Controls">
           <i class="ph ph-x"></i>
         </button>
+      </div>
+
+      <!-- Mobile Sidebar Perspective View Switcher (Side-Facing vs Top-Down) -->
+      <div class="sidebar-perspective-bar mobile-only">
+        <div class="sidebar-perspective-label">
+          <i class="ph ph-compass"></i>
+          <span>PERSPECTIVE:</span>
+        </div>
+        <div class="view-switch-group sidebar-view-switch-group" role="group" aria-label="Perspective View Switcher">
+          <button class="btn btn-pixel btn-view-mode btn-view-sidefacing active" data-view="sidefacing" title="Side-Facing Platformer View">
+            <i class="ph ph-panorama"></i>
+            <span>SIDE</span>
+          </button>
+          <button class="btn btn-pixel btn-view-mode btn-view-topdown" data-view="topdown" title="Top-Down RPG View">
+            <i class="ph ph-arrows-out-cardinal"></i>
+            <span>TOP</span>
+          </button>
+        </div>
       </div>
 
       <div class="panel-header-tabs" role="tablist">

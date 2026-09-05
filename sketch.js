@@ -462,15 +462,12 @@ const ViewController = {
   currentView: "sidefacing", // "topdown" | "sidefacing"
 
   init() {
-    const btnTopdown = document.getElementById("btn-view-topdown");
-    const btnSidefacing = document.getElementById("btn-view-sidefacing");
-
-    if (btnTopdown) {
-      btnTopdown.addEventListener("click", () => this.setView("topdown"));
-    }
-    if (btnSidefacing) {
-      btnSidefacing.addEventListener("click", () => this.setView("sidefacing"));
-    }
+    document.querySelectorAll(".btn-view-topdown").forEach(btn => {
+      btn.addEventListener("click", () => this.setView("topdown"));
+    });
+    document.querySelectorAll(".btn-view-sidefacing").forEach(btn => {
+      btn.addEventListener("click", () => this.setView("sidefacing"));
+    });
   },
 
   setView(view) {
@@ -485,17 +482,17 @@ const ViewController = {
     // 2. Set new active view
     this.currentView = view;
 
-    // 3. Update view buttons in header
-    const btnTopdown = document.getElementById("btn-view-topdown");
-    const btnSidefacing = document.getElementById("btn-view-sidefacing");
+    // 3. Update view buttons in header and sidebar
+    const topdownBtns = document.querySelectorAll(".btn-view-topdown");
+    const sidefacingBtns = document.querySelectorAll(".btn-view-sidefacing");
 
     if (view === "topdown") {
-      if (btnTopdown) btnTopdown.classList.add("active");
-      if (btnSidefacing) btnSidefacing.classList.remove("active");
+      topdownBtns.forEach(btn => btn.classList.add("active"));
+      sidefacingBtns.forEach(btn => btn.classList.remove("active"));
       SoundEngine.playAction("toggle_on");
     } else {
-      if (btnTopdown) btnTopdown.classList.remove("active");
-      if (btnSidefacing) btnSidefacing.classList.add("active");
+      topdownBtns.forEach(btn => btn.classList.remove("active"));
+      sidefacingBtns.forEach(btn => btn.classList.add("active"));
       SoundEngine.playAction("toggle_off");
     }
 
@@ -6680,15 +6677,20 @@ function drawHUD() {
   textAlign(RIGHT, BOTTOM);
   const pad = 10;
   
+  // On mobile (<= 860px), lift HUD above mobile bottom nav bar (56px)
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 860;
+  const bottomOffset = isMobile ? 68 : 14;
+  const rectBottomOffset = isMobile ? 78 : 28;
+
   // HUD Pill
   fill(13, 2, 5, 190);
   stroke(46, 8, 20);
   strokeWeight(2);
-  rect(width - textWidth(hudText) - pad * 2 - 10, height - 28, textWidth(hudText) + pad * 2, 20);
+  rect(width - textWidth(hudText) - pad * 2 - 10, height - rectBottomOffset, textWidth(hudText) + pad * 2, 20);
 
   noStroke();
   fill(201, 146, 162);
-  text(hudText, width - pad - 10, height - 14);
+  text(hudText, width - pad - 10, height - bottomOffset);
   pop();
 }
 
