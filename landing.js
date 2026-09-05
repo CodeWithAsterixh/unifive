@@ -289,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formatted = parsed.toFixed(2);
     
     // Standard PayPal donation link with custom amount & item name
-    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=support%40unifive-p5.com&currency_code=USD&amount=${parsed}&item_name=Support+UNIFIVE+Pixel+Game+Studio`;
+    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=peterpauleyinnaya%40gmail.com&currency_code=USD&amount=${parsed}&item_name=Support+UNIFIVE+Pixel+Game+Studio`;
     
     if (paypalBtn) {
       paypalBtn.href = paypalUrl;
