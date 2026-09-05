@@ -1,0 +1,1320 @@
+{
+  "sprite_male_sword": {
+    "id": "sprite_male_sword",
+    "name": "Male Warrior (Sword)",
+    "theme": "Top-Down RPG Hero",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/male_sword/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/idle_front_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/idle_left_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/idle_right_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/idle_back_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_front_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_left_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_right_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_back_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Attack Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/attack_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/attack_front_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Attack Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/attack_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/attack_left_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Attack Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/attack_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/attack_right_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Attack Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/attack_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/attack_back_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Attack Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_attack_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_attack_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Attack Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_attack_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_attack_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Attack Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_attack_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_attack_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Attack Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/walk_attack_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/walk_attack_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Attack Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_attack_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_attack_front_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Attack Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_attack_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_attack_left_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Attack Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_attack_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_attack_right_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Attack Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/run_attack_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/run_attack_back_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/hurt_front_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/hurt_left_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/hurt_right_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/hurt_back_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/death_front_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/death_left_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/death_right_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_sword/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_sword/death_back_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      }
+    }
+  },
+  "sprite_male_unarmed": {
+    "id": "sprite_male_unarmed",
+    "name": "Male Adventurer (Unarmed)",
+    "theme": "Top-Down RPG Hero",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/male_unarmed/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/idle_front_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/idle_left_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/idle_right_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/idle_back_prev.png",
+        "frameCount": 12,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/run_front_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/run_left_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/run_right_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/run_back_prev.png",
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/hurt_front_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/hurt_left_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/hurt_right_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/hurt_back_prev.png",
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/death_front_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/death_left_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/death_right_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/male_unarmed/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/male_unarmed/death_back_prev.png",
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64
+      }
+    }
+  },
+  "sprite_boar": {
+    "id": "sprite_boar",
+    "name": "Wild Boar",
+    "theme": "Top-Down Animals",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/boar/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/idle_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/idle_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/idle_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/idle_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/run_front_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/run_back_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/run_left_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/run_right_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Attack Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/attack_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/attack_front_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Attack Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/attack_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/attack_back_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Attack Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/attack_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/attack_left_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Attack Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/attack_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/attack_right_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/hurt_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/hurt_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/hurt_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/hurt_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/boar/death_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/boar/death_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/boar/death_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/boar/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/boar/death_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      }
+    }
+  },
+  "sprite_deer": {
+    "id": "sprite_deer",
+    "name": "Forest Deer",
+    "theme": "Top-Down Animals",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/deer/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/deer/idle_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/deer/idle_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/deer/idle_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/deer/idle_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/deer/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/deer/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/deer/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/deer/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/deer/run_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/deer/run_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/deer/run_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/deer/run_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/deer/hurt_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/deer/hurt_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/deer/hurt_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/deer/hurt_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/deer/death_front_prev.png",
+        "frameCount": 7,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/deer/death_back_prev.png",
+        "frameCount": 7,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/deer/death_left_prev.png",
+        "frameCount": 7,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/deer/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/deer/death_right_prev.png",
+        "frameCount": 7,
+        "frameWidth": 32,
+        "frameHeight": 32
+      }
+    }
+  },
+  "sprite_fox": {
+    "id": "sprite_fox",
+    "name": "Red Fox",
+    "theme": "Top-Down Animals",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/fox/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/fox/idle_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/fox/idle_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/fox/idle_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/fox/idle_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/fox/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/fox/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/fox/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/fox/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/fox/run_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/fox/run_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/fox/run_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/fox/run_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/fox/hurt_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/fox/hurt_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/fox/hurt_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/fox/hurt_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/fox/death_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/fox/death_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/fox/death_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/fox/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/fox/death_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      }
+    }
+  },
+  "sprite_hare": {
+    "id": "sprite_hare",
+    "name": "Field Hare",
+    "theme": "Top-Down Animals",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/hare/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/hare/idle_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/hare/idle_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/hare/idle_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/hare/idle_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/hare/walk_front_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/hare/walk_back_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/hare/walk_left_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/hare/walk_right_prev.png",
+        "frameCount": 5,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/run_front_sheet.png",
+        "preview": "assets/sprites/topdown/hare/run_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/run_back_sheet.png",
+        "preview": "assets/sprites/topdown/hare/run_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/run_left_sheet.png",
+        "preview": "assets/sprites/topdown/hare/run_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Run Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/run_right_sheet.png",
+        "preview": "assets/sprites/topdown/hare/run_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/hare/hurt_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/hare/hurt_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/hare/hurt_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/hare/hurt_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/hare/death_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/hare/death_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/hare/death_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/hare/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/hare/death_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      }
+    }
+  },
+  "sprite_black_grouse": {
+    "id": "sprite_black_grouse",
+    "name": "Black Grouse",
+    "theme": "Top-Down Animals",
+    "type": "sprite",
+    "src": "assets/sprites/topdown/black_grouse/single_frame.png",
+    "defaultPose": "Idle Front",
+    "poses": {
+      "Idle Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/idle_front_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/idle_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/idle_back_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/idle_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/idle_left_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/idle_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Idle Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/idle_right_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/idle_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/walk_front_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/walk_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/walk_back_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/walk_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/walk_left_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/walk_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Walk Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/walk_right_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/walk_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Flight Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/flight_front_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/flight_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Flight Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/flight_back_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/flight_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Flight Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/flight_left_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/flight_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Flight Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/flight_right_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/flight_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/hurt_front_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/hurt_front_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/hurt_back_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/hurt_back_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/hurt_left_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/hurt_left_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Hurt Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/hurt_right_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/hurt_right_prev.png",
+        "frameCount": 4,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Front": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/death_front_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/death_front_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Back": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/death_back_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/death_back_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Left": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/death_left_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/death_left_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      },
+      "Death Right": {
+        "type": "sheet",
+        "sheet": "assets/sprites/topdown/black_grouse/death_right_sheet.png",
+        "preview": "assets/sprites/topdown/black_grouse/death_right_prev.png",
+        "frameCount": 6,
+        "frameWidth": 32,
+        "frameHeight": 32
+      }
+    }
+  }
+}

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNIFIVE - Studio Workspace</title>
+  <base href="../">
+  
+  <!-- App Icons & Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Pixel Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Vector Icons Library -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Pixelated Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <!-- p5.js Core Library -->
+  <script src="libraries/p5.min.js"></script>
+
+  <!-- Application Script -->
+  <script src="sketch.js"></script>
+</head>
+<body class="mode-canvas">
+
+  <!-- Top Navigation & Control Toolbar -->
+  <header class="app-header">
+    <div class="header-left">
+      <button id="btn-toggle-sidebar" class="btn btn-pixel btn-header-icon" title="Toggle Controls / Blocks Drawer" aria-label="Controls">
+        <i class="ph ph-sidebar-simple"></i>
+      </button>
+
+      <a href="./" class="brand" title="UNIFIVE Studio - Return to Website Home" style="text-decoration: none; cursor: pointer;">
+        <div class="brand-icon-box">
+          <img src="favicon-32x32.png" alt="U5 Logo" style="width: 24px; height: 24px; image-rendering: pixelated;" />
+        </div>
+      </a>
+    </div>
+
+    <!-- Center View Switcher & Editor Mode Switcher -->
+    <div class="header-center">
+      <div class="view-switch-group" role="group" aria-label="Perspective View Switcher">
+        <button id="btn-view-sidefacing" class="btn btn-pixel btn-view-mode active" data-view="sidefacing" title="Side-Facing View (V)" aria-label="Side-Facing View">
+          <i class="ph ph-panorama"></i>
+          <span>SIDE</span>
+        </button>
+        <button id="btn-view-topdown" class="btn btn-pixel btn-view-mode" data-view="topdown" title="Top-Down View (V)" aria-label="Top-Down View">
+          <i class="ph ph-arrows-out-cardinal"></i>
+          <span>TOP</span>
+        </button>
+      </div>
+
+      <div class="header-mode-divider desktop-only"></div>
+
+      <div class="mode-switch-group desktop-only" role="group" aria-label="Editor Mode Switcher">
+        <button id="btn-mode-canvas" class="btn btn-pixel btn-mode-toggle active" data-mode="canvas" title="Canvas Editor Mode" aria-label="Canvas Editor Mode">
+          <i class="ph ph-paint-brush"></i>
+          <span>CANVAS</span>
+        </button>
+        <button id="btn-mode-code" class="btn btn-pixel btn-mode-toggle" data-mode="code" title="Visual Code Mode" aria-label="Visual Code Mode">
+          <i class="ph ph-code"></i>
+          <span>CODE</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="btn-undo" class="btn btn-pixel btn-header-icon" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+        <i class="ph ph-arrow-u-up-left"></i>
+      </button>
+
+      <button id="btn-redo" class="btn btn-pixel btn-header-icon" title="Redo (Ctrl+Y)" aria-label="Redo" disabled>
+        <i class="ph ph-arrow-u-up-right"></i>
+      </button>
+
+      <button id="btn-import-u5" class="btn btn-pixel btn-header-icon" title="Open .U5 Project" aria-label="Open .U5">
+        <i class="ph ph-folder-open"></i>
+      </button>
+
+      <input type="file" id="input-load-u5" accept=".u5" style="display: none;" />
+
+      <!-- EXPORT DROPDOWN MENU -->
+      <div class="export-dropdown-wrapper" id="export-dropdown-wrapper">
+        <button id="btn-export-menu" class="btn btn-pixel btn-header-export" title="Export Project" aria-label="Export Menu">
+          <i class="ph ph-export"></i>
+          <span>EXPORT</span>
+          <i class="ph ph-caret-down export-caret"></i>
+        </button>
+        <div class="export-dropdown-menu" id="export-dropdown-menu" style="display: none;">
+          <button id="btn-export-u5-opt" class="export-dropdown-item" title="Compile and export entire project into a .U5 file">
+            <i class="ph ph-package"></i>
+            <div class="export-item-texts">
+              <span class="export-item-title">EXPORT (.U5)</span>
+              <span class="export-item-desc">Full project (Layers, Code & Assets)</span>
+            </div>
+          </button>
+          <div class="export-menu-divider"></div>
+          <button id="btn-export-png-opt" class="export-dropdown-item" title="Export canvas as a PNG image">
+            <i class="ph ph-image"></i>
+            <div class="export-item-texts">
+              <span class="export-item-title">EXPORT PNG</span>
+              <span class="export-item-desc">High-resolution image snapshot</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <button id="btn-sound" class="btn btn-pixel btn-header-icon active" title="Toggle Sound (M)" aria-label="Toggle Sound">
+        <i id="sound-icon" class="ph ph-speaker-high"></i>
+      </button>
+
+      <button id="btn-fullscreen" class="btn btn-pixel btn-header-icon" title="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+        <i id="fullscreen-icon" class="ph ph-corners-out"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar Backdrop for Mobile Off-Canvas Drawer -->
+  <div id="sidebar-backdrop" class="sidebar-drawer-backdrop" style="display: none;"></div>
+
+  <!-- Resizable Split Workspace (Left: CREATE / CONFIG Tabs, Right: Full Canvas Stage) -->
+  <main class="workspace-main" id="workspace-container">
+    
+    <!-- LEFT PANE: CREATE / CONFIG Tabs -->
+    <section class="panel-controls" id="controls-pane">
+      
+      <!-- Mobile Drawer Title & Close Header Bar -->
+      <div class="drawer-mobile-header" id="drawer-mobile-header">
+        <div class="drawer-mobile-title">
+          <i class="ph ph-sliders"></i>
+          <span>WORKSPACE CONTROLS</span>
+        </div>
+        <button id="btn-close-controls-drawer" class="btn-icon-pixel btn-close-drawer" title="Close Controls">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="panel-header-tabs" role="tablist">
+        <button id="tab-btn-create" class="panel-tab-btn active" data-tab="create" role="tab" aria-selected="true" title="Create / Add Assets">
+          <i class="ph ph-plus-square"></i>
+          <span>CREATE</span>
+        </button>
+        <button id="tab-btn-layers" class="panel-tab-btn" data-tab="layers" role="tab" aria-selected="false" title="Layers & Stacking Order">
+          <i class="ph ph-stack"></i>
+          <span>LAYERS</span>
+        </button>
+        <button id="tab-btn-properties" class="panel-tab-btn" data-tab="properties" role="tab" aria-selected="false" title="Selected Item Properties">
+          <i class="ph ph-sliders-horizontal"></i>
+          <span>PROPS</span>
+        </button>
+        <button id="tab-btn-config" class="panel-tab-btn" data-tab="config" role="tab" aria-selected="false" title="World Canvas Configuration">
+          <i class="ph ph-gear-six"></i>
+          <span>CONFIG</span>
+        </button>
+      </div>
+
+      <div class="panel-body" id="controls-body">
+        
+        <!-- LAYERS TAB CONTENT (Visual Stacking Order & Hierarchy) -->
+        <div id="tab-pane-layers" class="tab-pane" role="tabpanel">
+          <div class="layers-container">
+            
+            <!-- Layers Header Toolbar -->
+            <div class="layers-header">
+              <div class="layers-title-group">
+                <i class="ph ph-stack"></i>
+                <span>STACKING ORDER</span>
+              </div>
+              <span id="layers-count-badge" class="layers-count-badge">0 LAYERS</span>
+            </div>
+
+            <!-- Quick Layer Reordering Toolbar -->
+            <div class="layers-toolbar" id="layers-quick-toolbar">
+              <button id="btn-layer-top" class="btn-layer-tool" title="Bring to Front (Top Layer)" disabled>
+                <i class="ph ph-arrow-line-up"></i>
+                <span>TOP</span>
+              </button>
+              <button id="btn-layer-up" class="btn-layer-tool" title="Bring Forward (1 Step Up)" disabled>
+                <i class="ph ph-arrow-up"></i>
+                <span>UP</span>
+              </button>
+              <button id="btn-layer-down" class="btn-layer-tool" title="Send Backward (1 Step Down)" disabled>
+                <i class="ph ph-arrow-down"></i>
+                <span>DOWN</span>
+              </button>
+              <button id="btn-layer-bot" class="btn-layer-tool" title="Send to Back (Bottom Layer)" disabled>
+                <i class="ph ph-arrow-line-down"></i>
+                <span>BOT</span>
+              </button>
+            </div>
+
+            <!-- Scrollable Layers List Area -->
+            <div class="layers-scroll-area">
+              <div id="layers-items-list" class="layers-list">
+                <!-- Dynamically populated layer items -->
+              </div>
+
+              <!-- Empty State when no objects on canvas -->
+              <div id="layers-empty-state" class="empty-gallery-state layers-empty-view">
+                <i class="ph ph-stack empty-gallery-icon"></i>
+                <span class="empty-gallery-title">NO LAYERS ON CANVAS</span>
+                <span class="empty-gallery-subtitle">Drag assets or sprites from the CREATE tab onto the canvas to manage visual layers, depth, and order.</span>
+              </div>
+            </div>
+
+            <!-- Footer Hint Bar -->
+            <div class="layers-footer-hint">
+              <i class="ph ph-info"></i>
+              <span>Top row is in front • Drag handles or use buttons to reorder</span>
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- CREATE TAB CONTENT (Divided into 2: Kinds Sidebar + Items Gallery) -->
+        <div id="tab-pane-create" class="tab-pane active" role="tabpanel">
+          <div class="create-split-container">
+            
+            <!-- LEFT COLUMN: Categories / Item Kinds (Narrow) -->
+            <div class="create-kinds-sidebar" id="create-kinds-list" role="tablist" aria-label="Asset Categories">
+              <!-- Populated dynamically from assets.json -->
+            </div>
+
+            <!-- RIGHT COLUMN: Items Gallery (Wide) -->
+            <div class="create-gallery-pane" id="create-gallery-pane">
+              
+              <!-- Gallery Header -->
+              <div class="create-gallery-header">
+                <div class="gallery-title-group">
+                  <i id="gallery-header-icon" class="ph ph-buildings"></i>
+                  <span id="gallery-header-title">CITY</span>
+                </div>
+                <span id="gallery-header-count" class="gallery-count-badge">0 ITEMS</span>
+              </div>
+
+              <!-- Items Grid Scroll Area -->
+              <div class="create-items-scroll">
+                <div class="create-items-grid" id="create-items-grid">
+                  <!-- Populated dynamically from assets.json -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PROPERTIES TAB CONTENT -->
+        <div id="tab-pane-properties" class="tab-pane" role="tabpanel">
+          
+          <!-- When NO item selected -->
+          <div id="prop-empty-state" class="empty-gallery-state prop-empty-view">
+            <i class="ph ph-sliders-horizontal empty-gallery-icon"></i>
+            <span class="empty-gallery-title">NO ITEM SELECTED</span>
+            <span class="empty-gallery-subtitle">Click an item on the canvas to inspect, resize, rotate, crop, and adjust its properties.</span>
+          </div>
+
+          <!-- When an item IS selected -->
+          <div id="prop-inspector-form" class="config-scroll-area" style="display: none;">
+            
+            <!-- 1. Selected Asset Info Header -->
+            <div class="prop-item-header">
+              <div class="prop-thumb-box">
+                <img id="prop-thumb-img" src="" alt="Thumbnail" />
+              </div>
+              <div class="prop-title-group">
+                <input id="prop-name-input" class="input-pixel prop-name-input" type="text" value="" placeholder="Asset Name" />
+                <div class="prop-id-row">
+                  <span id="prop-id-badge" class="prop-id-badge">ID: item_123</span>
+                  <span id="prop-cropped-badge" class="prop-badge-tag" style="display: none;">CROPPED</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Transform: Position (X, Y) -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-arrows-out-cardinal"></i>
+                <span>POSITION</span>
+              </div>
+              <div class="config-two-col">
+                <div class="input-labeled">
+                  <span class="input-tag">X</span>
+                  <input id="prop-pos-x" class="input-pixel" type="number" step="1" />
+                </div>
+                <div class="input-labeled">
+                  <span class="input-tag">Y</span>
+                  <input id="prop-pos-y" class="input-pixel" type="number" step="1" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Transform: Size (Width, Height) & Aspect Ratio -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-bounding-box"></i>
+                <span>DIMENSIONS</span>
+              </div>
+              <div class="config-two-col">
+                <div class="input-labeled">
+                  <span class="input-tag">W</span>
+                  <input id="prop-size-w" class="input-pixel" type="number" min="10" step="1" />
+                </div>
+                <div class="input-labeled">
+                  <span class="input-tag">H</span>
+                  <input id="prop-size-h" class="input-pixel" type="number" min="10" step="1" />
+                </div>
+              </div>
+              <div class="size-presets prop-scale-presets">
+                <button class="preset-chip prop-scale-chip" data-scale="0.5">50%</button>
+                <button class="preset-chip prop-scale-chip" data-scale="1.0">100%</button>
+                <button class="preset-chip prop-scale-chip" data-scale="1.5">150%</button>
+                <button class="preset-chip prop-scale-chip" data-scale="2.0">200%</button>
+                <button id="btn-lock-aspect" class="preset-chip active" title="Lock Aspect Ratio"><i class="ph ph-lock-simple"></i> LOCK</button>
+              </div>
+            </div>
+
+            <!-- 4. Transform: Rotation (Degrees, Slider & Quick Snap) -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-arrow-clockwise"></i>
+                <span>ROTATION & FLIP</span>
+              </div>
+              <div class="prop-rotation-row">
+                <input id="prop-rotation-slider" class="range-pixel" type="range" min="0" max="360" step="1" value="0" />
+                <div class="input-labeled prop-rot-input-wrap">
+                  <input id="prop-rotation-num" class="input-pixel" type="number" min="0" max="360" step="1" value="0" />
+                  <span class="input-tag">°</span>
+                </div>
+              </div>
+              <div class="size-presets prop-rotation-presets">
+                <button class="preset-chip prop-rot-chip" data-rot="0">0°</button>
+                <button class="preset-chip prop-rot-chip" data-rot="90">90°</button>
+                <button class="preset-chip prop-rot-chip" data-rot="180">180°</button>
+                <button class="preset-chip prop-rot-chip" data-rot="270">270°</button>
+                <button id="btn-flip-h" class="preset-chip" title="Flip Horizontal"><i class="ph ph-arrows-left-right"></i> FLIP H</button>
+                <button id="btn-flip-v" class="preset-chip" title="Flip Vertical"><i class="ph ph-arrows-down-up"></i> FLIP V</button>
+              </div>
+            </div>
+
+            <!-- 5. NEW CROP & SLICE CONTROLS -->
+            <div class="config-group" id="group-crop-controls">
+              <div class="config-group-header">
+                <i class="ph ph-crop"></i>
+                <span>CROP & SLICE</span>
+              </div>
+              
+              <!-- Crop Toggle & Reset -->
+              <div class="crop-trigger-row">
+                <button id="btn-toggle-crop" class="btn btn-pixel btn-crop-toggle" title="Enter Interactive Crop Mode on Canvas">
+                  <i class="ph ph-crop"></i>
+                  <span id="btn-toggle-crop-label">CROP ON CANVAS</span>
+                </button>
+                <button id="btn-reset-crop" class="btn btn-pixel btn-crop-reset" title="Reset to Full Image">
+                  <i class="ph ph-arrow-counter-clockwise"></i> RESET
+                </button>
+              </div>
+
+              <!-- Crop Aspect Presets -->
+              <div class="crop-aspect-label">ASPECT PRESET:</div>
+              <div class="size-presets prop-crop-presets">
+                <button class="preset-chip prop-crop-chip active" data-aspect="free">FREE</button>
+                <button class="preset-chip prop-crop-chip" data-aspect="1:1">1:1</button>
+                <button class="preset-chip prop-crop-chip" data-aspect="4:3">4:3</button>
+                <button class="preset-chip prop-crop-chip" data-aspect="16:9">16:9</button>
+                <button class="preset-chip prop-crop-chip" data-aspect="orig">ORIG</button>
+              </div>
+
+              <!-- Numeric Source Inset Inputs (X, Y, W, H) -->
+              <div class="config-two-col">
+                <div class="input-labeled">
+                  <span class="input-tag">CX</span>
+                  <input id="prop-crop-x" class="input-pixel" type="number" min="0" step="1" title="Crop Source X" />
+                </div>
+                <div class="input-labeled">
+                  <span class="input-tag">CY</span>
+                  <input id="prop-crop-y" class="input-pixel" type="number" min="0" step="1" title="Crop Source Y" />
+                </div>
+              </div>
+              <div class="config-two-col">
+                <div class="input-labeled">
+                  <span class="input-tag">CW</span>
+                  <input id="prop-crop-w" class="input-pixel" type="number" min="4" step="1" title="Crop Source Width" />
+                </div>
+                <div class="input-labeled">
+                  <span class="input-tag">CH</span>
+                  <input id="prop-crop-h" class="input-pixel" type="number" min="4" step="1" title="Crop Source Height" />
+                </div>
+              </div>
+
+              <div class="crop-apply-row" id="crop-apply-row">
+                <button id="btn-apply-crop" class="btn btn-pixel btn-apply-crop" title="Apply and Save Crop">
+                  <i class="ph ph-check-bold"></i> APPLY CROP
+                </button>
+              </div>
+            </div>
+
+            <!-- 6. Layer Order & Actions -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-stack"></i>
+                <span>LAYERING & ACTIONS</span>
+              </div>
+              <div class="prop-action-buttons-grid">
+                <button id="btn-bring-front" class="btn btn-pixel btn-prop-action" title="Bring to Front">
+                  <i class="ph ph-arrow-line-up"></i> TOP
+                </button>
+                <button id="btn-bring-forward" class="btn btn-pixel btn-prop-action" title="Bring Forward">
+                  <i class="ph ph-arrow-up"></i> UP
+                </button>
+                <button id="btn-send-backward" class="btn btn-pixel btn-prop-action" title="Send Backward">
+                  <i class="ph ph-arrow-down"></i> DOWN
+                </button>
+                <button id="btn-send-back" class="btn btn-pixel btn-prop-action" title="Send to Back">
+                  <i class="ph ph-arrow-line-down"></i> BOTTOM
+                </button>
+              </div>
+              <div class="prop-danger-row">
+                <button id="btn-duplicate-item" class="btn btn-pixel btn-duplicate" title="Duplicate (Ctrl+D)">
+                  <i class="ph ph-copy"></i> DUPLICATE
+                </button>
+                <button id="btn-delete-item" class="btn btn-pixel btn-danger" title="Delete Item (Del)">
+                  <i class="ph ph-trash"></i> DELETE
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CONFIG TAB CONTENT -->
+        <div id="tab-pane-config" class="tab-pane" role="tabpanel">
+          <div class="config-scroll-area">
+            
+            <!-- 1. Background Color Config -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-palette"></i>
+                <span>WORLD BACKGROUND</span>
+              </div>
+              <div class="config-group-body">
+                <div class="color-picker-row">
+                  <div class="color-preview-box" id="color-preview-box" style="background-color: #ffffff;"></div>
+                  <input type="color" id="cfg-bg-color-picker" value="#ffffff" class="pixel-color-input" title="Pick Color">
+                  <input type="text" id="cfg-bg-color-text" value="#FFFFFF" maxlength="7" class="pixel-text-input" spellcheck="false">
+                </div>
+                <div class="swatch-palette">
+                  <button class="swatch-btn active" data-color="#ffffff" style="background-color: #ffffff;" title="White"></button>
+                  <button class="swatch-btn" data-color="#f8fafc" style="background-color: #f8fafc;" title="Off-White"></button>
+                  <button class="swatch-btn" data-color="#fef08a" style="background-color: #fef08a;" title="Pastel Yellow"></button>
+                  <button class="swatch-btn" data-color="#bbf7d0" style="background-color: #bbf7d0;" title="Pastel Green"></button>
+                  <button class="swatch-btn" data-color="#bae6fd" style="background-color: #bae6fd;" title="Sky Blue"></button>
+                  <button class="swatch-btn" data-color="#1e293b" style="background-color: #1e293b;" title="Blueprint"></button>
+                  <button class="swatch-btn" data-color="#18181b" style="background-color: #18181b;" title="Dark Charcoal"></button>
+                  <button class="swatch-btn" data-color="#000000" style="background-color: #000000;" title="Deep Black"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. World Dimensions Config -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-bounding-box"></i>
+                <span>WORLD SIZE</span>
+              </div>
+              <div class="config-group-body">
+                <div class="dimension-inputs-grid">
+                  <div class="input-field-group">
+                    <label for="cfg-world-width">WIDTH (PX)</label>
+                    <input type="number" id="cfg-world-width" value="2000" min="400" max="20000" step="100" class="pixel-number-input">
+                  </div>
+                  <div class="input-field-group">
+                    <label for="cfg-world-height">HEIGHT (PX)</label>
+                    <input type="number" id="cfg-world-height" value="1500" min="400" max="20000" step="100" class="pixel-number-input">
+                  </div>
+                </div>
+                <div class="preset-chips-row size-presets">
+                  <button class="preset-chip" data-w="1200" data-h="800">1200x800</button>
+                  <button class="preset-chip active" data-w="2000" data-h="1500">2000x1500</button>
+                  <button class="preset-chip" data-w="3200" data-h="2400">3200x2400</button>
+                  <button class="preset-chip" data-w="4800" data-h="3200">4800x3200</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Unique Compressed Package (.U5) -->
+            <div class="config-group u5-compile-group">
+              <div class="config-group-header">
+                <i class="ph ph-package"></i>
+                <span>PROJECT COMPILATION (.U5)</span>
+              </div>
+              <div class="config-group-body">
+                <p class="u5-compile-description">
+                  Compile your entire scene into a standalone, compressed <strong>.U5</strong> file. Bundles world config, all layers/properties, visual code scripts, and embeds <em>only the assets used</em>.
+                </p>
+                
+                <div class="u5-actions-grid">
+                  <button id="btn-cfg-export-u5" class="btn btn-pixel btn-compile-u5" title="Compile and download .u5 package">
+                    <i class="ph ph-file-arrow-down"></i>
+                    <span>COMPILE TO .U5</span>
+                  </button>
+                  <button id="btn-cfg-import-u5" class="btn btn-pixel btn-load-u5" title="Open .u5 package">
+                    <i class="ph ph-folder-open"></i>
+                    <span>OPEN .U5 FILE</span>
+                  </button>
+                </div>
+
+                <div class="u5-stats-pill" id="u5-stats-pill">
+                  <i class="ph ph-info"></i>
+                  <span id="u5-stats-text">0 Layers • 0 Scripts • Standalone</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LEFT PANE: CODE TOOLBOX (Visible when in Code Mode) -->
+    <aside class="panel-code-toolbox" id="code-toolbox-pane" style="display: none;">
+      <!-- Mobile Drawer Header Bar for Blocks Palette -->
+      <div class="drawer-mobile-header" id="blocks-drawer-mobile-header">
+        <div class="drawer-mobile-title">
+          <i class="ph ph-code-block"></i>
+          <span>BLOCKS PALETTE</span>
+        </div>
+        <button id="btn-close-blocks-drawer" class="btn-icon-pixel btn-close-drawer" title="Close Blocks Palette">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="code-toolbox-header">
+        <div class="code-toolbox-brand">
+          <i class="ph ph-code-block"></i>
+          <span>BLOCKS PALETTE</span>
+        </div>
+      </div>
+      <div class="code-toolbox-body">
+        <!-- Categories Column (Narrow) -->
+        <div class="code-categories-sidebar" id="code-categories-list" role="tablist" aria-label="Code Categories">
+          <button class="code-cat-btn active" data-category="events" title="Event Triggers" style="--cat-color: #f59e0b;">
+            <span class="code-cat-box"></span>
+            <span>EVENTS</span>
+          </button>
+          <button class="code-cat-btn" data-category="motion" title="Movement & Position" style="--cat-color: #3b82f6;">
+            <span class="code-cat-box"></span>
+            <span>MOTION</span>
+          </button>
+          <button class="code-cat-btn" data-category="looks" title="Appearance & Poses" style="--cat-color: #a855f7;">
+            <span class="code-cat-box"></span>
+            <span>LOOKS</span>
+          </button>
+          <button class="code-cat-btn" data-category="sound" title="Audio & Effects" style="--cat-color: #ec4899;">
+            <span class="code-cat-box"></span>
+            <span>SOUND</span>
+          </button>
+          <button class="code-cat-btn" data-category="control" title="Loops & Logic" style="--cat-color: #10b981;">
+            <span class="code-cat-box"></span>
+            <span>CONTROL</span>
+          </button>
+          <button class="code-cat-btn" data-category="variables" title="Variables & Scores" style="--cat-color: #f97316;">
+            <span class="code-cat-box"></span>
+            <span>VARS</span>
+          </button>
+        </div>
+
+        <!-- Palette Blocks List (Wide) -->
+        <div class="code-palette-pane" id="code-palette-pane">
+          <div class="code-palette-header">
+            <div class="code-palette-title-group">
+              <span class="code-cat-dot" id="code-palette-cat-dot" style="background-color: #f59e0b;"></span>
+              <span id="code-palette-title">EVENTS</span>
+            </div>
+            <span class="palette-count-badge" id="code-palette-count">6 BLOCKS</span>
+          </div>
+          <div class="code-blocks-scroll">
+            <div class="code-blocks-list" id="code-blocks-list">
+              <!-- Dynamically populated blocks -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RESIZABLE SPLITTER DIVIDER -->
+    <div class="pane-splitter" id="pane-splitter" title="Drag to Resize Panels">
+      <div class="splitter-grip"></div>
+    </div>
+
+    <!-- RIGHT PANE: Canvas Stage -->
+    <section class="panel-stage" id="stage-pane">
+      <div id="canvas-container" class="canvas-wrapper"></div>
+
+      <!-- 3-SECTION CODE MODE WORKSPACE (Active when in Code Mode) -->
+      <div class="code-stage-layout" id="code-stage-layout" style="display: none;">
+        
+        <!-- SECTION 1: Code Drag & Drop Placement Area (Left Main Workspace) -->
+        <section class="code-section-workspace" id="code-workspace-section" aria-label="Code Script Workspace">
+          <div class="code-workspace-header">
+            <div class="code-target-badge" id="code-target-badge">
+              <i class="ph ph-person-simple-walk" id="code-target-icon"></i>
+              <span class="code-target-prefix">SPRITE:</span>
+              <strong id="code-target-name" class="code-target-name">NO OBJECT SELECTED</strong>
+            </div>
+            <div class="code-workspace-tools">
+              <button id="btn-code-run" class="btn btn-pixel btn-code-action btn-run" title="Run Script">
+                <i class="ph ph-play-fill"></i>
+                <span>RUN</span>
+              </button>
+              <button id="btn-code-clear" class="btn btn-pixel btn-code-action" title="Clear Code Workspace">
+                <i class="ph ph-trash"></i>
+                <span>CLEAR</span>
+              </button>
+              <div class="code-zoom-controls">
+                <button id="btn-code-zoom-out" class="btn-icon-pixel btn-zoom-action" title="Zoom Out (-)">
+                  <i class="ph ph-minus"></i>
+                </button>
+                <span id="code-zoom-level" class="zoom-level-tag">100%</span>
+                <button id="btn-code-zoom-in" class="btn-icon-pixel btn-zoom-action" title="Zoom In (+)">
+                  <i class="ph ph-plus"></i>
+                </button>
+                <button id="btn-code-center" class="btn-icon-pixel btn-zoom-action" title="Reset View (Center)">
+                  <i class="ph ph-arrows-in-cardinal"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-canvas-area" id="code-drop-zone">
+            <div class="code-canvas-grid-bg"></div>
+            <div class="code-blocks-workspace" id="code-workspace-blocks">
+              <div class="code-workspace-empty" id="code-workspace-empty">
+                <div class="empty-code-icon-box">
+                  <i class="ph ph-puzzle-piece"></i>
+                </div>
+                <span class="empty-code-title">SECTION 1 • CODE PLACEMENT AREA</span>
+                <span class="empty-code-subtitle">Drag blocks from the left panel and drop them here to build scripts for your character.</span>
+                <div class="empty-code-hint">
+                  <i class="ph ph-info"></i>
+                  <span>Select an object in Section 3 to write code for it</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT SPLIT CONTAINER: SECTION 2 (Top Preview) & SECTION 3 (Bottom Objects) -->
+        <aside class="code-stage-sidebar" id="code-stage-sidebar">
+          
+          <!-- SECTION 2: Canvas Preview Box (Top-Right) -->
+          <section class="code-section-preview" id="code-preview-section" aria-label="Canvas Stage Preview">
+            <div class="code-section-header">
+              <div class="code-section-title">
+                <i class="ph ph-monitor-play"></i>
+                <span>STAGE PREVIEW</span>
+              </div>
+              <button id="btn-toggle-code-stage" class="btn-icon-pixel btn-toggle-stage-preview" title="Minimize / Expand Stage Preview">
+                <i class="ph ph-caret-up"></i>
+              </button>
+            </div>
+            <div class="code-preview-canvas-box" id="code-preview-canvas-box">
+              <!-- #canvas-container is mounted here in Code Mode -->
+            </div>
+          </section>
+
+          <!-- SECTION 3: Objects on Canvas List (Bottom-Right) -->
+          <section class="code-section-objects" id="code-objects-section" aria-label="Objects on Canvas List">
+            <div class="code-section-header">
+              <div class="code-section-title">
+                <i class="ph ph-stack"></i>
+                <span>SECTION 3 • OBJECTS</span>
+              </div>
+              <div class="objects-header-right">
+                <span class="objects-lock-badge" title="Resizing is locked in Code Mode">
+                  <i class="ph ph-lock-key"></i> LOCKED
+                </span>
+                <span class="objects-count-badge" id="code-objects-count-badge">0 ITEMS</span>
+              </div>
+            </div>
+            
+            <div class="code-objects-scroll" id="code-objects-scroll">
+              <div class="code-objects-list" id="code-objects-list">
+                <!-- Dynamically populated objects list -->
+              </div>
+            </div>
+          </section>
+
+        </aside>
+
+      </div>
+
+      <!-- Floating Canvas Crop Control Bar -->
+      <div class="floating-crop-bar" id="floating-crop-bar" style="display: none;">
+        <div class="crop-bar-label">
+          <i class="ph ph-crop"></i>
+          <span>CROPPING</span>
+        </div>
+        <button id="btn-canvas-apply-crop" class="btn btn-pixel btn-crop-confirm" title="Apply Crop">
+          <i class="ph ph-check-bold"></i>
+          <span>APPLY</span>
+        </button>
+        <button id="btn-canvas-cancel-crop" class="btn btn-pixel btn-crop-cancel" title="Cancel Crop">
+          <i class="ph ph-x-bold"></i>
+          <span>CANCEL</span>
+        </button>
+      </div>
+
+      <!-- Floating Sprite Poses Panel (Right Side of Canvas) -->
+      <aside class="floating-sprite-poses-panel" id="floating-sprite-poses-panel" style="display: none;" aria-label="Sprite Poses and Animations">
+        <!-- Panel Header -->
+        <div class="sprite-poses-header">
+          <div class="sprite-poses-title-group">
+            <div class="sprite-poses-icon-wrap">
+              <i class="ph ph-person-simple-walk"></i>
+            </div>
+            <div class="sprite-poses-titles">
+              <span id="sprite-poses-char-name" class="sprite-poses-name">CHARACTER</span>
+              <span id="sprite-poses-theme-badge" class="sprite-poses-badge">THEME</span>
+            </div>
+          </div>
+          <div class="sprite-poses-actions">
+            <span id="sprite-poses-count" class="sprite-poses-count-tag">0 POSES</span>
+            <button id="btn-minimize-sprite-poses" class="btn-icon-pixel btn-minimize-poses" title="Minimize / Expand Panel">
+              <i class="ph ph-caret-down"></i>
+            </button>
+            <button id="btn-close-sprite-poses" class="btn-icon-pixel btn-close-poses" title="Close Poses Panel">
+              <i class="ph ph-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Autoplay & Controls Toolbar -->
+        <div class="sprite-poses-toolbar">
+          <button id="btn-toggle-sprite-autoplay" class="btn btn-pixel btn-autoplay-toggle" title="Toggle continuous canvas animation playback">
+            <i class="ph ph-play"></i>
+            <span id="sprite-autoplay-label">AUTOPLAY: OFF</span>
+          </button>
+          <div class="sprite-autoplay-speed-wrap" title="Animation Playback Speed">
+            <span class="speed-tag">SPD:</span>
+            <button class="btn-speed-chip active" data-speed="100">1x</button>
+            <button class="btn-speed-chip" data-speed="60">1.5x</button>
+            <button class="btn-speed-chip" data-speed="160">0.6x</button>
+          </div>
+        </div>
+
+        <!-- Instruction bar -->
+        <div class="sprite-poses-instructions">
+          <i class="ph ph-cursor"></i>
+          <span>Hover to preview animation • Click to select pose</span>
+        </div>
+
+        <!-- Scrollable Grid of Animated Pose Cards -->
+        <div class="sprite-poses-scroll">
+          <div class="sprite-poses-grid" id="sprite-poses-grid">
+            <!-- Dynamically populated with animated pose cards -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Floating Action Dock (Bottom Center) -->
+      <div class="floating-action-dock" id="floating-dock">
+        
+        <!-- Mouse Tool Mode (Move vs Select) -->
+        <div class="dock-segmented-group" role="group" aria-label="Mouse Mode">
+          <button id="btn-tool-move" class="btn btn-pixel btn-dock-tool active" data-tool="move" title="Move & Pan World (M)">
+            <i class="ph ph-hand-grabbing"></i>
+          </button>
+          <button id="btn-tool-select" class="btn btn-pixel btn-dock-tool" data-tool="select" title="Select Tool (S)">
+            <i class="ph ph-cursor"></i>
+          </button>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- Grid Visibility Toggle -->
+        <button id="btn-toggle-grid" class="btn btn-pixel btn-dock-tool active" title="Toggle Grid (G)">
+          <i id="grid-icon" class="ph ph-grid-four"></i>
+        </button>
+
+        <!-- Selected Item Layer Actions (Dynamically visible when an item is selected) -->
+        <div class="dock-layer-group" id="dock-layer-actions" style="display: none;">
+          <div class="dock-divider"></div>
+          <button id="btn-dock-move-front" class="btn btn-pixel btn-dock-layer" title="Move in Front / Bring Forward">
+            <i class="ph ph-arrow-up"></i>
+            <span>MOVE FRONT</span>
+          </button>
+          <button id="btn-dock-move-back" class="btn btn-pixel btn-dock-layer" title="Move Behind / Send Backward">
+            <i class="ph ph-arrow-down"></i>
+            <span>MOVE BACK</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Make a Variable -->
+  <div id="modal-make-variable" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-plus-circle"></i>
+          <span>NEW VARIABLE</span>
+        </div>
+        <button id="btn-close-var-modal" class="btn-icon-pixel" title="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="pixel-modal-body">
+        <div class="modal-field-group">
+          <label for="input-new-var-name" class="modal-field-label">VARIABLE NAME:</label>
+          <input id="input-new-var-name" class="input-pixel modal-text-input" type="text" placeholder="e.g. score, coins, speed" maxlength="24" autocomplete="off" />
+        </div>
+        <div class="modal-scope-group">
+          <label class="modal-radio-label">
+            <input type="radio" name="var-scope" value="global" checked />
+            <span>For all sprites (Global)</span>
+          </label>
+          <label class="modal-radio-label">
+            <input type="radio" name="var-scope" value="local" />
+            <span>For this sprite only</span>
+          </label>
+        </div>
+      </div>
+      <div class="pixel-modal-footer">
+        <button id="btn-cancel-var-modal" class="btn btn-pixel btn-modal-cancel">CANCEL</button>
+        <button id="btn-create-var-modal" class="btn btn-pixel btn-modal-confirm">CREATE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Export Project (.U5) Metadata Configuration -->
+  <div id="modal-export-u5" class="pixel-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box export-u5-modal-box">
+      <div class="pixel-modal-header">
+        <div class="pixel-modal-title">
+          <i class="ph ph-package"></i>
+          <span>EXPORT PROJECT (.U5)</span>
+        </div>
+        <button id="btn-close-export-modal" class="btn-icon-pixel" title="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="pixel-modal-body">
+        <!-- Live Scene Thumbnail & Quick Stats -->
+        <div class="export-preview-header-row">
+          <div class="export-thumb-preview-wrap">
+            <img id="export-preview-img" class="export-preview-thumb" alt="Canvas Snapshot" />
+            <div class="export-thumb-badge">U5</div>
+          </div>
+          <div class="export-summary-meta">
+            <div class="export-meta-badge" id="export-meta-perspective">
+              <i class="ph ph-compass"></i>
+              <span>SIDE-FACING</span>
+            </div>
+            <div class="export-meta-badge" id="export-meta-layers">
+              <i class="ph ph-stack"></i>
+              <span>0 LAYERS</span>
+            </div>
+            <div class="export-meta-badge" id="export-meta-scripts">
+              <i class="ph ph-code"></i>
+              <span>0 SCRIPT BLOCKS</span>
+            </div>
+            <div class="export-meta-badge" id="export-meta-world">
+              <i class="ph ph-bounding-box"></i>
+              <span>2000 × 1500</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Meta Fields -->
+        <div class="modal-two-col">
+          <div class="modal-field-group flex-2">
+            <label for="input-export-title" class="modal-field-label">PROJECT NAME:</label>
+            <input id="input-export-title" class="input-pixel modal-text-input" type="text" placeholder="e.g. My_Epic_Game" maxlength="32" autocomplete="off" />
+          </div>
+          <div class="modal-field-group flex-1">
+            <label for="input-export-version" class="modal-field-label">VERSION:</label>
+            <input id="input-export-version" class="input-pixel modal-text-input" type="text" placeholder="1.0.0" maxlength="10" value="1.0.0" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="modal-field-group">
+          <label for="input-export-author" class="modal-field-label">CREATOR / AUTHOR:</label>
+          <input id="input-export-author" class="input-pixel modal-text-input" type="text" placeholder="e.g. PixelArtist" maxlength="32" autocomplete="off" />
+        </div>
+
+        <div class="modal-field-group">
+          <label for="input-export-desc" class="modal-field-label">DESCRIPTION / NOTES:</label>
+          <textarea id="input-export-desc" class="input-pixel modal-text-input modal-textarea-input" rows="3" placeholder="Brief notes about your world, gameplay, or sprite controls..."></textarea>
+        </div>
+
+        <!-- Web Worker Compilation Status -->
+        <div id="export-worker-status" class="export-worker-status" style="display: none;">
+          <div class="export-spinner-box">
+            <i class="ph ph-spinner ph-spin"></i>
+          </div>
+          <div class="export-worker-info">
+            <span class="export-worker-title">BACKGROUND WORKER COMPRESSING...</span>
+            <span class="export-worker-sub">Packaging serialized layers, assets & code with GZIP</span>
+          </div>
+        </div>
+      </div>
+      <div class="pixel-modal-footer">
+        <button id="btn-cancel-export-modal" class="btn btn-pixel btn-modal-cancel">CANCEL</button>
+        <button id="btn-confirm-export-u5" class="btn btn-pixel btn-export-u5-confirm">
+          <i class="ph ph-file-arrow-down"></i>
+          <span>EXPORT .U5</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Tab Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Navigation">
+    <button id="btn-mobile-nav-canvas" class="mobile-nav-btn active" data-mode="canvas" title="Canvas Editor">
+      <i class="ph ph-paint-brush"></i>
+      <span>CANVAS</span>
+    </button>
+    <button id="btn-mobile-nav-controls" class="mobile-nav-btn" title="Open Controls & Assets Drawer">
+      <i class="ph ph-squares-four"></i>
+      <span>CONTROLS</span>
+    </button>
+    <button id="btn-mobile-nav-code" class="mobile-nav-btn" data-mode="code" title="Code Editor">
+      <i class="ph ph-code"></i>
+      <span>CODE</span>
+    </button>
+  </nav>
+
+</body>
+</html>

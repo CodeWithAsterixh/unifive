@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary SEO Meta Tags -->
+  <title>UNIFIVE: In-Browser 2D &amp; Top-Down Pixel Game Studio</title>
+  <meta name="title" content="UNIFIVE: In-Browser 2D &amp; Top-Down Pixel Game Studio">
+  <meta name="description" content="Build 2D platformers and top-down RPG games directly in your browser with UNIFIVE. Features visual block scripting, sprite animations, and .U5 project export.">
+  <meta name="keywords" content="pixel game maker, 2d game engine, top-down rpg creator, visual block scripting, scratch for game development, in-browser game studio, pixel art game maker, u5 file format, p5js games, level editor, game development tool">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="UNIFIVE Studio">
+  <meta name="application-name" content="UNIFIVE">
+  <meta name="theme-color" content="#120308">
+  <link rel="canonical" href="https://unifive-p5.web.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://unifive-p5.web.app/">
+  <meta property="og:title" content="UNIFIVE: In-Browser 2D &amp; Top-Down Pixel Game Studio">
+  <meta property="og:description" content="Build 2D platformers and top-down RPG games directly in your browser with UNIFIVE. Features visual block scripting, sprite animations, and .U5 project export.">
+  <meta property="og:image" content="assets/canvas ui.png">
+  <meta property="og:image:alt" content="UNIFIVE Pixel Game Studio Workspace with visual canvas level editor">
+  <meta property="og:site_name" content="UNIFIVE">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://unifive-p5.web.app/">
+  <meta name="twitter:title" content="UNIFIVE: In-Browser 2D &amp; Top-Down Pixel Game Studio">
+  <meta name="twitter:description" content="Build 2D platformers and top-down RPG games directly in your browser with UNIFIVE. Visual block coding, sprite animations, and one-click .U5 export.">
+  <meta name="twitter:image" content="assets/canvas ui.png">
+  <meta name="twitter:image:alt" content="UNIFIVE Workspace interface">
+
+  <!-- Structured Data: WebApplication, FAQPage & WebSite Schemas (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://unifive-p5.web.app/#webapp",
+        "name": "UNIFIVE Pixel Game Studio",
+        "url": "https://unifive-p5.web.app/",
+        "applicationCategory": "GameApplication, MultimediaApplication, DeveloperApplication",
+        "operatingSystem": "Any modern web browser (Chrome, Firefox, Safari, Edge)",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "An in-browser creative studio for building 2D platformers and top-down RPG maps with visual block programming, frame-by-frame character animations, and portable .U5 export.",
+        "featureList": [
+          "Dual Perspective Modes: Side-Facing Platformer and Top-Down RPG",
+          "Visual Block Scripting with Magnetic Snapping and Real-Time Execution",
+          "Frame-by-Frame Animated Sprites with Interactive Poses & Autoplay",
+          "Single-File Compressed .U5 Project Packaging with Web Workers",
+          "Interactive Crop Tool and Layer Transformations directly on Canvas",
+          "Web Audio 8-Bit Retro Sound Synthesizer"
+        ],
+        "screenshot": "assets/canvas ui.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://unifive-p5.web.app/#website",
+        "name": "UNIFIVE",
+        "url": "https://unifive-p5.web.app/",
+        "description": "Free web-based 2D and top-down pixel game maker and studio."
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://unifive-p5.web.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is UNIFIVE?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UNIFIVE is a free in-browser game studio that allows creators to design 2D platformers and top-down RPG maps with visual block programming, animated sprites, and .U5 project export."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need to install any software to use UNIFIVE?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. UNIFIVE runs entirely within your web browser with zero installation or build steps required."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the .U5 project file format?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The .U5 file is a self-contained, GZIP-compressed project package that bundles placed assets, transforms, visual script logic, thumbnails, and icons into a single shareable file."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does visual block scripting work in UNIFIVE?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You drag and snap Scratch-style puzzle blocks (Events, Motion, Looks, Sound, Control, Variables) to control character actions, play 8-bit sound effects, and handle game events with real-time visual execution highlights."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- App Icons & Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Pixel Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Vector Icons Library -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Landing Website Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="landing.css">
+</head>
+<body class="sticky-scroll-body">
+
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+  <!-- ========================================================================
+       700vh SCROLL TRACK FOR BUTTER-SMOOTH STICKY SCROLL ANIMATIONS
+       (Modeled after WorldLoadingScreen.tsx)
+       ======================================================================== -->
+  <div class="scroll-track" id="scroll-track">
+    
+    <!-- Pinned 100dvh Sticky Viewport -->
+    <div class="sticky-viewport" id="sticky-viewport">
+
+      <!-- Sticky Top Progress Bar -->
+      <div class="scroll-progress-bar" id="scroll-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Page scroll progress"></div>
+
+      <!-- Sticky Top Navigation Header -->
+      <header class="site-header" id="site-header" role="banner">
+        <div class="nav-inner">
+          <a href="./" class="brand-wrap" title="UNIFIVE Home" aria-label="UNIFIVE Homepage">
+            <div class="brand-icon-box">
+              <img src="favicon-32x32.png" alt="UNIFIVE Icon" width="32" height="32" />
+            </div>
+            <div class="brand-titles">
+              <span class="brand-name">UNIFIVE</span>
+              <span class="brand-tag">PIXEL GAME STUDIO • v2.0</span>
+            </div>
+          </a>
+
+          <!-- Desktop Quick Jump Links -->
+          <nav role="navigation" aria-label="Main Navigation">
+            <ul class="nav-links">
+              <li><button class="nav-link-btn" data-target-chapter="0" aria-label="Navigate to Chapter 1: Overview">OVERVIEW</button></li>
+              <li><button class="nav-link-btn" data-target-chapter="1" aria-label="Navigate to Chapter 2: Features">FEATURES</button></li>
+              <li><button class="nav-link-btn" data-target-chapter="2" aria-label="Navigate to Chapter 3: Perspectives">PERSPECTIVES</button></li>
+              <li><button class="nav-link-btn" data-target-chapter="3" aria-label="Navigate to Chapter 4: Visual Code">VISUAL CODE</button></li>
+              <li><button class="nav-link-btn" data-target-chapter="4" aria-label="Navigate to Chapter 5: .U5 Format">.U5 FORMAT</button></li>
+              <li><button class="nav-link-btn" data-target-chapter="5" aria-label="Navigate to Chapter 6: Assets">ASSETS</button></li>
+            </ul>
+          </nav>
+
+          <!-- Header Action CTAs & Sound Toggle -->
+          <div class="nav-actions">
+            <!-- Desktop Action Items -->
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-pixel btn-icon-social desktop-only" title="GitHub Repository &amp; Profile" aria-label="View on GitHub">
+              <i class="ph ph-github-logo" aria-hidden="true"></i>
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="btn-pixel btn-icon-social desktop-only" title="Follow on X (Twitter)" aria-label="Follow on X">
+              <i class="ph ph-x-logo" aria-hidden="true"></i>
+            </a>
+            <button id="btn-coffee-trigger" class="btn-pixel btn-coffee-nav btn-open-coffee desktop-only" title="Support UNIFIVE" aria-label="Buy Me a Coffee">
+              <i class="ph ph-coffee" aria-hidden="true"></i>
+              <span>BUY ME A COFFEE</span>
+            </button>
+            <button id="btn-sound-toggle" class="btn-pixel btn-secondary-burgundy btn-sound desktop-only" title="Toggle 8-bit Sound" aria-label="Toggle 8-bit retro sound effects, currently muted" aria-pressed="false">
+              <i class="ph ph-speaker-slash" id="sound-icon" aria-hidden="true"></i>
+              <span id="sound-label">MUTED</span>
+            </button>
+            <a href="app/" class="btn-pixel btn-primary-emerald btn-launch-nav desktop-only" title="Launch UNIFIVE Studio" aria-label="Launch UNIFIVE Game Studio in Browser">
+              <i class="ph ph-play-fill" aria-hidden="true"></i>
+              <span>LAUNCH STUDIO</span>
+            </a>
+
+            <!-- Mobile Action Items (Coffee, Launch App Icon, and Menu Toggle) -->
+            <button class="btn-pixel btn-coffee-mobile btn-open-coffee mobile-only" title="Buy Me a Coffee" aria-label="Buy Me a Coffee">
+              <i class="ph ph-coffee" aria-hidden="true"></i>
+            </button>
+            <a href="app/" class="btn-pixel btn-primary-emerald btn-launch-mobile mobile-only" title="Launch Studio App" aria-label="Launch Studio App">
+              <i class="ph ph-rocket-launch" aria-hidden="true"></i>
+            </a>
+            <button id="btn-mobile-menu-toggle" class="btn-pixel btn-mobile-menu mobile-only" title="Open Menu" aria-label="Open Navigation Menu" aria-expanded="false" aria-controls="mobile-sidebar-drawer">
+              <i class="ph ph-list" id="menu-toggle-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ====================================================================
+           MOBILE SLIDE-OUT NAVIGATION SIDEBAR (DRAWER)
+           ==================================================================== -->
+      <div class="mobile-sidebar-backdrop" id="mobile-sidebar-backdrop" hidden></div>
+      <aside class="pixel-box mobile-sidebar-drawer" id="mobile-sidebar-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu" hidden>
+        <div class="mobile-sidebar-header">
+          <div class="brand-wrap">
+            <div class="brand-icon-box">
+              <img src="favicon-32x32.png" alt="U5 Logo" width="24" height="24" />
+            </div>
+            <div class="brand-titles">
+              <span class="brand-name">UNIFIVE</span>
+              <span class="brand-tag">NAVIGATION</span>
+            </div>
+          </div>
+          <button class="btn-pixel mobile-sidebar-close" id="btn-close-sidebar" aria-label="Close navigation sidebar">
+            <i class="ph ph-x" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="mobile-sidebar-body">
+          <nav class="mobile-nav-list" aria-label="Mobile Chapter Links">
+            <button class="mobile-nav-link" data-target-chapter="0">
+              <span class="chapter-num">01</span>
+              <span class="chapter-txt">OVERVIEW</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-nav-link" data-target-chapter="1">
+              <span class="chapter-num">02</span>
+              <span class="chapter-txt">FEATURES</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-nav-link" data-target-chapter="2">
+              <span class="chapter-num">03</span>
+              <span class="chapter-txt">PERSPECTIVES</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-nav-link" data-target-chapter="3">
+              <span class="chapter-num">04</span>
+              <span class="chapter-txt">VISUAL CODE</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-nav-link" data-target-chapter="4">
+              <span class="chapter-num">05</span>
+              <span class="chapter-txt">.U5 FORMAT</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-nav-link" data-target-chapter="5">
+              <span class="chapter-num">06</span>
+              <span class="chapter-txt">ASSETS</span>
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+          </nav>
+
+          <div class="mobile-sidebar-actions">
+            <button id="btn-sound-toggle-mobile" class="btn-pixel btn-secondary-burgundy mobile-sound-btn" title="Toggle 8-bit Sound">
+              <i class="ph ph-speaker-slash" id="mobile-sound-icon" aria-hidden="true"></i>
+              <span id="mobile-sound-label">SOUND: MUTED</span>
+            </button>
+
+            <button class="btn-pixel btn-coffee-nav btn-open-coffee mobile-coffee-action" title="Support UNIFIVE">
+              <i class="ph ph-coffee" aria-hidden="true"></i>
+              <span>BUY ME A COFFEE</span>
+            </button>
+
+            <a href="app/" class="btn-pixel btn-primary-emerald mobile-launch-action" title="Launch UNIFIVE Studio">
+              <i class="ph ph-play-fill" aria-hidden="true"></i>
+              <span>LAUNCH STUDIO</span>
+            </a>
+          </div>
+
+          <div class="mobile-sidebar-socials">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-pixel btn-icon-social" title="GitHub" aria-label="GitHub">
+              <i class="ph ph-github-logo" aria-hidden="true"></i>
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="btn-pixel btn-icon-social" title="X (Twitter)" aria-label="X">
+              <i class="ph ph-x-logo" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Central Multi-Chapter Stage Area (All chapters cross-fade & 3D tilt seamlessly) -->
+      <main class="sticky-stage" id="main-content" role="main" aria-label="Presentation Chapters">
+
+        <!-- ====================================================================
+             CHAPTER 0: HERO & WORKSPACE OVERVIEW (0.00 -> 0.14)
+             ==================================================================== -->
+        <section class="chapter-layer active" id="chapter-0" data-chapter="0" role="region" aria-labelledby="heading-chapter-0">
+          <div class="section-container hero-container">
+            <h1 class="hero-title" id="heading-chapter-0">
+              CREATE, CODE &amp; COMPILE <br />
+              <span class="highlight-gold">2D PIXEL WORLDS</span> IN YOUR <span class="highlight-emerald">BROWSER</span>
+            </h1>
+
+            <p class="hero-description">
+              UNIFIVE is an in-browser creative studio for building 2D platformers and top-down RPG maps with visual block programming, frame-by-frame character animations, and single-file <strong>.U5</strong> export.
+            </p>
+
+            <div class="hero-actions">
+              <a href="app/" class="btn-pixel btn-primary-emerald btn-hero-primary" title="Open UNIFIVE Studio" aria-label="Open UNIFIVE Studio and start building games for free">
+                <i class="ph ph-rocket-launch" aria-hidden="true"></i>
+                <span>LAUNCH STUDIO (FREE)</span>
+              </a>
+              <button class="btn-pixel btn-secondary-burgundy btn-hero-secondary" data-target-chapter="1" title="Explore Features" aria-label="Scroll down to explore core features">
+                <i class="ph ph-arrow-down" aria-hidden="true"></i>
+                <span>EXPLORE FEATURES</span>
+              </button>
+            </div>
+
+            <!-- Hero Visual Studio Showcase Image Frame -->
+            <div class="hero-mockup-wrapper">              
+              <figure class="hero-image-frame pixel-box">
+                <figcaption class="hero-image-header">
+                  <div class="mockup-dots" aria-hidden="true">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                  </div>
+                  <div class="mockup-title">UNIFIVE STUDIO [SIDE-FACING &amp; TOP-DOWN WORKSPACE]</div>
+                  <div></div>
+                </figcaption>
+                <div class="hero-image-container">
+                  <img src="assets/canvas ui.png" alt="UNIFIVE Pixel Game Studio interface showing canvas level editor, asset sidebar, and placement tools" class="hero-showcase-img" loading="eager" width="1200" height="700" />
+                </div>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 1: CORE FEATURES BENTO GRID (0.14 -> 0.28)
+             ==================================================================== -->
+        <section class="chapter-layer" id="chapter-1" data-chapter="1" role="region" aria-labelledby="heading-chapter-1">
+          <div class="section-container">
+            <header class="section-header">
+              <h2 class="section-title" id="heading-chapter-1">BUILT FOR 2D GAME CREATION</h2>
+              <p class="section-subtitle">
+                Place scenery, configure character poses, write game logic with puzzle blocks, and export your project in one click.
+              </p>
+            </header>
+
+            <div class="bento-grid">
+              <!-- Card 1: Dual Perspectives -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-arrows-left-right"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Dual Perspectives</h3>
+                  <p>
+                    Switch between side-scrolling platformers and 4-directional top-down maps with independent layers and assets.
+                  </p>
+                </div>
+              </article>
+
+              <!-- Card 2: Visual Code Scripting -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-puzzle-piece"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Magnetic Block Scripting</h3>
+                  <p>
+                    Snap puzzle blocks to script movement, speech bubbles, 8-bit sound synthesis, and real-time execution loops.
+                  </p>
+                </div>
+              </article>
+
+              <!-- Card 3: Animated Sprites -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-person-simple-walk"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Character Poses &amp; Autoplay</h3>
+                  <p>
+                    Preview frame animations on hover or toggle live autoplay. Includes heroes, civilians, enemies, and wildlife.
+                  </p>
+                </div>
+              </article>
+
+              <!-- Card 4: .U5 Packaging -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-package"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Portable .U5 Format</h3>
+                  <p>
+                    Export into a single compressed <code>.u5</code> file with embedded icons, live canvas thumbnails, and script trees.
+                  </p>
+                </div>
+              </article>
+
+              <!-- Card 5: Infinite Canvas & Tools -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-hand-grabbing"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Canvas Tools &amp; Cropping</h3>
+                  <p>
+                    Pan and zoom freely, transform layers, and crop asset sprites with grid guides directly on the stage.
+                  </p>
+                </div>
+              </article>
+
+              <!-- Card 6: Zero Install -->
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true">
+                  <i class="ph ph-device-mobile"></i>
+                </div>
+                <div class="bento-content">
+                  <h3>Browser-Based Workflow</h3>
+                  <p>
+                    Runs 100% in modern desktop and mobile browsers. Zero installation, account setup, or build steps.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 2: TWO GAME PERSPECTIVES (0.28 -> 0.42)
+             ==================================================================== -->
+        <section class="chapter-layer" id="chapter-2" data-chapter="2" role="region" aria-labelledby="heading-chapter-2">
+          <div class="section-container">
+            <header class="section-header">
+              <h2 class="section-title" id="heading-chapter-2">TWO GAME PERSPECTIVES</h2>
+              <p class="section-subtitle">
+                Design platformers or top-down adventure maps with dedicated asset libraries.
+              </p>
+            </header>
+
+            <div class="persp-dual-grid">
+              <!-- Side-Facing Mode -->
+              <article class="pixel-box persp-card">
+                <header class="persp-card-header">
+                  <div class="persp-card-title">
+                    <i class="ph ph-panorama" aria-hidden="true"></i>
+                    <h3>SIDE-FACING PLATFORMER</h3>
+                  </div>
+                </header>
+                <div class="persp-card-visual">
+                  <img src="assets/sidefacing-assets/city-backgrounds/city_1_composite_hd.png" alt="Side-facing city skyline platformer backdrop with multi-layered parallax buildings" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" loading="lazy" width="400" height="200" />
+                </div>
+                <ul class="persp-card-features">
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> Multi-layer composite city skylines, deserts, forests, and mountains</li>
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> Side sprites: Archer, Swordsman, Wizard, Police Officer, and Raider</li>
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> Character actions: Attack, Hurt, Jump, Run, and Shoot</li>
+                </ul>
+              </article>
+
+              <!-- Top-Down Mode -->
+              <article class="pixel-box persp-card">
+                <header class="persp-card-header">
+                  <div class="persp-card-title">
+                    <i class="ph ph-arrows-out-cardinal" aria-hidden="true"></i>
+                    <h3>TOP-DOWN RPG &amp; ADVENTURE</h3>
+                  </div>
+                </header>
+                <div class="persp-card-visual">
+                  <img src="assets/sprites/topdown/male_sword/single_frame.png" alt="Top-down male warrior sprite in idle stance for 4-directional RPG gameplay" style="width: 64px; height: 64px; image-rendering: pixelated;" loading="lazy" width="64" height="64" />
+                </div>
+                <ul class="persp-card-features">
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> Individual cobblestone road tiles, tropical land, and terrain props</li>
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> Medieval castles, city buildings, dungeon chests, and torch decorations</li>
+                  <li><i class="ph ph-check-square-fill" aria-hidden="true"></i> 4-direction heroes and wildlife: Male Warrior, Boar, Deer, Fox, and Hare</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 3: VISUAL CODE BLOCKS SHOWCASE (0.42 -> 0.56)
+             ==================================================================== -->
+        <section class="chapter-layer" id="chapter-3" data-chapter="3" role="region" aria-labelledby="heading-chapter-3">
+          <div class="section-container">
+            <header class="section-header">
+              <h2 class="section-title" id="heading-chapter-3">MAGNETIC PUZZLE BLOCK CODING</h2>
+              <p class="section-subtitle">
+                Snap blocks together to program characters. Scripts execute with step-by-step visual highlights.
+              </p>
+            </header>
+
+            <div class="code-showcase-wrapper">
+              <figure class="pixel-box code-image-frame">
+                <figcaption class="hero-image-header">
+                  <div class="mockup-dots" aria-hidden="true">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                  </div>
+                  <div class="mockup-title">VISUAL BLOCK SCRIPTING &amp; EXECUTION ENGINE</div>
+                  <div></div>
+                </figcaption>
+                <div class="code-image-container">
+                  <img src="assets/code ui.png" alt="Visual code blocks scripting interface in UNIFIVE showing connected Scratch-like motion, event, and sound puzzle blocks" class="code-showcase-img" loading="lazy" width="1200" height="700" />
+                </div>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 4: .U5 PACKAGE SPECIFICATION (0.56 -> 0.70)
+             ==================================================================== -->
+        <section class="chapter-layer" id="chapter-4" data-chapter="4" role="region" aria-labelledby="heading-chapter-4">
+          <div class="section-container">
+            <header class="section-header">
+              <h2 class="section-title" id="heading-chapter-4">THE .U5 FILE FORMAT</h2>
+              <p class="section-subtitle">
+                Bundles scene data, placed assets, character scripts, and metadata into one compressed file.
+              </p>
+            </header>
+
+            <article class="pixel-box u5-spec-card">
+              <div class="u5-spec-info">
+                <h3>Self-Contained GZIP Compressed Package</h3>
+                <p>
+                  When exporting a project, UNIFIVE packages only the assets and sprites placed in your scene into base64 data URLs. Metadata, canvas preview snapshots, and application icons are embedded directly in the file.
+                </p>
+                <ul class="u5-features-list">
+                  <li><i class="ph ph-check-circle" aria-hidden="true"></i> Embedded pixel icon for file identification</li>
+                  <li><i class="ph ph-check-circle" aria-hidden="true"></i> Canvas snapshot thumbnail for project previews</li>
+                  <li><i class="ph ph-check-circle" aria-hidden="true"></i> World transforms, crop coordinates, and layer ordering</li>
+                  <li><i class="ph ph-check-circle" aria-hidden="true"></i> Visual script trees and project variables</li>
+                  <li><i class="ph ph-check-circle" aria-hidden="true"></i> Background Web Worker compression without main thread stalls</li>
+                </ul>
+              </div>
+
+              <div class="u5-json-preview" aria-label="JSON structure of a .u5 project file">
+<pre><code>{
+  "format": "UNIFIVE_U5",
+  "version": "1.0.0",
+  "icon": "data:image/png;base64,iVBOR...",
+  "thumbnail": "data:image/png;base64,...",
+  "metadata": {
+    "title": "Archer_Forest_Quest",
+    "perspective": "sidefacing",
+    "author": "PixelMaster",
+    "version": "1.0.0"
+  },
+  "worldConfig": { "worldWidth": 2000, ... },
+  "layers": [ ... ],
+  "code": { "objectScripts": { ... } }
+}</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 5: CATALOGED PIXEL ASSETS (0.70 -> 0.84)
+             ==================================================================== -->
+        <section class="chapter-layer" id="chapter-5" data-chapter="5" role="region" aria-labelledby="heading-chapter-5">
+          <div class="section-container">
+            <header class="section-header">
+              <h2 class="section-title" id="heading-chapter-5">CATALOGED PIXEL ASSETS</h2>
+              <p class="section-subtitle">
+                Sourced and organized assets for side-scrolling platformers and top-down maps.
+              </p>
+            </header>
+
+            <div class="bento-grid">
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true"><i class="ph ph-image"></i></div>
+                <div class="bento-content">
+                  <h3>Side-Facing Backgrounds</h3>
+                  <p>Parallax layers and composite scenes covering cities, deserts, forests, mountains, oceans, and summer landscapes.</p>
+                </div>
+              </article>
+
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true"><i class="ph ph-grid-four"></i></div>
+                <div class="bento-content">
+                  <h3>Top-Down Tiles &amp; Structures</h3>
+                  <p>Individual cobblestone roads, tropical terrain tiles, castles, houses, and interior furniture pieces.</p>
+                </div>
+              </article>
+
+              <article class="pixel-box bento-card">
+                <div class="bento-icon-box" aria-hidden="true"><i class="ph ph-person-simple-walk"></i></div>
+                <div class="bento-content">
+                  <h3>Animated Character Sprites</h3>
+                  <p>Side-scrolling characters and 4-directional top-down heroes, animals, and animated environmental props with live hover previews.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             CHAPTER 6: THANK YOU & COMMUNITY (0.84 -> 1.00)
+             ==================================================================== -->
+        <section class="chapter-layer chapter-thank-you" id="chapter-6" data-chapter="6" role="region" aria-labelledby="heading-chapter-6">
+          <div class="section-container">
+            <article class="pixel-box cta-box thank-you-card">
+              <div class="thank-you-badge">
+                <i class="ph ph-heart-fill" aria-hidden="true"></i>
+                <span>THANK YOU FOR BUILDING WITH UNIFIVE</span>
+              </div>
+              <h2 id="heading-chapter-6">THANK YOU FOR VISITING!</h2>
+              <p>UNIFIVE is built for retro creators, indie game developers, and pixel artists. Start creating right now, join the journey, or support future updates.</p>
+              
+              <div class="cta-actions">
+                <a href="app/" class="btn-pixel btn-primary-emerald btn-hero-primary" title="Launch UNIFIVE Studio" aria-label="Launch UNIFIVE Studio Now">
+                  <i class="ph ph-rocket-launch" aria-hidden="true"></i>
+                  <span>LAUNCH STUDIO</span>
+                </a>
+                <button class="btn-pixel btn-secondary-burgundy btn-hero-secondary btn-open-coffee" title="Support the project" aria-label="Buy Me a Coffee to support UNIFIVE">
+                  <i class="ph ph-coffee" aria-hidden="true"></i>
+                  <span>BUY ME A COFFEE</span>
+                </button>
+              </div>
+
+              <!-- Community & Social Links -->
+              <div class="cta-socials">
+                <span class="cta-social-label">CONNECT &amp; FOLLOW:</span>
+                <div class="cta-social-btns">
+                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="cta-social-btn" title="GitHub Repository &amp; Profile" aria-label="GitHub Profile">
+                    <i class="ph ph-github-logo" aria-hidden="true"></i>
+                    <span>GitHub</span>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="cta-social-btn" title="Follow on X (Twitter)" aria-label="Follow on X">
+                    <i class="ph ph-x-logo" aria-hidden="true"></i>
+                    <span>X.com</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Sticky Bottom Chapter Indicator & Controls -->
+      <footer class="sticky-footer" id="sticky-footer" role="contentinfo" aria-label="Presentation Controls and Progress">
+        <div class="footer-inner">
+          <nav class="chapter-indicators" id="chapter-indicators" role="tablist" aria-label="Presentation Chapters">
+            <button class="chapter-dot active" data-target-chapter="0" role="tab" aria-selected="true" aria-label="Chapter 1 of 7: Overview"><span>01</span></button>
+            <button class="chapter-dot" data-target-chapter="1" role="tab" aria-selected="false" aria-label="Chapter 2 of 7: Features"><span>02</span></button>
+            <button class="chapter-dot" data-target-chapter="2" role="tab" aria-selected="false" aria-label="Chapter 3 of 7: Perspectives"><span>03</span></button>
+            <button class="chapter-dot" data-target-chapter="3" role="tab" aria-selected="false" aria-label="Chapter 4 of 7: Visual Code"><span>04</span></button>
+            <button class="chapter-dot" data-target-chapter="4" role="tab" aria-selected="false" aria-label="Chapter 5 of 7: .U5 Spec"><span>05</span></button>
+            <button class="chapter-dot" data-target-chapter="5" role="tab" aria-selected="false" aria-label="Chapter 6 of 7: Assets"><span>06</span></button>
+            <button class="chapter-dot" data-target-chapter="6" role="tab" aria-selected="false" aria-label="Chapter 7 of 7: Thank You"><span>07</span></button>
+          </nav>
+
+          <div class="footer-social-links" aria-label="Community &amp; Project Links">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link-item" title="GitHub Profile &amp; Repository" aria-label="GitHub">
+              <i class="ph ph-github-logo" aria-hidden="true"></i>
+              <span>GitHub</span>
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="footer-link-item" title="X Profile" aria-label="X (Twitter)">
+              <i class="ph ph-x-logo" aria-hidden="true"></i>
+              <span>X.com</span>
+            </a>
+            <button class="footer-link-item btn-open-coffee" title="Support creator via Buy Me a Coffee" aria-label="Buy Me a Coffee">
+              <i class="ph ph-coffee" aria-hidden="true"></i>
+              <span>Buy Coffee</span>
+            </button>
+          </div>
+
+          <div class="scroll-hint" id="scroll-hint" aria-hidden="true">
+            <i class="ph ph-arrow-down"></i>
+            <span>SCROLL TO EXPLORE</span>
+          </div>
+
+          <div class="footer-brand-tag">
+            <span>UNIFIVE • 2026</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BUY ME A COFFEE MODAL (WITH PAYPAL INTEGRATION)
+       ======================================================================== -->
+  <div class="pixel-modal-backdrop" id="modal-coffee" role="dialog" aria-modal="true" aria-labelledby="modal-coffee-title" hidden>
+    <div class="pixel-box modal-coffee-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-coffee-title">
+          <i class="ph ph-coffee" aria-hidden="true"></i>
+          <span>BUY ME A COFFEE</span>
+        </div>
+        <button class="btn-pixel modal-close-btn" id="btn-close-coffee" aria-label="Close Coffee Donation Modal">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-subtitle">
+          UNIFIVE is free &amp; open-source. If you enjoy building games with it, buying a coffee helps support new sprite sheets, top-down tiles, and engine improvements!
+        </p>
+
+        <!-- Preset Coffee Tiers -->
+        <div class="coffee-amount-presets" role="radiogroup" aria-label="Choose donation amount">
+          <button type="button" class="btn-pixel coffee-preset active" data-amount="3" aria-label="Donate $3 for 1 Coffee" aria-checked="true" role="radio">
+            <span class="coffee-cups">☕</span>
+            <span class="coffee-price">$3</span>
+            <span class="coffee-tier">1 Coffee</span>
+          </button>
+          <button type="button" class="btn-pixel coffee-preset" data-amount="5" aria-label="Donate $5 for 2 Coffees" aria-checked="false" role="radio">
+            <span class="coffee-cups">☕☕</span>
+            <span class="coffee-price">$5</span>
+            <span class="coffee-tier">2 Coffees</span>
+          </button>
+          <button type="button" class="btn-pixel coffee-preset" data-amount="10" aria-label="Donate $10 for Mega Boost" aria-checked="false" role="radio">
+            <span class="coffee-cups">⚡☕</span>
+            <span class="coffee-price">$10</span>
+            <span class="coffee-tier">Mega Boost</span>
+          </button>
+          <button type="button" class="btn-pixel coffee-preset" data-amount="25" aria-label="Donate $25 for Super Creator" aria-checked="false" role="radio">
+            <span class="coffee-cups">🏆☕</span>
+            <span class="coffee-price">$25</span>
+            <span class="coffee-tier">Super Creator</span>
+          </button>
+        </div>
+
+        <!-- Custom Amount Field -->
+        <div class="coffee-custom-row">
+          <label for="coffee-custom-amount">CUSTOM AMOUNT ($USD):</label>
+          <div class="coffee-input-wrap">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="coffee-custom-amount" min="1" max="1000" step="1" value="3" placeholder="3" aria-label="Custom donation amount in USD" />
+          </div>
+        </div>
+
+        <!-- Payment Method Notice -->
+        <div class="payment-method-badge">
+          <i class="ph ph-paypal-logo" aria-hidden="true"></i>
+          <span>PAYMENT METHOD: PAYPAL (SECURE)</span>
+        </div>
+
+        <!-- Action Button with dynamic PayPal Link -->
+        <div class="modal-actions">
+          <a id="btn-paypal-checkout" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=support%40unifive-p5.com&currency_code=USD&amount=3&item_name=UNIFIVE+Coffee+Donation" target="_blank" rel="noopener noreferrer" class="btn-pixel btn-primary-emerald btn-paypal-action" aria-label="Proceed to PayPal checkout">
+            <i class="ph ph-paypal-logo" aria-hidden="true"></i>
+            <span id="paypal-btn-label">CONTINUE TO PAYPAL ($3.00)</span>
+            <i class="ph ph-arrow-square-out" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Landing Sticky Scroll Engine Script -->
+  <script src="landing.js"></script>
+
+</body>
+</html>

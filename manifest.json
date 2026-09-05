@@ -1,0 +1,55 @@
+{
+  "name": "UNIFIVE Pixel Game Studio",
+  "short_name": "UNIFIVE",
+  "description": "In-browser 2D and top-down pixel game maker with visual block scripting, sprite poses, and .U5 project export.",
+  "start_url": "./app/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#120308",
+  "theme_color": "#120308",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "games",
+    "developer",
+    "graphics",
+    "productivity"
+  ],
+  "shortcuts": [
+    {
+      "name": "Launch Studio",
+      "short_name": "Studio",
+      "description": "Open UNIFIVE Studio Workspace",
+      "url": "./app/",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
