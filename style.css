@@ -3104,7 +3104,7 @@ body.resizing {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px 6px 10px;
+  padding: 5px 12px 5px 10px;
   background-color: var(--block-bg, #2563eb);
   color: #ffffff;
   border: 2px solid #0f172a;
@@ -3119,7 +3119,9 @@ body.resizing {
   user-select: none;
   border-radius: 4px;
   position: relative;
-  min-height: 32px;
+  min-height: 34px;
+  height: 34px;
+  box-sizing: border-box;
 }
 
 .code-block-item:hover {
@@ -3190,6 +3192,8 @@ body.resizing {
   border-top-right-radius: 18px 14px;
   padding-top: 8px;
   padding-bottom: 7px;
+  height: 38px;
+  min-height: 38px;
 }
 
 .code-block-item.hat-block::before {
@@ -3210,13 +3214,17 @@ body.resizing {
   border: none;
   background-color: transparent !important;
   box-shadow: none;
+  min-height: auto;
+  height: auto;
+  pointer-events: none !important;
+  z-index: 5;
 }
 
 .code-block-item.c-block .c-block-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px 6px 16px;
+  padding: 5px 12px 5px 16px;
   background-color: var(--block-bg, #059669);
   color: #ffffff;
   border: 2px solid #0f172a;
@@ -3229,17 +3237,20 @@ body.resizing {
   min-width: 140px;
   max-width: 100%;
   position: relative;
-  min-height: 32px;
-  z-index: 2;
+  min-height: 34px;
+  height: 34px;
+  box-sizing: border-box;
+  z-index: 6;
   white-space: nowrap;
+  pointer-events: auto !important;
 }
 
-/* Inner tab inside loop mouth */
+/* Inner tab inside loop mouth (indented at 30px to match child top notch socket) */
 .code-block-item.c-block .c-block-header::after {
   content: '';
   position: absolute;
   bottom: -6px;
-  left: 32px;
+  left: 30px;
   width: 16px;
   height: 5px;
   background-color: var(--block-bg, #059669);
@@ -3253,13 +3264,14 @@ body.resizing {
 
 .code-block-item.c-block .c-block-body {
   width: 100%;
-  min-height: 16px;
+  min-height: 24px;
   background-color: transparent;
   position: relative;
   box-sizing: border-box;
   margin-top: -2px;
   margin-bottom: -2px;
-  z-index: 1;
+  z-index: 4;
+  pointer-events: none !important;
 }
 
 .code-blocks-workspace .code-block-item.c-block .c-block-body {
@@ -3279,20 +3291,24 @@ body.resizing {
   box-shadow: inset 1px 0 0px rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
   z-index: 5;
+  pointer-events: auto !important;
 }
 
 .code-block-item.c-block .c-block-footer {
   width: 90px;
   height: 14px;
+  min-height: 14px;
   background-color: var(--block-bg, #059669);
   border: 2px solid #0f172a;
   border-radius: 0 4px 4px 4px;
   position: relative;
+  box-sizing: border-box;
   box-shadow: 
     inset 1px 1px 0px rgba(255, 255, 255, 0.3),
     inset -1px -1px 0px rgba(0, 0, 0, 0.3),
     2px 2px 0px #000000;
-  z-index: 2;
+  z-index: 6;
+  pointer-events: auto !important;
 }
 
 /* 5b. DUAL-MOUTH E-BLOCKS (if ... else) */
@@ -3304,13 +3320,17 @@ body.resizing {
   border: none;
   background-color: transparent !important;
   box-shadow: none;
+  min-height: auto;
+  height: auto;
+  pointer-events: none !important;
+  z-index: 5;
 }
 
 .code-block-item.e-block .e-block-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px 6px 16px;
+  padding: 5px 12px 5px 16px;
   background-color: var(--block-bg, #059669);
   color: #ffffff;
   border: 2px solid #0f172a;
@@ -3323,9 +3343,12 @@ body.resizing {
   min-width: 140px;
   max-width: 100%;
   position: relative;
-  min-height: 32px;
-  z-index: 3;
+  min-height: 34px;
+  height: 34px;
+  box-sizing: border-box;
+  z-index: 6;
   white-space: nowrap;
+  pointer-events: auto !important;
 }
 
 .code-block-item.e-block .e-block-header::after,
@@ -3333,7 +3356,7 @@ body.resizing {
   content: '';
   position: absolute;
   bottom: -6px;
-  left: 32px;
+  left: 30px;
   width: 16px;
   height: 5px;
   background-color: var(--block-bg, #059669);
@@ -3348,13 +3371,14 @@ body.resizing {
 .code-block-item.e-block .e-block-body-if,
 .code-block-item.e-block .e-block-body-else {
   width: 100%;
-  min-height: 16px;
+  min-height: 24px;
   background-color: transparent;
   position: relative;
   box-sizing: border-box;
   margin-top: -2px;
   margin-bottom: -2px;
-  z-index: 1;
+  z-index: 4;
+  pointer-events: none !important;
 }
 
 .code-blocks-workspace .code-block-item.e-block .e-block-body-if,
@@ -3376,6 +3400,7 @@ body.resizing {
   box-shadow: inset 1px 0 0px rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
   z-index: 5;
+  pointer-events: auto !important;
 }
 
 .code-block-item.e-block .e-block-divider {
@@ -3390,28 +3415,34 @@ body.resizing {
   min-width: 100px;
   position: relative;
   min-height: 26px;
+  height: 26px;
+  box-sizing: border-box;
   font-size: 0.72rem;
   font-weight: 700;
   box-shadow: 
     inset 1px 1px 0px rgba(255, 255, 255, 0.3),
     inset -1px -1px 0px rgba(0, 0, 0, 0.3),
     2px 2px 0px #000000;
-  z-index: 2;
+  z-index: 6;
   white-space: nowrap;
+  pointer-events: auto !important;
 }
 
 .code-block-item.e-block .e-block-footer {
   width: 90px;
   height: 14px;
+  min-height: 14px;
   background-color: var(--block-bg, #059669);
   border: 2px solid #0f172a;
   border-radius: 0 4px 4px 4px;
   position: relative;
+  box-sizing: border-box;
   box-shadow: 
     inset 1px 1px 0px rgba(255, 255, 255, 0.3),
     inset -1px -1px 0px rgba(0, 0, 0, 0.3),
     2px 2px 0px #000000;
-  z-index: 3;
+  z-index: 6;
+  pointer-events: auto !important;
 }
 
 /* 6. INPUT CHIPS & DROPDOWNS */
@@ -3518,7 +3549,8 @@ body.resizing {
   background-color: var(--block-bg, #0284c7) !important;
   position: relative !important;
   z-index: 2 !important;
-  cursor: default !important;
+  cursor: grab !important;
+  user-select: none !important;
   transform: none !important;
 }
 
@@ -3789,10 +3821,10 @@ body.resizing {
   position: absolute;
   top: 0;
   left: 0;
-  width: 0;
-  height: 0;
-  overflow: visible;
+  width: 100%;
+  height: 100%;
   pointer-events: none; /* Empty canvas receives pan mouse events */
+  will-change: transform;
 }
 
 .code-blocks-workspace .code-block-item {

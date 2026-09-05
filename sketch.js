@@ -4036,23 +4036,62 @@ const AppModeController = {
   },
 
   getBlockElement(blockId) {
+    if (!blockId) return null;
+    const workspace = document.getElementById("code-workspace-blocks");
+    if (workspace) {
+      const el = workspace.querySelector(`.code-block-item[data-block-id="${blockId}"]`);
+      if (el) return el;
+    }
     return document.querySelector(`.code-block-item[data-block-id="${blockId}"]`);
+  },
+
+  getBranchHeight(startBlockId, map) {
+    if (!startBlockId || !map.has(startBlockId)) return 24;
+    let totalH = 0;
+    let currId = startBlockId;
+    const visited = new Set();
+    while (currId && map.has(currId) && !visited.has(currId)) {
+      visited.add(currId);
+      const b = map.get(currId);
+      const bH = this.getFullBlockHeight(b, map);
+      totalH += (totalH === 0 ? bH : (bH - 2));
+      currId = b.nextId;
+    }
+    return Math.max(24, totalH);
+  },
+
+  getFullBlockHeight(block, map) {
+    if (!block) return 34;
+    if (block.c_block) {
+      const headerH = 34;
+      const bodyH = this.getBranchHeight(block.childId, map || new Map());
+      const footerH = 14;
+      return headerH + bodyH + footerH - 4;
+    }
+    if (block.e_block) {
+      const headerH = 34;
+      const ifBodyH = this.getBranchHeight(block.childId_if, map || new Map());
+      const dividerH = 26;
+      const elseBodyH = this.getBranchHeight(block.childId_else, map || new Map());
+      const footerH = 14;
+      return headerH + ifBodyH + dividerH + elseBodyH + footerH - 6;
+    }
+    if (block.hat) return 38;
+    return 34;
   },
 
   getBlockDimensions(block) {
     if (!block) return { w: 140, h: 34 };
+    const scripts = this.getCurrentScripts();
+    const map = new Map(scripts.map(b => [b.id, b]));
+    const h = this.getFullBlockHeight(block, map);
     const el = block.id ? this.getBlockElement(block.id) : null;
-    if (el && el.offsetWidth > 0 && el.offsetHeight > 0) {
-      return { w: el.offsetWidth, h: el.offsetHeight };
+    if (el && el.offsetWidth > 0) {
+      return { w: el.offsetWidth, h: h };
     }
-    // Estimated dimensions based on name length and block type
     const len = (block.name || "").length;
     const estW = Math.max(140, Math.min(270, len * 9 + 40));
-    let estH = 34;
-    if (block.e_block) estH = 114;
-    else if (block.c_block) estH = 72;
-    else if (block.hat) estH = 38;
-    return { w: estW, h: estH };
+    return { w: estW, h: h };
   },
 
   // Returns all blocks in the connected downstream stack starting from rootBlock
@@ -4062,44 +4101,47 @@ const AppModeController = {
     const stack = [];
     const visited = new Set();
 
-    let curr = rootBlock;
-    while (curr && !visited.has(curr.id)) {
-      visited.add(curr.id);
-      stack.push(curr);
+    const collect = (node) => {
+      if (!node || visited.has(node.id)) return;
+      visited.add(node.id);
+      stack.push(node);
 
-      if (curr.nextId && map.has(curr.nextId)) {
-        curr = map.get(curr.nextId);
-      } else {
-        // Fallback: detect direct geometric adjacency (snap connection)
-        const currDims = this.getBlockDimensions(curr);
-        const child = scripts.find(b => {
-          if (visited.has(b.id)) return false;
-          const matchX = Math.abs(b.x - curr.x) <= 6;
-          const matchY = Math.abs(b.y - (curr.y + currDims.h - 2)) <= 6;
-          return matchX && matchY;
-        });
-        if (child) {
-          curr.nextId = child.id;
-          child.prevId = curr.id;
-          curr = child;
-        } else {
-          curr = null;
+      // Collect inside C-block body
+      if (node.c_block && node.childId && map.has(node.childId)) {
+        collect(map.get(node.childId));
+      }
+
+      // Collect inside E-block branches
+      if (node.e_block) {
+        if (node.childId_if && map.has(node.childId_if)) {
+          collect(map.get(node.childId_if));
+        }
+        if (node.childId_else && map.has(node.childId_else)) {
+          collect(map.get(node.childId_else));
         }
       }
-    }
+
+      // Collect downstream connected next block
+      if (node.nextId && map.has(node.nextId)) {
+        collect(map.get(node.nextId));
+      }
+    };
+
+    collect(rootBlock);
     return stack;
   },
 
   // Find nearest magnetic snap target near (draggedX, draggedY)
-  findSnapTarget(draggedBlock, draggedX, draggedY, excludeIds = new Set()) {
+  findSnapTarget(draggedBlock, draggedX, draggedY, excludeIds = new Set(), ignoreTargetId = null) {
     const scripts = this.getCurrentScripts();
     if (!scripts || scripts.length === 0) return null;
 
+    const map = new Map(scripts.map(b => [b.id, b]));
     const draggedDims = this.getBlockDimensions(draggedBlock);
     let bestTarget = null;
     let minDistance = 999999;
 
-    const snapThresholdX = 48;
+    const snapThresholdX = 65;
     const snapThresholdY = 32;
 
     for (let i = 0; i < scripts.length; i++) {
@@ -4107,33 +4149,123 @@ const AppModeController = {
       if (excludeIds.has(target.id)) continue;
       if (draggedBlock.id && target.id === draggedBlock.id) continue;
 
-      const targetDims = this.getBlockDimensions(target);
+      const fullTargetH = this.getFullBlockHeight(target, map);
 
-      // 1. SNAP UNDERNEATH TARGET BLOCK
-      if (!target.cap && !draggedBlock.hat && !draggedBlock.isBoolean) {
-        const snapX = target.x;
-        const snapY = target.y + targetDims.h - 2;
+      // If we just detached from this target, ignore snapping back to it while pulling away
+      if (ignoreTargetId && target.id === ignoreTargetId) {
+        if (Math.hypot(draggedX - target.x, draggedY - target.y) < 55) {
+          continue;
+        }
+      }
 
-        const dx = Math.abs(draggedX - snapX);
-        const dy = Math.abs(draggedY - snapY);
+      // 1. SNAP INSIDE C-BLOCK MOUTH (Takes priority when dragged over mouth area)
+      if (target.c_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
+        if (!target.childId && draggedY < target.y + fullTargetH - 14) {
+          const snapX = target.x + 16;
+          const snapY = target.y + 32;
 
-        if (dx <= snapThresholdX && dy <= snapThresholdY) {
-          const dist = dx + dy;
-          if (dist < minDistance) {
-            minDistance = dist;
-            bestTarget = {
-              target: target,
-              position: "bottom",
-              snapX: snapX,
-              snapY: snapY,
-              snapW: draggedDims.w,
-              snapH: draggedDims.h
-            };
+          const dx = Math.abs(draggedX - snapX);
+          const dy = Math.abs(draggedY - snapY);
+
+          if (dx <= 80 && dy <= 45) {
+            const dist = dx + dy;
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestTarget = {
+                target: target,
+                position: "inside",
+                snapX: snapX,
+                snapY: snapY,
+                snapW: draggedDims.w,
+                snapH: draggedDims.h
+              };
+            }
           }
         }
       }
 
-      // 2. SNAP ABOVE TARGET BLOCK
+      // 2. SNAP INSIDE DUAL-MOUTH E-BLOCK (IF vs ELSE MOUTHS)
+      if (target.e_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
+        const ifBodyH = this.getBranchHeight(target.childId_if, map);
+        
+        // Top If-branch mouth
+        if (!target.childId_if && draggedY < target.y + 30 + ifBodyH) {
+          const snapIfX = target.x + 16;
+          const snapIfY = target.y + 32;
+          const dxIf = Math.abs(draggedX - snapIfX);
+          const dyIf = Math.abs(draggedY - snapIfY);
+
+          if (dxIf <= 80 && dyIf <= 45) {
+            const dist = dxIf + dyIf;
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestTarget = {
+                target: target,
+                position: "inside_if",
+                snapX: snapIfX,
+                snapY: snapIfY,
+                snapW: draggedDims.w,
+                snapH: draggedDims.h
+              };
+            }
+          }
+        }
+
+        // Bottom Else-branch mouth
+        if (!target.childId_else && draggedY >= target.y + 30 + ifBodyH && draggedY < target.y + fullTargetH - 14) {
+          const snapElseX = target.x + 16;
+          const snapElseY = target.y + 54 + ifBodyH;
+          const dxElse = Math.abs(draggedX - snapElseX);
+          const dyElse = Math.abs(draggedY - snapElseY);
+
+          if (dxElse <= 80 && dyElse <= 45) {
+            const dist = dxElse + dyElse;
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestTarget = {
+                target: target,
+                position: "inside_else",
+                snapX: snapElseX,
+                snapY: snapElseY,
+                snapW: draggedDims.w,
+                snapH: draggedDims.h
+              };
+            }
+          }
+        }
+      }
+
+      // 3. SNAP UNDERNEATH TARGET BLOCK (At bottom of regular block or bottom footer of C/E-block)
+      if (!target.cap && !draggedBlock.hat && !draggedBlock.isBoolean) {
+        // For C-block or E-block, bottom snap is only active near the actual footer bar
+        const isMouthContainer = target.c_block || target.e_block;
+        const isNearFooterOrRegular = !isMouthContainer || (draggedY >= target.y + fullTargetH - 26);
+
+        if (isNearFooterOrRegular) {
+          const snapX = target.x;
+          const snapY = target.y + fullTargetH - 2;
+
+          const dx = Math.abs(draggedX - snapX);
+          const dy = Math.abs(draggedY - snapY);
+
+          if (dx <= snapThresholdX && dy <= snapThresholdY) {
+            const dist = dx + dy;
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestTarget = {
+                target: target,
+                position: "bottom",
+                snapX: snapX,
+                snapY: snapY,
+                snapW: draggedDims.w,
+                snapH: draggedDims.h
+              };
+            }
+          }
+        }
+      }
+
+      // 4. SNAP ABOVE TARGET BLOCK
       if (!target.hat && !draggedBlock.cap && !draggedBlock.isBoolean) {
         const snapX = target.x;
         const snapY = target.y - draggedDims.h + 2;
@@ -4157,75 +4289,6 @@ const AppModeController = {
         }
       }
 
-      // 3. SNAP INSIDE C-BLOCK MOUTH
-      if (target.c_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
-        const snapX = target.x + 14;
-        const snapY = target.y + 32;
-
-        const dx = Math.abs(draggedX - snapX);
-        const dy = Math.abs(draggedY - snapY);
-
-        if (dx <= snapThresholdX && dy <= snapThresholdY) {
-          const dist = dx + dy;
-          if (dist < minDistance) {
-            minDistance = dist;
-            bestTarget = {
-              target: target,
-              position: "inside",
-              snapX: snapX,
-              snapY: snapY,
-              snapW: draggedDims.w,
-              snapH: draggedDims.h
-            };
-          }
-        }
-      }
-
-      // 4. SNAP INSIDE DUAL-MOUTH E-BLOCK (IF vs ELSE MOUTHS)
-      if (target.e_block && !draggedBlock.hat && !draggedBlock.isBoolean) {
-        // Top If-branch mouth
-        const snapIfX = target.x + 14;
-        const snapIfY = target.y + 32;
-        const dxIf = Math.abs(draggedX - snapIfX);
-        const dyIf = Math.abs(draggedY - snapIfY);
-
-        if (dxIf <= snapThresholdX && dyIf <= snapThresholdY) {
-          const dist = dxIf + dyIf;
-          if (dist < minDistance) {
-            minDistance = dist;
-            bestTarget = {
-              target: target,
-              position: "inside_if",
-              snapX: snapIfX,
-              snapY: snapIfY,
-              snapW: draggedDims.w,
-              snapH: draggedDims.h
-            };
-          }
-        }
-
-        // Bottom Else-branch mouth
-        const snapElseX = target.x + 14;
-        const snapElseY = target.y + 70;
-        const dxElse = Math.abs(draggedX - snapElseX);
-        const dyElse = Math.abs(draggedY - snapElseY);
-
-        if (dxElse <= snapThresholdX && dyElse <= snapThresholdY) {
-          const dist = dxElse + dyElse;
-          if (dist < minDistance) {
-            minDistance = dist;
-            bestTarget = {
-              target: target,
-              position: "inside_else",
-              snapX: snapElseX,
-              snapY: snapElseY,
-              snapW: draggedDims.w,
-              snapH: draggedDims.h
-            };
-          }
-        }
-      }
-
       // 5. SNAP INTO CONDITION SOCKET (For if_then, if_else, logical blocks when dragging boolean blocks)
       const isDraggedBool = !!(draggedBlock.isBoolean || draggedBlock.boolean || draggedBlock.color === "#0284c7" || (draggedBlock.id && draggedBlock.id.startsWith("op_") && (draggedBlock.isBoolean || draggedBlock.opType)));
       if (isDraggedBool) {
@@ -4235,7 +4298,7 @@ const AppModeController = {
           const dxCond = Math.abs(draggedX - snapCondX);
           const dyCond = Math.abs(draggedY - snapCondY);
 
-          if (dxCond <= 130 && dyCond <= 45) {
+          if (dxCond <= 75 && dyCond <= 32) {
             const dist = dxCond + dyCond;
             if (dist < minDistance) {
               minDistance = dist;
@@ -4256,7 +4319,7 @@ const AppModeController = {
             const dxCond = Math.abs(draggedX - snapCondX);
             const dyCond = Math.abs(draggedY - snapCondY);
 
-            if (dxCond <= 80 && dyCond <= 38) {
+            if (dxCond <= 60 && dyCond <= 32) {
               const dist = dxCond + dyCond;
               if (dist < minDistance) {
                 minDistance = dist;
@@ -4277,7 +4340,7 @@ const AppModeController = {
             const dxLeft = Math.abs(draggedX - snapLeftX);
             const dyLeft = Math.abs(draggedY - snapLeftY);
 
-            if (dxLeft <= 50 && dyLeft <= 38) {
+            if (dxLeft <= 45 && dyLeft <= 32) {
               const dist = dxLeft + dyLeft;
               if (dist < minDistance) {
                 minDistance = dist;
@@ -4298,7 +4361,7 @@ const AppModeController = {
             const dxRight = Math.abs(draggedX - snapRightX);
             const dyRight = Math.abs(draggedY - snapRightY);
 
-            if (dxRight <= 50 && dyRight <= 38) {
+            if (dxRight <= 45 && dyRight <= 32) {
               const dist = dxRight + dyRight;
               if (dist < minDistance) {
                 minDistance = dist;
@@ -4343,8 +4406,9 @@ const AppModeController = {
     if (indicator) {
       indicator.style.left = `${snapTarget.snapX}px`;
       indicator.style.top = `${snapTarget.snapY}px`;
-      indicator.style.width = `${Math.max(100, snapTarget.snapW)}px`;
-      indicator.style.height = `${Math.max(30, snapTarget.snapH)}px`;
+      const isInside = snapTarget.position === "inside" || snapTarget.position === "inside_if" || snapTarget.position === "inside_else";
+      indicator.style.width = isInside ? `${Math.max(110, snapTarget.snapW - 20)}px` : `${Math.max(100, snapTarget.snapW)}px`;
+      indicator.style.height = isInside ? `26px` : `${Math.max(30, snapTarget.snapH)}px`;
       indicator.style.display = "block";
     }
 
@@ -4352,7 +4416,13 @@ const AppModeController = {
       const targetEl = this.getBlockElement(snapTarget.target.id);
       if (targetEl) {
         if (snapTarget.position === "condition") {
-          const slotEl = targetEl.querySelector(".code-condition-slot");
+          const slotEl = targetEl.querySelector('.code-condition-slot[data-slot="condition"], .code-condition-slot:not([data-slot])');
+          if (slotEl) slotEl.classList.add("snap-target-highlight");
+        } else if (snapTarget.position === "left_condition") {
+          const slotEl = targetEl.querySelector('.code-condition-slot.left-slot, .code-condition-slot[data-slot="left"]');
+          if (slotEl) slotEl.classList.add("snap-target-highlight");
+        } else if (snapTarget.position === "right_condition") {
+          const slotEl = targetEl.querySelector('.code-condition-slot.right-slot, .code-condition-slot[data-slot="right"]');
           if (slotEl) slotEl.classList.add("snap-target-highlight");
         } else {
           targetEl.classList.add("snap-target-highlight");
@@ -4518,6 +4588,55 @@ const AppModeController = {
         nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
 
         if (isWorkspace) {
+          // Drag nested condition block OUT of socket
+          nestedEl.addEventListener("mousedown", (e) => {
+            if (e.target.closest(".nested-block-eject-btn")) return;
+            e.stopPropagation();
+            e.preventDefault();
+
+            const condToExtract = JSON.parse(JSON.stringify(block.conditionBlock));
+            delete block.conditionBlock;
+
+            const dropZone = document.getElementById("code-drop-zone");
+            const rect = dropZone ? dropZone.getBoundingClientRect() : { left: 0, top: 0 };
+            const worldX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
+            const worldY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
+
+            condToExtract.id = condToExtract.id || ("block_" + Date.now() + "_" + Math.floor(Math.random() * 10000));
+            condToExtract.x = worldX - 20;
+            condToExtract.y = worldY - 10;
+            condToExtract.nextId = null;
+            condToExtract.prevId = null;
+            condToExtract.isBoolean = true;
+
+            const scripts = this.getCurrentScripts();
+            scripts.push(condToExtract);
+            this.renderScriptsForActiveTarget();
+
+            const extractedEl = this.getBlockElement(condToExtract.id);
+            if (extractedEl) {
+              extractedEl.classList.add("dragging");
+              this.draggedPlacedBlock = {
+                block: condToExtract,
+                elt: extractedEl,
+                stack: [condToExtract],
+                stackItems: [{
+                  block: condToExtract,
+                  elt: extractedEl,
+                  initialX: condToExtract.x,
+                  initialY: condToExtract.y
+                }],
+                stackIds: new Set([condToExtract.id]),
+                mouseStartX: e.clientX,
+                mouseStartY: e.clientY,
+                initialX: condToExtract.x,
+                initialY: condToExtract.y,
+                detachedFromId: block.id
+              };
+            }
+            SoundEngine.playChiptuneTone(740, "triangle", 0.04, 0.1);
+          });
+
           const ejectBtn = document.createElement("button");
           ejectBtn.className = "nested-block-eject-btn";
           ejectBtn.innerHTML = "✕";
@@ -4546,6 +4665,54 @@ const AppModeController = {
         nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
 
         if (isWorkspace) {
+          nestedEl.addEventListener("mousedown", (e) => {
+            if (e.target.closest(".nested-block-eject-btn")) return;
+            e.stopPropagation();
+            e.preventDefault();
+
+            const condToExtract = JSON.parse(JSON.stringify(block.leftConditionBlock));
+            delete block.leftConditionBlock;
+
+            const dropZone = document.getElementById("code-drop-zone");
+            const rect = dropZone ? dropZone.getBoundingClientRect() : { left: 0, top: 0 };
+            const worldX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
+            const worldY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
+
+            condToExtract.id = condToExtract.id || ("block_" + Date.now() + "_" + Math.floor(Math.random() * 10000));
+            condToExtract.x = worldX - 20;
+            condToExtract.y = worldY - 10;
+            condToExtract.nextId = null;
+            condToExtract.prevId = null;
+            condToExtract.isBoolean = true;
+
+            const scripts = this.getCurrentScripts();
+            scripts.push(condToExtract);
+            this.renderScriptsForActiveTarget();
+
+            const extractedEl = this.getBlockElement(condToExtract.id);
+            if (extractedEl) {
+              extractedEl.classList.add("dragging");
+              this.draggedPlacedBlock = {
+                block: condToExtract,
+                elt: extractedEl,
+                stack: [condToExtract],
+                stackItems: [{
+                  block: condToExtract,
+                  elt: extractedEl,
+                  initialX: condToExtract.x,
+                  initialY: condToExtract.y
+                }],
+                stackIds: new Set([condToExtract.id]),
+                mouseStartX: e.clientX,
+                mouseStartY: e.clientY,
+                initialX: condToExtract.x,
+                initialY: condToExtract.y,
+                detachedFromId: block.id
+              };
+            }
+            SoundEngine.playChiptuneTone(740, "triangle", 0.04, 0.1);
+          });
+
           const ejectBtn = document.createElement("button");
           ejectBtn.className = "nested-block-eject-btn";
           ejectBtn.innerHTML = "✕";
@@ -4574,6 +4741,54 @@ const AppModeController = {
         nestedEl.querySelectorAll(".code-block-delete-btn").forEach(b => b.remove());
 
         if (isWorkspace) {
+          nestedEl.addEventListener("mousedown", (e) => {
+            if (e.target.closest(".nested-block-eject-btn")) return;
+            e.stopPropagation();
+            e.preventDefault();
+
+            const condToExtract = JSON.parse(JSON.stringify(block.rightConditionBlock));
+            delete block.rightConditionBlock;
+
+            const dropZone = document.getElementById("code-drop-zone");
+            const rect = dropZone ? dropZone.getBoundingClientRect() : { left: 0, top: 0 };
+            const worldX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
+            const worldY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
+
+            condToExtract.id = condToExtract.id || ("block_" + Date.now() + "_" + Math.floor(Math.random() * 10000));
+            condToExtract.x = worldX - 20;
+            condToExtract.y = worldY - 10;
+            condToExtract.nextId = null;
+            condToExtract.prevId = null;
+            condToExtract.isBoolean = true;
+
+            const scripts = this.getCurrentScripts();
+            scripts.push(condToExtract);
+            this.renderScriptsForActiveTarget();
+
+            const extractedEl = this.getBlockElement(condToExtract.id);
+            if (extractedEl) {
+              extractedEl.classList.add("dragging");
+              this.draggedPlacedBlock = {
+                block: condToExtract,
+                elt: extractedEl,
+                stack: [condToExtract],
+                stackItems: [{
+                  block: condToExtract,
+                  elt: extractedEl,
+                  initialX: condToExtract.x,
+                  initialY: condToExtract.y
+                }],
+                stackIds: new Set([condToExtract.id]),
+                mouseStartX: e.clientX,
+                mouseStartY: e.clientY,
+                initialX: condToExtract.x,
+                initialY: condToExtract.y,
+                detachedFromId: block.id
+              };
+            }
+            SoundEngine.playChiptuneTone(740, "triangle", 0.04, 0.1);
+          });
+
           const ejectBtn = document.createElement("button");
           ejectBtn.className = "nested-block-eject-btn";
           ejectBtn.innerHTML = "✕";
@@ -4707,9 +4922,16 @@ const AppModeController = {
             }
 
             const rect = dropZone.getBoundingClientRect();
-            const worldX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
-            const worldY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
-            this.addBlockToWorkspace(blockTemplate, worldX, worldY);
+            const worldCursorX = Math.round((e.clientX - rect.left - this.panX) / this.zoom);
+            const worldCursorY = Math.round((e.clientY - rect.top - this.panY) / this.zoom);
+            const bDims = this.getBlockDimensions(blockTemplate);
+            const worldTopLeftX = worldCursorX - Math.round(bDims.w / 2);
+            const worldTopLeftY = worldCursorY - Math.round(bDims.h / 2);
+
+            let snap = this.findSnapTarget(blockTemplate, worldTopLeftX, worldTopLeftY, new Set());
+            if (!snap) snap = this.findSnapTarget(blockTemplate, worldCursorX, worldCursorY, new Set());
+
+            this.addBlockToWorkspace(blockTemplate, snap ? snap.snapX : worldTopLeftX, snap ? snap.snapY : worldTopLeftY, snap);
           }
         } catch (err) {}
       });
@@ -4719,50 +4941,108 @@ const AppModeController = {
     window.addEventListener("mousemove", (e) => {
       if (this.isPanning) {
         this.panX = e.clientX - this.panStartX;
-        this.panY = e.clientY - this.panY;
+        this.panY = e.clientY - this.panStartY;
         this.updateWorkspaceTransform();
       } else if (this.draggedPlacedBlock) {
-        const dx = (e.clientX - this.draggedPlacedBlock.mouseStartX) / this.zoom;
-        const dy = (e.clientY - this.draggedPlacedBlock.mouseStartY) / this.zoom;
+        const dp = this.draggedPlacedBlock;
+        const dx = (e.clientX - dp.mouseStartX) / this.zoom;
+        const dy = (e.clientY - dp.mouseStartY) / this.zoom;
+        const moveDistSq = dx * dx + dy * dy;
 
-        const stackItems = this.draggedPlacedBlock.stackItems;
-        const rootBlock = this.draggedPlacedBlock.block;
+        // Disconnect only after moving past drag threshold (4px)
+        if (moveDistSq >= 16 && !dp.hasDisconnected) {
+          dp.hasDisconnected = true;
+          const block = dp.block;
+          const scripts = this.getCurrentScripts();
+          const isExtractSingle = dp.isExtractSingle;
+          let detachedFromId = null;
 
-        for (let i = 0; i < stackItems.length; i++) {
-          const item = stackItems[i];
-          item.block.x = Math.round(item.initialX + dx);
-          item.block.y = Math.round(item.initialY + dy);
-          if (item.elt) {
-            item.elt.style.left = `${item.block.x}px`;
-            item.elt.style.top = `${item.block.y}px`;
+          // Disconnect from upstream parent
+          if (block.prevId) {
+            detachedFromId = block.prevId;
+            const parent = scripts.find(b => b.id === block.prevId);
+            if (parent && parent.nextId === block.id) {
+              parent.nextId = isExtractSingle ? (block.nextId || null) : null;
+            }
+            block.prevId = null;
+          }
+          if (block.parentCBlockId) {
+            detachedFromId = block.parentCBlockId;
+            const parentC = scripts.find(b => b.id === block.parentCBlockId);
+            if (parentC && parentC.childId === block.id) {
+              parentC.childId = isExtractSingle ? (block.nextId || null) : null;
+            }
+            block.parentCBlockId = null;
+          }
+          if (block.parentEBlockId) {
+            detachedFromId = block.parentEBlockId;
+            const parentE = scripts.find(b => b.id === block.parentEBlockId);
+            if (parentE) {
+              if (parentE.childId_if === block.id) parentE.childId_if = isExtractSingle ? (block.nextId || null) : null;
+              if (parentE.childId_else === block.id) parentE.childId_else = isExtractSingle ? (block.nextId || null) : null;
+            }
+            block.parentEBlockId = null;
+            block.parentEBranch = null;
+          }
+
+          // If extracting single block, bridge downstream block to old parent
+          if (isExtractSingle && block.nextId) {
+            const nextB = scripts.find(b => b.id === block.nextId);
+            if (nextB) {
+              nextB.prevId = detachedFromId;
+            }
+            block.nextId = null;
+          }
+
+          dp.detachedFromId = detachedFromId;
+
+          // Mark dragging visually
+          for (let i = 0; i < dp.stackItems.length; i++) {
+            if (dp.stackItems[i].elt) dp.stackItems[i].elt.classList.add("dragging");
+          }
+
+          if (detachedFromId) {
+            this.layoutConnectedStacks();
           }
         }
 
-        const snapTarget = this.findSnapTarget(
-          rootBlock,
-          rootBlock.x,
-          rootBlock.y,
-          this.draggedPlacedBlock.stackIds
-        );
-        this.activeSnapTarget = snapTarget;
-        this.showSnapIndicator(snapTarget);
+        if (dp.hasDisconnected) {
+          const stackItems = dp.stackItems;
+          const rootBlock = dp.block;
 
-        const dropZoneEl = document.getElementById("code-drop-zone");
-        if (dropZoneEl) {
-          const rect = dropZoneEl.getBoundingClientRect();
-          const isOutside = (
-            e.clientX < rect.left ||
-            e.clientX > rect.right ||
-            e.clientY < rect.top ||
-            e.clientY > rect.bottom
-          );
-          if (isOutside) {
-            for (let i = 0; i < stackItems.length; i++) {
-              if (stackItems[i].elt) stackItems[i].elt.classList.add("delete-candidate");
+          for (let i = 0; i < stackItems.length; i++) {
+            const item = stackItems[i];
+            item.block.x = Math.round(item.initialX + dx);
+            item.block.y = Math.round(item.initialY + dy);
+            if (item.elt) {
+              item.elt.style.left = `${item.block.x}px`;
+              item.elt.style.top = `${item.block.y}px`;
             }
-          } else {
+          }
+
+          const snapTarget = this.findSnapTarget(
+            rootBlock,
+            rootBlock.x,
+            rootBlock.y,
+            dp.stackIds,
+            dp.detachedFromId
+          );
+          this.activeSnapTarget = snapTarget;
+          this.showSnapIndicator(snapTarget);
+
+          const dropZoneEl = document.getElementById("code-drop-zone");
+          if (dropZoneEl) {
+            const rect = dropZoneEl.getBoundingClientRect();
+            const isOutside = (
+              e.clientX < rect.left ||
+              e.clientX > rect.right ||
+              e.clientY < rect.top ||
+              e.clientY > rect.bottom
+            );
             for (let i = 0; i < stackItems.length; i++) {
-              if (stackItems[i].elt) stackItems[i].elt.classList.remove("delete-candidate");
+              if (stackItems[i].elt) {
+                stackItems[i].elt.classList.toggle("delete-candidate", isOutside);
+              }
             }
           }
         }
@@ -4775,6 +5055,18 @@ const AppModeController = {
         if (dropZone) dropZone.classList.remove("panning");
       }
       if (this.draggedPlacedBlock) {
+        const dp = this.draggedPlacedBlock;
+
+        if (!dp.hasDisconnected) {
+          for (let i = 0; i < dp.stackItems.length; i++) {
+            if (dp.stackItems[i].elt) {
+              dp.stackItems[i].elt.classList.remove("dragging", "delete-candidate");
+            }
+          }
+          this.draggedPlacedBlock = null;
+          return;
+        }
+
         const dropZoneEl = document.getElementById("code-drop-zone");
         let isOutside = false;
         if (dropZoneEl) {
@@ -4787,8 +5079,8 @@ const AppModeController = {
           );
         }
 
-        const stackItems = this.draggedPlacedBlock.stackItems;
-        const rootBlock = this.draggedPlacedBlock.block;
+        const stackItems = dp.stackItems;
+        const rootBlock = dp.block;
 
         if (isOutside) {
           const scripts = this.getCurrentScripts();
@@ -4841,16 +5133,40 @@ const AppModeController = {
             lastInStack.nextId = target.id;
             target.prevId = lastInStack.id;
           } else if (snap.position === "inside") {
+            const oldChildId = snap.target.childId;
             snap.target.childId = rootBlock.id;
             rootBlock.parentCBlockId = snap.target.id;
+            if (oldChildId && oldChildId !== rootBlock.id) {
+              const lastInStack = stackItems[stackItems.length - 1].block;
+              lastInStack.nextId = oldChildId;
+              const scripts = this.getCurrentScripts();
+              const oldChild = scripts.find(b => b.id === oldChildId);
+              if (oldChild) oldChild.prevId = lastInStack.id;
+            }
           } else if (snap.position === "inside_if") {
+            const oldChildId = snap.target.childId_if;
             snap.target.childId_if = rootBlock.id;
             rootBlock.parentEBlockId = snap.target.id;
             rootBlock.parentEBranch = "if";
+            if (oldChildId && oldChildId !== rootBlock.id) {
+              const lastInStack = stackItems[stackItems.length - 1].block;
+              lastInStack.nextId = oldChildId;
+              const scripts = this.getCurrentScripts();
+              const oldChild = scripts.find(b => b.id === oldChildId);
+              if (oldChild) oldChild.prevId = lastInStack.id;
+            }
           } else if (snap.position === "inside_else") {
+            const oldChildId = snap.target.childId_else;
             snap.target.childId_else = rootBlock.id;
             rootBlock.parentEBlockId = snap.target.id;
             rootBlock.parentEBranch = "else";
+            if (oldChildId && oldChildId !== rootBlock.id) {
+              const lastInStack = stackItems[stackItems.length - 1].block;
+              lastInStack.nextId = oldChildId;
+              const scripts = this.getCurrentScripts();
+              const oldChild = scripts.find(b => b.id === oldChildId);
+              if (oldChild) oldChild.prevId = lastInStack.id;
+            }
           } else if (snap.position === "condition") {
             const target = snap.target;
             target.conditionBlock = JSON.parse(JSON.stringify(rootBlock));
@@ -4903,6 +5219,7 @@ const AppModeController = {
             }
           }
           SoundEngine.playChiptuneTone(540, "square", 0.04, 0.08);
+          this.renderScriptsForActiveTarget();
         }
 
         this.showSnapIndicator(null);
@@ -5235,9 +5552,17 @@ const AppModeController = {
               moveEv.clientY >= rect.top &&
               moveEv.clientY <= rect.bottom
             ) {
-              const worldX = Math.round((moveEv.clientX - rect.left - this.panX) / this.zoom);
-              const worldY = Math.round((moveEv.clientY - rect.top - this.panY) / this.zoom);
-              const snap = this.findSnapTarget(block, worldX, worldY, new Set());
+              const bDims = this.getBlockDimensions(block);
+              const worldCursorX = Math.round((moveEv.clientX - rect.left - this.panX) / this.zoom);
+              const worldCursorY = Math.round((moveEv.clientY - rect.top - this.panY) / this.zoom);
+
+              const worldTopLeftX = worldCursorX - Math.round(bDims.w / 2);
+              const worldTopLeftY = worldCursorY - Math.round(bDims.h / 2);
+
+              let snap = this.findSnapTarget(block, worldTopLeftX, worldTopLeftY, new Set());
+              if (!snap) {
+                snap = this.findSnapTarget(block, worldCursorX, worldCursorY, new Set());
+              }
               this.activePaletteSnap = snap;
               this.showSnapIndicator(snap);
             } else {
@@ -5273,8 +5598,9 @@ const AppModeController = {
               SoundEngine.playChiptuneTone(880, "triangle", 0.04, 0.15);
               setTimeout(() => SoundEngine.playChiptuneTone(1174, "triangle", 0.06, 0.15), 40);
             } else {
-              const worldX = Math.round((upEv.clientX - rect.left - this.panX) / this.zoom);
-              const worldY = Math.round((upEv.clientY - rect.top - this.panY) / this.zoom);
+              const bDims = this.getBlockDimensions(block);
+              const worldX = Math.round((upEv.clientX - rect.left - this.panX) / this.zoom) - Math.round(bDims.w / 2);
+              const worldY = Math.round((upEv.clientY - rect.top - this.panY) / this.zoom) - Math.round(bDims.h / 2);
               this.addBlockToWorkspace(block, worldX, worldY);
             }
           }
@@ -5374,16 +5700,34 @@ const AppModeController = {
         placedBlock.nextId = target.id;
         target.prevId = placedBlock.id;
       } else if (snapTarget.position === "inside") {
+        const oldChildId = snapTarget.target.childId;
         snapTarget.target.childId = placedBlock.id;
         placedBlock.parentCBlockId = snapTarget.target.id;
+        if (oldChildId && oldChildId !== placedBlock.id) {
+          placedBlock.nextId = oldChildId;
+          const oldChild = scripts.find(b => b.id === oldChildId);
+          if (oldChild) oldChild.prevId = placedBlock.id;
+        }
       } else if (snapTarget.position === "inside_if") {
+        const oldChildId = snapTarget.target.childId_if;
         snapTarget.target.childId_if = placedBlock.id;
         placedBlock.parentEBlockId = snapTarget.target.id;
         placedBlock.parentEBranch = "if";
+        if (oldChildId && oldChildId !== placedBlock.id) {
+          placedBlock.nextId = oldChildId;
+          const oldChild = scripts.find(b => b.id === oldChildId);
+          if (oldChild) oldChild.prevId = placedBlock.id;
+        }
       } else if (snapTarget.position === "inside_else") {
+        const oldChildId = snapTarget.target.childId_else;
         snapTarget.target.childId_else = placedBlock.id;
         placedBlock.parentEBlockId = snapTarget.target.id;
         placedBlock.parentEBranch = "else";
+        if (oldChildId && oldChildId !== placedBlock.id) {
+          placedBlock.nextId = oldChildId;
+          const oldChild = scripts.find(b => b.id === oldChildId);
+          if (oldChild) oldChild.prevId = placedBlock.id;
+        }
       }
     }
 
@@ -5392,6 +5736,52 @@ const AppModeController = {
     if (!snapTarget) {
       SoundEngine.playChiptuneTone(680, "square", 0.05, 0.08);
     }
+  },
+
+  deleteSingleBlock(blockId) {
+    const scripts = this.getCurrentScripts();
+    const idx = scripts.findIndex(b => b.id === blockId);
+    if (idx === -1) return;
+
+    const block = scripts[idx];
+    const prevBlock = block.prevId ? scripts.find(b => b.id === block.prevId) : null;
+    const nextBlock = block.nextId ? scripts.find(b => b.id === block.nextId) : null;
+    const parentC = block.parentCBlockId ? scripts.find(b => b.id === block.parentCBlockId) : null;
+    const parentE = block.parentEBlockId ? scripts.find(b => b.id === block.parentEBlockId) : null;
+
+    // Bridge the parent to the next block (or null)
+    if (prevBlock && prevBlock.nextId === block.id) {
+      prevBlock.nextId = nextBlock ? nextBlock.id : null;
+    }
+    if (parentC && parentC.childId === block.id) {
+      parentC.childId = nextBlock ? nextBlock.id : null;
+    }
+    if (parentE) {
+      if (parentE.childId_if === block.id) {
+        parentE.childId_if = nextBlock ? nextBlock.id : null;
+      }
+      if (parentE.childId_else === block.id) {
+        parentE.childId_else = nextBlock ? nextBlock.id : null;
+      }
+    }
+
+    // Bridge the next block to the parent
+    if (nextBlock) {
+      nextBlock.prevId = prevBlock ? prevBlock.id : null;
+      nextBlock.parentCBlockId = prevBlock ? (prevBlock.parentCBlockId || null) : (parentC ? parentC.id : null);
+      nextBlock.parentEBlockId = prevBlock ? (prevBlock.parentEBlockId || null) : (parentE ? parentE.id : null);
+      nextBlock.parentEBranch = prevBlock ? (prevBlock.parentEBranch || null) : (parentE ? block.parentEBranch : null);
+
+      if (!prevBlock && !parentC && !parentE) {
+        nextBlock.x = block.x;
+        nextBlock.y = block.y;
+      }
+    }
+
+    // Remove ONLY this single block from the scripts array
+    scripts.splice(idx, 1);
+    this.renderScriptsForActiveTarget();
+    SoundEngine.playAction("delete");
   },
 
   renderScriptsForActiveTarget() {
@@ -5416,39 +5806,26 @@ const AppModeController = {
       blockEl.style.left = `${block.x}px`;
       blockEl.style.top = `${block.y}px`;
 
-      // Delete block button
+      // Delete single block button
       const deleteBtn = blockEl.querySelector(".code-block-delete-btn");
       if (deleteBtn) {
         deleteBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          const idx = scripts.findIndex(b => b.id === block.id);
-          if (idx >= 0) {
-            scripts.splice(idx, 1);
-            this.renderScriptsForActiveTarget();
-            SoundEngine.playAction("delete");
-          }
+          this.deleteSingleBlock(block.id);
         });
       }
 
       // Drag to move placed block and its connected stack freely anywhere on the canvas
       blockEl.addEventListener("mousedown", (e) => {
-        if (e.target.closest(".code-block-delete-btn") || e.target.closest(".code-block-input") || e.target.closest(".code-block-select")) {
+        if (e.target.closest(".code-block-delete-btn") || e.target.closest(".code-block-input") || e.target.closest(".code-block-select") || e.target.closest(".nested-block-eject-btn")) {
           return;
         }
         e.stopPropagation();
 
-        if (block.prevId) {
-          const parent = scripts.find(b => b.id === block.prevId);
-          if (parent) {
-            parent.nextId = null;
-          }
-          block.prevId = null;
-        }
-
-        const stack = this.getConnectedStack(block);
+        const isExtractSingle = e.altKey || e.shiftKey;
+        const stack = isExtractSingle ? [block] : this.getConnectedStack(block);
         const stackItems = stack.map(b => {
           const el = this.getBlockElement(b.id);
-          if (el) el.classList.add("dragging");
           return {
             block: b,
             elt: el,
@@ -5466,7 +5843,10 @@ const AppModeController = {
           mouseStartX: e.clientX,
           mouseStartY: e.clientY,
           initialX: block.x,
-          initialY: block.y
+          initialY: block.y,
+          isExtractSingle: isExtractSingle,
+          hasDisconnected: false,
+          detachedFromId: null
         };
       });
 
@@ -5492,6 +5872,9 @@ const AppModeController = {
       if (!node || visited.has(node.id)) return;
       visited.add(node.id);
 
+      curX = typeof curX === "number" && !isNaN(curX) ? curX : 60;
+      curY = typeof curY === "number" && !isNaN(curY) ? curY : 60;
+
       node.x = curX;
       node.y = curY;
 
@@ -5501,28 +5884,70 @@ const AppModeController = {
         el.style.top = `${node.y}px`;
       }
 
-      const nodeDims = this.getBlockDimensions(node);
-
-      // Layout inner C-block children
-      if (node.c_block && node.childId && map.has(node.childId)) {
-        layoutNode(map.get(node.childId), curX + 16, curY + 32);
-      }
-
-      // Layout inner E-block children
-      if (node.e_block) {
+      if (node.c_block) {
+        const bodyH = this.getBranchHeight(node.childId, map);
+        if (el) {
+          const bodyEl = el.querySelector(".c-block-body");
+          if (bodyEl) {
+            bodyEl.style.height = `${bodyH}px`;
+            bodyEl.style.minHeight = `${bodyH}px`;
+          }
+        }
+        // Layout inner C-block children
+        if (node.childId && map.has(node.childId)) {
+          let childNode = map.get(node.childId);
+          let childY = curY + 32;
+          while (childNode && !visited.has(childNode.id)) {
+            layoutNode(childNode, curX + 16, childY);
+            const childDims = this.getBlockDimensions(childNode);
+            childY += childDims.h - 2;
+            childNode = childNode.nextId ? map.get(childNode.nextId) : null;
+          }
+        }
+      } else if (node.e_block) {
+        const ifBodyH = this.getBranchHeight(node.childId_if, map);
+        const elseBodyH = this.getBranchHeight(node.childId_else, map);
+        if (el) {
+          const bodyIfEl = el.querySelector(".e-block-body-if");
+          if (bodyIfEl) {
+            bodyIfEl.style.height = `${ifBodyH}px`;
+            bodyIfEl.style.minHeight = `${ifBodyH}px`;
+          }
+          const bodyElseEl = el.querySelector(".e-block-body-else");
+          if (bodyElseEl) {
+            bodyElseEl.style.height = `${elseBodyH}px`;
+            bodyElseEl.style.minHeight = `${elseBodyH}px`;
+          }
+        }
+        // Layout inner If-branch children
         if (node.childId_if && map.has(node.childId_if)) {
-          layoutNode(map.get(node.childId_if), curX + 16, curY + 32);
+          let childNode = map.get(node.childId_if);
+          let childY = curY + 32;
+          while (childNode && !visited.has(childNode.id)) {
+            layoutNode(childNode, curX + 16, childY);
+            const childDims = this.getBlockDimensions(childNode);
+            childY += childDims.h - 2;
+            childNode = childNode.nextId ? map.get(childNode.nextId) : null;
+          }
         }
+        // Layout inner Else-branch children
         if (node.childId_else && map.has(node.childId_else)) {
-          layoutNode(map.get(node.childId_else), curX + 16, curY + 70);
+          let childNode = map.get(node.childId_else);
+          let childY = curY + 32 + ifBodyH + 24;
+          while (childNode && !visited.has(childNode.id)) {
+            layoutNode(childNode, curX + 16, childY);
+            const childDims = this.getBlockDimensions(childNode);
+            childY += childDims.h - 2;
+            childNode = childNode.nextId ? map.get(childNode.nextId) : null;
+          }
         }
       }
 
-      // Layout downstream connected next block
+      // Layout downstream connected next block (attached to bottom footer of this block)
       if (node.nextId && map.has(node.nextId)) {
         const nextNode = map.get(node.nextId);
-        // Overlap 2px for seamless puzzle tab lock
-        const nextY = curY + nodeDims.h - 2;
+        const fullH = this.getFullBlockHeight(node, map);
+        const nextY = curY + fullH - 2;
         layoutNode(nextNode, curX, nextY);
       }
     };
