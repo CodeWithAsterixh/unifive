@@ -28,7 +28,7 @@
   <script src="libraries/p5.min.js"></script>
 
   <!-- Application Script -->
-  <script src="sketch.js"></script>
+  <script src="app.js"></script>
   <script src="player.js"></script>
 </head>
 <body class="mode-canvas">
@@ -36,7 +36,7 @@
   <!-- Top Navigation & Control Toolbar -->
   <header class="app-header">
     <div class="header-left">
-      <button id="btn-toggle-sidebar" class="btn btn-pixel btn-header-icon" title="Toggle Controls / Blocks Drawer" aria-label="Controls">
+      <button id="btn-toggle-sidebar" class="btn btn-pixel btn-header-icon mobile-only" title="Toggle Controls / Blocks Drawer" aria-label="Controls">
         <i class="ph ph-sidebar-simple"></i>
       </button>
 
@@ -45,11 +45,9 @@
           <img src="favicon-32x32.png" alt="U5 Logo" style="width: 24px; height: 24px; image-rendering: pixelated;" />
         </div>
       </a>
-    </div>
 
-    <!-- Center View Switcher & Editor Mode Switcher (Desktop Only) -->
-    <div class="header-center desktop-only">
-      <div class="view-switch-group" role="group" aria-label="Perspective View Switcher">
+      <!-- Desktop View Switcher (SIDE / TOP) -->
+      <div class="view-switch-group desktop-only" role="group" aria-label="Perspective View Switcher">
         <button id="btn-view-sidefacing" class="btn btn-pixel btn-view-mode btn-view-sidefacing active" data-view="sidefacing" title="Side-Facing View (V)" aria-label="Side-Facing View">
           <i class="ph ph-panorama"></i>
           <span>SIDE</span>
@@ -60,8 +58,7 @@
         </button>
       </div>
 
-      <div class="header-mode-divider desktop-only"></div>
-
+      <!-- Desktop Editor Mode Switcher (CANVAS / CODE / PLAY) -->
       <div class="mode-switch-group desktop-only" role="group" aria-label="Editor Mode Switcher">
         <button id="btn-mode-canvas" class="btn btn-pixel btn-mode-toggle active" data-mode="canvas" title="Canvas Editor Mode (1)" aria-label="Canvas Editor Mode">
           <i class="ph ph-paint-brush"></i>
@@ -721,7 +718,80 @@
 
     <!-- RIGHT PANE: Canvas Stage -->
     <section class="panel-stage" id="stage-pane">
-      <div id="canvas-container" class="canvas-wrapper"></div>
+      <div id="canvas-container" class="canvas-wrapper">
+        <!-- Mobile / Touch Virtual Gamepad Overlay (PSP / Console Style) -->
+        <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
+          <!-- Top Left: L Shoulder -->
+          <div class="vcontrol-group vcontrol-shoulder-l" id="vcontrol-shoulder-l" data-group="shoulder-l">
+            <button class="vcontrol-shoulder-btn" data-button="l_shoulder" aria-label="L Shoulder">
+              <span>L</span>
+            </button>
+            <div class="vcontrol-resize-handle" data-group="shoulder-l" title="Drag to Resize Scale"></div>
+          </div>
+
+          <!-- Top Right: R Shoulder -->
+          <div class="vcontrol-group vcontrol-shoulder-r" id="vcontrol-shoulder-r" data-group="shoulder-r">
+            <button class="vcontrol-shoulder-btn" data-button="r_shoulder" aria-label="R Shoulder">
+              <span>R</span>
+            </button>
+            <div class="vcontrol-resize-handle" data-group="shoulder-r" title="Drag to Resize Scale"></div>
+          </div>
+
+          <!-- Left: D-Pad -->
+          <div class="vcontrol-group vcontrol-dpad" id="vcontrol-dpad" data-group="dpad">
+            <button class="vcontrol-dpad-btn dpad-up" data-button="dpad_up" data-dir="up" aria-label="D-Pad Up">
+              <i class="ph ph-caret-up-bold"></i>
+            </button>
+            <button class="vcontrol-dpad-btn dpad-left" data-button="dpad_left" data-dir="left" aria-label="D-Pad Left">
+              <i class="ph ph-caret-left-bold"></i>
+            </button>
+            <div class="vcontrol-dpad-center"></div>
+            <button class="vcontrol-dpad-btn dpad-right" data-button="dpad_right" data-dir="right" aria-label="D-Pad Right">
+              <i class="ph ph-caret-right-bold"></i>
+            </button>
+            <button class="vcontrol-dpad-btn dpad-down" data-button="dpad_down" data-dir="down" aria-label="D-Pad Down">
+              <i class="ph ph-caret-down-bold"></i>
+            </button>
+            <div class="vcontrol-resize-handle" data-group="dpad" title="Drag to Resize Scale"></div>
+          </div>
+
+          <!-- Bottom Left: Analog Stick -->
+          <div class="vcontrol-group vcontrol-stick" id="vcontrol-stick" data-group="stick">
+            <div class="vcontrol-stick-base" id="vcontrol-stick-base">
+              <div class="vcontrol-stick-knob" id="vcontrol-stick-knob"></div>
+            </div>
+            <div class="vcontrol-resize-handle" data-group="stick" title="Drag to Resize Scale"></div>
+          </div>
+
+          <!-- Center Bottom: System Buttons (Select / Start) -->
+          <div class="vcontrol-group vcontrol-system" id="vcontrol-system" data-group="system">
+            <button class="vcontrol-system-btn" data-button="select" aria-label="Select">
+              <span>SELECT</span>
+            </button>
+            <button class="vcontrol-system-btn" data-button="start" aria-label="Start">
+              <span>START</span>
+            </button>
+            <div class="vcontrol-resize-handle" data-group="system" title="Drag to Resize Scale"></div>
+          </div>
+
+          <!-- Right: Action Buttons (Triangle, Circle, Cross, Square) -->
+          <div class="vcontrol-group vcontrol-actions" id="vcontrol-actions" data-group="actions">
+            <button class="vcontrol-action-btn action-triangle" data-button="triangle" data-action="triangle" aria-label="Triangle Button">
+              <i class="ph ph-triangle-bold"></i>
+            </button>
+            <button class="vcontrol-action-btn action-circle" data-button="circle" data-action="attack" aria-label="Circle Button">
+              <i class="ph ph-circle-bold"></i>
+            </button>
+            <button class="vcontrol-action-btn action-cross" data-button="cross" data-action="jump" aria-label="Cross Button">
+              <i class="ph ph-x-bold"></i>
+            </button>
+            <button class="vcontrol-action-btn action-square" data-button="square" data-action="square" aria-label="Square Button">
+              <i class="ph ph-square-bold"></i>
+            </button>
+            <div class="vcontrol-resize-handle" data-group="actions" title="Drag to Resize Scale"></div>
+          </div>
+        </div>
+      </div>
 
       <!-- 3-SECTION CODE MODE WORKSPACE (Active when in Code Mode) -->
       <div class="code-stage-layout" id="code-stage-layout" style="display: none;">
@@ -785,9 +855,14 @@
                 <i class="ph ph-monitor-play"></i>
                 <span>STAGE PREVIEW</span>
               </div>
-              <button id="btn-toggle-code-stage" class="btn-icon-pixel btn-toggle-stage-preview" title="Minimize / Expand Stage Preview">
-                <i class="ph ph-caret-up"></i>
-              </button>
+              <div class="code-section-header-actions" style="display: flex; align-items: center; gap: 4px;">
+                <button id="btn-toggle-preview-vcontrols" class="btn-icon-pixel btn-toggle-stage-preview" title="Toggle Virtual Controls Overlay (Editing Preview)">
+                  <i class="ph ph-game-controller"></i>
+                </button>
+                <button id="btn-toggle-code-stage" class="btn-icon-pixel btn-toggle-stage-preview" title="Minimize / Expand Stage Preview">
+                  <i class="ph ph-caret-up"></i>
+                </button>
+              </div>
             </div>
             <div class="code-preview-canvas-box" id="code-preview-canvas-box">
               <!-- #canvas-container is mounted here in Code Mode -->
@@ -888,9 +963,34 @@
         </div>
       </aside>
 
-      <!-- Floating Action Dock (Bottom Center) -->
+      <!-- Snap Drop Target Indicators (Active during dock drag) -->
+      <div class="dock-snap-indicators" id="dock-snap-indicators" style="display: none;">
+        <div class="dock-snap-zone snap-top" data-target="top">
+          <i class="ph ph-arrow-up-bold"></i>
+          <span>TOP CENTER</span>
+        </div>
+        <div class="dock-snap-zone snap-bottom" data-target="bottom">
+          <i class="ph ph-arrow-down-bold"></i>
+          <span>BOTTOM CENTER</span>
+        </div>
+        <div class="dock-snap-zone snap-left" data-target="left">
+          <i class="ph ph-arrow-left-bold"></i>
+          <span>LEFT CENTER</span>
+        </div>
+        <div class="dock-snap-zone snap-right" data-target="right">
+          <i class="ph ph-arrow-right-bold"></i>
+          <span>RIGHT CENTER</span>
+        </div>
+      </div>
+
+      <!-- Floating Action Dock (Snappable to Bottom, Left, Top, Right Center) -->
       <div class="floating-action-dock" id="floating-dock">
         
+        <!-- Dock Drag / Snap Handle -->
+        <div class="dock-drag-handle" id="dock-drag-handle" title="Drag or Click to Snap Dock (Bottom, Left, Top, Right)">
+          <i class="ph ph-dots-six-vertical" id="dock-drag-icon"></i>
+        </div>
+
         <!-- Mouse Tool Mode (Move vs Select) -->
         <div class="dock-segmented-group" role="group" aria-label="Mouse Mode">
           <button id="btn-tool-move" class="btn btn-pixel btn-dock-tool active" data-tool="move" title="Move & Pan World (M)">
@@ -906,6 +1006,11 @@
         <!-- Grid Visibility Toggle -->
         <button id="btn-toggle-grid" class="btn btn-pixel btn-dock-tool active" title="Toggle Grid (G)">
           <i id="grid-icon" class="ph ph-grid-four"></i>
+        </button>
+
+        <!-- Virtual Controls Preview Toggle (for editing) -->
+        <button id="btn-dock-toggle-vcontrols" class="btn btn-pixel btn-dock-tool" title="Toggle Virtual Controls Preview Overlay (V)">
+          <i class="ph ph-game-controller"></i>
         </button>
 
         <!-- Selected Item Layer Actions (Dynamically visible when an item is selected) -->
@@ -943,38 +1048,66 @@
 
       <!-- Player Game Viewport -->
       <div class="player-canvas-container" id="player-canvas-container">
-        <!-- #canvas-container is mounted here in Play Mode -->
+        <!-- #canvas-container (which contains #mobile-virtual-gamepad) is mounted here in Play Mode -->
       </div>
 
-      <!-- Mobile / Touch Virtual Gamepad Overlay -->
-      <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
-        <!-- Left: 4-Way D-Pad -->
-        <div class="virtual-dpad-cluster">
-          <button class="virtual-dpad-btn dpad-up" data-dir="up" aria-label="Up">
-            <i class="ph ph-caret-up-fill"></i>
-          </button>
-          <button class="virtual-dpad-btn dpad-left" data-dir="left" aria-label="Left">
-            <i class="ph ph-caret-left-fill"></i>
-          </button>
-          <div class="virtual-dpad-center"></div>
-          <button class="virtual-dpad-btn dpad-right" data-dir="right" aria-label="Right">
-            <i class="ph ph-caret-right-fill"></i>
-          </button>
-          <button class="virtual-dpad-btn dpad-down" data-dir="down" aria-label="Down">
-            <i class="ph ph-caret-down-fill"></i>
-          </button>
+      <!-- Controls Layout Customizer Overlay (PPSSPP Style) -->
+      <div class="vcontrols-customizer-overlay" id="vcontrols-customizer-overlay" style="display: none;">
+        <!-- Left Customizer Sidebar -->
+        <aside class="vcontrols-customizer-sidebar">
+          <div class="customizer-sidebar-header">
+            <i class="ph ph-game-controller"></i>
+            <span>Controls</span>
+          </div>
+          <div class="customizer-tool-list">
+            <button class="customizer-tool-btn active" data-tool="move" id="btn-customizer-tool-move">
+              <span>Move</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="resize" id="btn-customizer-tool-resize">
+              <span>Resize</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="visibility" id="btn-customizer-tool-visibility">
+              <span>Visibility</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="reset" id="btn-customizer-tool-reset">
+              <span>Reset</span>
+            </button>
+            <button class="customizer-tool-btn customizer-btn-back" data-tool="back" id="btn-customizer-tool-back">
+              <span>Back</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- Resize Scale Floating Toolbar (when Resize tool active) -->
+        <div class="customizer-resize-bar" id="customizer-resize-bar" style="display: none;">
+          <span class="resize-label" id="customizer-resize-label">Scale: 100%</span>
+          <button class="btn-pixel-xs" id="btn-customizer-scale-down" title="Scale Down"><i class="ph ph-minus"></i></button>
+          <button class="btn-pixel-xs" id="btn-customizer-scale-up" title="Scale Up"><i class="ph ph-plus"></i></button>
         </div>
 
-        <!-- Right: Action Buttons (A & B) -->
-        <div class="virtual-actions-cluster">
-          <button class="virtual-action-btn action-b" data-action="attack" aria-label="Action B / Attack">
-            <span>B</span>
-            <small>ATTACK</small>
-          </button>
-          <button class="virtual-action-btn action-a" data-action="jump" aria-label="Action A / Jump">
-            <span>A</span>
-            <small>JUMP</small>
-          </button>
+        <!-- Visibility Checklist Floating Dialog (when Visibility tool active) -->
+        <div class="customizer-visibility-box" id="customizer-visibility-box" style="display: none;">
+          <div class="visibility-title">Element Visibility</div>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-dpad" checked>
+            <span>D-Pad</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-stick" checked>
+            <span>Analog Stick</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-actions" checked>
+            <span>Action Buttons (▲, ◯, ✕, □)</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-shoulders" checked>
+            <span>Shoulders (L & R)</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-system" checked>
+            <span>Select & Start</span>
+          </label>
         </div>
       </div>
 
@@ -1148,6 +1281,10 @@
             <i class="ph ph-play-fill"></i>
             <span>RESUME GAME</span>
           </button>
+          <button id="btn-pause-customize-controls" class="btn btn-pixel btn-pause-option btn-customize-controls">
+            <i class="ph ph-sliders-horizontal"></i>
+            <span>CUSTOMIZE CONTROLS</span>
+          </button>
           <button id="btn-pause-restart" class="btn btn-pixel btn-pause-option">
             <i class="ph ph-arrow-counter-clockwise"></i>
             <span>RESTART LEVEL</span>
@@ -1213,9 +1350,9 @@
       <i class="ph ph-paint-brush"></i>
       <span>CANVAS</span>
     </button>
-    <button id="btn-mobile-nav-controls" class="mobile-nav-btn" title="Open Controls & Assets Drawer">
-      <i class="ph ph-squares-four"></i>
-      <span>CONTROLS</span>
+    <button id="btn-mobile-nav-play" class="mobile-nav-btn mobile-nav-play" data-mode="play" title="Play Game Mode (P)">
+      <i class="ph ph-play"></i>
+      <span>PLAY</span>
     </button>
     <button id="btn-mobile-nav-code" class="mobile-nav-btn" data-mode="code" title="Code Editor">
       <i class="ph ph-code"></i>

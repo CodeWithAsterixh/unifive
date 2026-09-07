@@ -83,7 +83,7 @@
   <script src="libraries/p5.min.js"></script>
 
   <!-- UNIFIVE Studio Core & Player Modules -->
-  <script src="sketch.js"></script>
+  <script src="app.js"></script>
   <script src="player.js"></script>
 </head>
 <body class="standalone-player mode-play">
@@ -137,38 +137,139 @@
 
       <!-- Player Canvas Container -->
       <div class="player-canvas-container" id="player-canvas-container">
-        <div id="canvas-container" class="canvas-wrapper"></div>
+        <div id="canvas-container" class="canvas-wrapper">
+          <!-- Mobile / Touch Virtual Gamepad Overlay (PSP / Console Style) -->
+          <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
+            <!-- Top Left: L Shoulder -->
+            <div class="vcontrol-group vcontrol-shoulder-l" id="vcontrol-shoulder-l" data-group="shoulder-l">
+              <button class="vcontrol-shoulder-btn" data-button="l_shoulder" aria-label="L Shoulder">
+                <span>L</span>
+              </button>
+              <div class="vcontrol-resize-handle" data-group="shoulder-l" title="Drag to Resize Scale"></div>
+            </div>
+
+            <!-- Top Right: R Shoulder -->
+            <div class="vcontrol-group vcontrol-shoulder-r" id="vcontrol-shoulder-r" data-group="shoulder-r">
+              <button class="vcontrol-shoulder-btn" data-button="r_shoulder" aria-label="R Shoulder">
+                <span>R</span>
+              </button>
+              <div class="vcontrol-resize-handle" data-group="shoulder-r" title="Drag to Resize Scale"></div>
+            </div>
+
+            <!-- Left: D-Pad -->
+            <div class="vcontrol-group vcontrol-dpad" id="vcontrol-dpad" data-group="dpad">
+              <button class="vcontrol-dpad-btn dpad-up" data-button="dpad_up" data-dir="up" aria-label="D-Pad Up">
+                <i class="ph ph-caret-up-bold"></i>
+              </button>
+              <button class="vcontrol-dpad-btn dpad-left" data-button="dpad_left" data-dir="left" aria-label="D-Pad Left">
+                <i class="ph ph-caret-left-bold"></i>
+              </button>
+              <div class="vcontrol-dpad-center"></div>
+              <button class="vcontrol-dpad-btn dpad-right" data-button="dpad_right" data-dir="right" aria-label="D-Pad Right">
+                <i class="ph ph-caret-right-bold"></i>
+              </button>
+              <button class="vcontrol-dpad-btn dpad-down" data-button="dpad_down" data-dir="down" aria-label="D-Pad Down">
+                <i class="ph ph-caret-down-bold"></i>
+              </button>
+              <div class="vcontrol-resize-handle" data-group="dpad" title="Drag to Resize Scale"></div>
+            </div>
+
+            <!-- Bottom Left: Analog Stick -->
+            <div class="vcontrol-group vcontrol-stick" id="vcontrol-stick" data-group="stick">
+              <div class="vcontrol-stick-base" id="vcontrol-stick-base">
+                <div class="vcontrol-stick-knob" id="vcontrol-stick-knob"></div>
+              </div>
+              <div class="vcontrol-resize-handle" data-group="stick" title="Drag to Resize Scale"></div>
+            </div>
+
+            <!-- Center Bottom: System Buttons (Select / Start) -->
+            <div class="vcontrol-group vcontrol-system" id="vcontrol-system" data-group="system">
+              <button class="vcontrol-system-btn" data-button="select" aria-label="Select">
+                <span>SELECT</span>
+              </button>
+              <button class="vcontrol-system-btn" data-button="start" aria-label="Start">
+                <span>START</span>
+              </button>
+              <div class="vcontrol-resize-handle" data-group="system" title="Drag to Resize Scale"></div>
+            </div>
+
+            <!-- Right: Action Buttons (Triangle, Circle, Cross, Square) -->
+            <div class="vcontrol-group vcontrol-actions" id="vcontrol-actions" data-group="actions">
+              <button class="vcontrol-action-btn action-triangle" data-button="triangle" data-action="triangle" aria-label="Triangle Button">
+                <i class="ph ph-triangle-bold"></i>
+              </button>
+              <button class="vcontrol-action-btn action-circle" data-button="circle" data-action="attack" aria-label="Circle Button">
+                <i class="ph ph-circle-bold"></i>
+              </button>
+              <button class="vcontrol-action-btn action-cross" data-button="cross" data-action="jump" aria-label="Cross Button">
+                <i class="ph ph-x-bold"></i>
+              </button>
+              <button class="vcontrol-action-btn action-square" data-button="square" data-action="square" aria-label="Square Button">
+                <i class="ph ph-square-bold"></i>
+              </button>
+              <div class="vcontrol-resize-handle" data-group="actions" title="Drag to Resize Scale"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Mobile / Touch Virtual Gamepad Overlay -->
-      <div class="mobile-virtual-gamepad" id="mobile-virtual-gamepad" style="display: none;">
-        <!-- Left: 4-Way D-Pad -->
-        <div class="virtual-dpad-cluster">
-          <button class="virtual-dpad-btn dpad-up" data-dir="up" aria-label="Up">
-            <i class="ph ph-caret-up-fill"></i>
-          </button>
-          <button class="virtual-dpad-btn dpad-left" data-dir="left" aria-label="Left">
-            <i class="ph ph-caret-left-fill"></i>
-          </button>
-          <div class="virtual-dpad-center"></div>
-          <button class="virtual-dpad-btn dpad-right" data-dir="right" aria-label="Right">
-            <i class="ph ph-caret-right-fill"></i>
-          </button>
-          <button class="virtual-dpad-btn dpad-down" data-dir="down" aria-label="Down">
-            <i class="ph ph-caret-down-fill"></i>
-          </button>
+      <!-- Controls Layout Customizer Overlay (PPSSPP Style) -->
+      <div class="vcontrols-customizer-overlay" id="vcontrols-customizer-overlay" style="display: none;">
+        <!-- Left Customizer Sidebar -->
+        <aside class="vcontrols-customizer-sidebar">
+          <div class="customizer-sidebar-header">
+            <i class="ph ph-game-controller"></i>
+            <span>Controls</span>
+          </div>
+          <div class="customizer-tool-list">
+            <button class="customizer-tool-btn active" data-tool="move" id="btn-customizer-tool-move">
+              <span>Move</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="resize" id="btn-customizer-tool-resize">
+              <span>Resize</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="visibility" id="btn-customizer-tool-visibility">
+              <span>Visibility</span>
+            </button>
+            <button class="customizer-tool-btn" data-tool="reset" id="btn-customizer-tool-reset">
+              <span>Reset</span>
+            </button>
+            <button class="customizer-tool-btn customizer-btn-back" data-tool="back" id="btn-customizer-tool-back">
+              <span>Back</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- Resize Scale Floating Toolbar (when Resize tool active) -->
+        <div class="customizer-resize-bar" id="customizer-resize-bar" style="display: none;">
+          <span class="resize-label" id="customizer-resize-label">Scale: 100%</span>
+          <button class="btn-pixel-xs" id="btn-customizer-scale-down" title="Scale Down"><i class="ph ph-minus"></i></button>
+          <button class="btn-pixel-xs" id="btn-customizer-scale-up" title="Scale Up"><i class="ph ph-plus"></i></button>
         </div>
 
-        <!-- Right: Action Buttons (A & B) -->
-        <div class="virtual-actions-cluster">
-          <button class="virtual-action-btn action-b" data-action="attack" aria-label="Action B / Attack">
-            <span>B</span>
-            <small>ATTACK</small>
-          </button>
-          <button class="virtual-action-btn action-a" data-action="jump" aria-label="Action A / Jump">
-            <span>A</span>
-            <small>JUMP</small>
-          </button>
+        <!-- Visibility Checklist Floating Dialog (when Visibility tool active) -->
+        <div class="customizer-visibility-box" id="customizer-visibility-box" style="display: none;">
+          <div class="visibility-title">Element Visibility</div>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-dpad" checked>
+            <span>D-Pad</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-stick" checked>
+            <span>Analog Stick</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-actions" checked>
+            <span>Action Buttons (▲, ◯, ✕, □)</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-shoulders" checked>
+            <span>Shoulders (L & R)</span>
+          </label>
+          <label class="visibility-check-item">
+            <input type="checkbox" id="vis-check-system" checked>
+            <span>Select & Start</span>
+          </label>
         </div>
       </div>
 
@@ -190,6 +291,10 @@
           <button id="btn-pause-resume" class="btn btn-pixel btn-pause-option btn-resume">
             <i class="ph ph-play-fill"></i>
             <span>RESUME GAME</span>
+          </button>
+          <button id="btn-pause-customize-controls" class="btn btn-pixel btn-pause-option btn-customize-controls">
+            <i class="ph ph-sliders-horizontal"></i>
+            <span>CUSTOMIZE CONTROLS</span>
           </button>
           <button id="btn-pause-restart" class="btn btn-pixel btn-pause-option">
             <i class="ph ph-arrow-counter-clockwise"></i>
