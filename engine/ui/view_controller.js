@@ -26,14 +26,18 @@ const ViewController = {
     const topdownBtns = document.querySelectorAll(".btn-view-topdown");
     const sidefacingBtns = document.querySelectorAll(".btn-view-sidefacing");
 
-    if (view === "topdown") {
-      topdownBtns.forEach(btn => btn.classList.add("active"));
-      sidefacingBtns.forEach(btn => btn.classList.remove("active"));
-      SoundEngine.playAction("toggle_on");
-    } else {
-      topdownBtns.forEach(btn => btn.classList.remove("active"));
-      sidefacingBtns.forEach(btn => btn.classList.add("active"));
-      SoundEngine.playAction("toggle_off");
+    switch (view) {
+      case "topdown":
+        topdownBtns.forEach(btn => btn.classList.add("active"));
+        sidefacingBtns.forEach(btn => btn.classList.remove("active"));
+        SoundEngine.playAction("toggle_on");
+        break;
+      case "sidefacing":
+      default:
+        topdownBtns.forEach(btn => btn.classList.remove("active"));
+        sidefacingBtns.forEach(btn => btn.classList.add("active"));
+        SoundEngine.playAction("toggle_off");
+        break;
     }
 
     // 4. Load the target scene data (world config, items, undo stacks, categories)

@@ -28,13 +28,21 @@ const TabController = {
       pane.classList.toggle("active", isTarget);
     });
 
-    if (tabId === "layers" && typeof LayersController !== "undefined") {
-      LayersController.update();
-    } else if (tabId === "properties" && typeof PropertiesController !== "undefined") {
-      PropertiesController.updateFromSelected(typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null);
-    } else if (tabId === "config") {
-      if (typeof ConfigController !== "undefined") ConfigController.syncUIFromWorldConfig();
-      if (typeof U5Compiler !== "undefined") U5Compiler.updateStats();
+    switch (tabId) {
+      case "layers":
+        if (typeof LayersController !== "undefined") LayersController.update();
+        break;
+      case "properties":
+        if (typeof PropertiesController !== "undefined") {
+          PropertiesController.updateFromSelected(typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null);
+        }
+        break;
+      case "config":
+        if (typeof ConfigController !== "undefined") ConfigController.syncUIFromWorldConfig();
+        if (typeof U5Compiler !== "undefined") U5Compiler.updateStats();
+        break;
+      default:
+        break;
     }
 
     SoundEngine.playChiptuneTone(380, "square", 0.06, 0.1);

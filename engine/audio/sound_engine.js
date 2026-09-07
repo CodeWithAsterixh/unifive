@@ -1,139 +1,36 @@
+/**
+ * UNIFIVE Engine - Sound Engine Subsystem
+ * Aggregator coordinating audio context synthesis (synth_core.js) and game sound effects (sound_effects.js).
+ */
 const SoundEngine = {
   enabled: true,
-  audioCtx: null,
+
+  get audioCtx() {
+    return typeof SynthCore !== "undefined" ? SynthCore.audioCtx : null;
+  },
+  set audioCtx(val) {
+    if (typeof SynthCore !== "undefined") SynthCore.audioCtx = val;
+  },
 
   init() {
-    if (!this.audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        this.audioCtx = new AudioContext();
-      }
-    }
-    if (this.audioCtx && this.audioCtx.state === "suspended") {
-      this.audioCtx.resume();
-    }
+    if (typeof SynthCore !== "undefined") SynthCore.init();
   },
 
   playChiptuneTone(freq, type = "square", duration = 0.08, volume = 0.1) {
-    if (!this.enabled) return;
-    try {
-      this.init();
-      if (!this.audioCtx) return;
-
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(volume, this.audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(this.audioCtx.destination);
-
-      osc.start();
-      osc.stop(this.audioCtx.currentTime + duration);
-    } catch (e) {
-      console.warn("8-Bit Audio error:", e);
+    if (typeof SynthCore !== "undefined") {
+      SynthCore.playChiptuneTone(this.enabled, freq, type, duration, volume);
     }
   },
 
   playAction(action) {
-    switch (action) {
-      case "undo":
-        this.playChiptuneTone(320, "square", 0.07, 0.12);
-        setTimeout(() => this.playChiptuneTone(240, "square", 0.09, 0.12), 60);
-        break;
-      case "redo":
-        this.playChiptuneTone(260, "square", 0.07, 0.12);
-        setTimeout(() => this.playChiptuneTone(390, "square", 0.09, 0.12), 60);
-        break;
-      case "save":
-        this.playChiptuneTone(523.25, "square", 0.08, 0.12);
-        setTimeout(() => this.playChiptuneTone(659.25, "square", 0.08, 0.12), 70);
-        setTimeout(() => this.playChiptuneTone(783.99, "square", 0.08, 0.12), 140);
-        setTimeout(() => this.playChiptuneTone(1046.50, "square", 0.18, 0.15), 210);
-        break;
-      case "toggle_on":
-        this.playChiptuneTone(440, "square", 0.06, 0.1);
-        setTimeout(() => this.playChiptuneTone(880, "square", 0.1, 0.12), 60);
-        break;
-      case "toggle_off":
-        this.playChiptuneTone(600, "square", 0.06, 0.1);
-        setTimeout(() => this.playChiptuneTone(300, "square", 0.1, 0.1), 60);
-        break;
-      default:
-        this.playChiptuneTone(440, "square", 0.08, 0.1);
+    if (typeof SoundEffects !== "undefined") {
+      SoundEffects.playAction(this, action);
     }
   },
 
   playSoundEffect(name) {
-    if (!this.enabled) return;
-    try {
-      this.init();
-      if (!this.audioCtx) return;
-      const t = this.audioCtx.currentTime;
-      switch (name) {
-        case "jump": {
-          const osc = this.audioCtx.createOscillator();
-          const gain = this.audioCtx.createGain();
-          osc.type = "square";
-          osc.frequency.setValueAtTime(300, t);
-          osc.frequency.exponentialRampToValueAtTime(800, t + 0.15);
-          gain.gain.setValueAtTime(0.12, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-          osc.connect(gain);
-          gain.connect(this.audioCtx.destination);
-          osc.start(t);
-          osc.stop(t + 0.18);
-          break;
-        }
-        case "laser": {
-          const osc = this.audioCtx.createOscillator();
-          const gain = this.audioCtx.createGain();
-          osc.type = "sawtooth";
-          osc.frequency.setValueAtTime(1200, t);
-          osc.frequency.exponentialRampToValueAtTime(120, t + 0.14);
-          gain.gain.setValueAtTime(0.12, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-          osc.connect(gain);
-          gain.connect(this.audioCtx.destination);
-          osc.start(t);
-          osc.stop(t + 0.15);
-          break;
-        }
-        case "coin": {
-          this.playChiptuneTone(987.77, "triangle", 0.08, 0.15);
-          setTimeout(() => this.playChiptuneTone(1318.51, "triangle", 0.2, 0.15), 70);
-          break;
-        }
-        case "hit": {
-          const osc = this.audioCtx.createOscillator();
-          const gain = this.audioCtx.createGain();
-          osc.type = "sawtooth";
-          osc.frequency.setValueAtTime(180, t);
-          osc.frequency.exponentialRampToValueAtTime(40, t + 0.12);
-          gain.gain.setValueAtTime(0.18, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-          osc.connect(gain);
-          gain.connect(this.audioCtx.destination);
-          osc.start(t);
-          osc.stop(t + 0.13);
-          break;
-        }
-        case "powerup": {
-          const notes = [330, 392, 494, 659];
-          notes.forEach((freq, idx) => {
-            setTimeout(() => this.playChiptuneTone(freq, "square", 0.07, 0.12), idx * 60);
-          });
-          break;
-        }
-        default:
-          this.playChiptuneTone(440, "square", 0.08, 0.1);
-      }
-    } catch (e) {
-      console.warn("Sound effect error:", e);
+    if (typeof SoundEffects !== "undefined") {
+      SoundEffects.playSoundEffect(this, name);
     }
   },
 
@@ -154,9 +51,9 @@ const SoundEngine = {
       if (label) label.textContent = "AUDIO: OFF";
     }
     return this.enabled;
+  },
+
+  toggleMute() {
+    return this.toggle();
   }
 };
-
-// ============================================================================
-// 4. VIEW PERSPECTIVE CONTROLLER (Top-Down vs Side-Facing)
-// ============================================================================
