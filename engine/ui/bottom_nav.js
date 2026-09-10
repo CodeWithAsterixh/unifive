@@ -1,40 +1,14 @@
 /**
- * UNIFIVE Engine - Bottom Nav Subsystem
- * Mobile viewport bottom navigation buttons: Canvas mode, Play mode, and Code mode transitions.
+ * UNIFIVE Engine - Mobile Bottom Navigation Subsystem
  */
 const BottomNav = {
-  bindBottomNav(controller) {
-    const btnNavPlay = document.getElementById("btn-mobile-nav-play");
-    if (btnNavPlay) {
-      btnNavPlay.addEventListener("click", () => {
-        if (typeof GamePlayer !== "undefined") {
-          GamePlayer.togglePlay();
-        } else if (typeof GamePlayerEngine !== "undefined") {
-          if (GamePlayerEngine.isPlaying) GamePlayerEngine.exit();
-          else GamePlayerEngine.enter();
-        }
-        controller.closeDrawer();
-      });
-    }
+  init(controller) {
+    const navCanvas = document.getElementById("btn-mobile-nav-canvas");
+    const navPlay = document.getElementById("btn-mobile-nav-play");
+    const navCode = document.getElementById("btn-mobile-nav-code");
 
-    const btnNavCanvas = document.getElementById("btn-mobile-nav-canvas");
-    if (btnNavCanvas) {
-      btnNavCanvas.addEventListener("click", () => {
-        if (typeof AppModeController !== "undefined") {
-          AppModeController.setMode("canvas");
-        }
-        controller.closeDrawer();
-      });
-    }
-
-    const btnNavCode = document.getElementById("btn-mobile-nav-code");
-    if (btnNavCode) {
-      btnNavCode.addEventListener("click", () => {
-        if (typeof AppModeController !== "undefined") {
-          AppModeController.setMode("code");
-        }
-        controller.closeDrawer();
-      });
-    }
+    if (navCanvas) navCanvas.addEventListener("click", () => controller.switchMode("canvas"));
+    if (navPlay) navPlay.addEventListener("click", () => controller.switchMode("play"));
+    if (navCode) navCode.addEventListener("click", () => controller.switchMode("code"));
   }
 };

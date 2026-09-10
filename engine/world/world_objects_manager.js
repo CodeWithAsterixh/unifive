@@ -1,60 +1,22 @@
 /**
- * UNIFIVE World - Objects Manager Aggregator
- * Orchestrates objects storage, transformation gizmos, and p5 canvas drawing.
+ * UNIFIVE World - World Objects Manager
  */
 const WorldObjectsManager = {
-  get items() {
-    return ObjectsStore.items;
-  },
-  set items(val) {
-    ObjectsStore.items = val;
-  },
-
-  get imageCache() {
-    return ObjectsStore.imageCache;
-  },
-  set imageCache(val) {
-    ObjectsStore.imageCache = val;
-  },
-
-  get selectedId() {
-    return ObjectsStore.selectedId;
-  },
-  set selectedId(val) {
-    ObjectsStore.selectedId = val;
-  },
-
-  dragState: {
-    isDragging: false,
-    mode: null,
-    handle: null,
-    startX: 0,
-    startY: 0,
-    startItemX: 0,
-    startItemY: 0,
-    startItemW: 0,
-    startItemH: 0,
-    startAngle: 0,
-    initialAngle: 0,
-    anchorX: 0,
-    anchorY: 0
-  },
-
-  ghostPreview: {
-    active: false,
-    item: null,
-    worldX: 0,
-    worldY: 0
-  },
+  items: [],
+  selectedId: null,
+  dragState: { isDragging: false, mode: null, handle: null, startX: 0, startY: 0, startItemX: 0, startItemY: 0, startItemW: 0, startItemH: 0 },
+  ghostPreview: { active: false, worldX: 0, worldY: 0, item: null },
 
   init() {
     this.initCanvasDropListeners();
-    this.initKeyboardListeners();
+    if (typeof CropController !== "undefined") CropController.init();
+    if (typeof SpritePosesController !== "undefined") SpritePosesController.init();
   },
 
   initCanvasDropListeners() {
     const container = document.getElementById("canvas-container");
-    if (!container) return;
+    if (!container || container.dataset.dropBound === "true") return;
+    container.dataset.dropBound = "true";
 
     container.addEventListener("dragenter", (e) => {
       e.preventDefault();
@@ -63,21 +25,22 @@ const WorldObjectsManager = {
 
     container.addEventListener("dragover", (e) => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = "copy";
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
       container.classList.add("drag-hover");
 
-      if (typeof mainCanvas !== "undefined" && mainCanvas && typeof WorldConfig !== "undefined") {
-        const rect = mainCanvas.elt.getBoundingClientRect();
-        const sx = e.clientX - rect.left;
-        const sy = e.clientY - rect.top;
-        const wx = WorldConfig.panX + (sx - width / 2) / WorldConfig.zoom;
-        const wy = WorldConfig.panY + (sy - height / 2) / WorldConfig.zoom;
+      const item = typeof CreatePanelController !== "undefined" ? CreatePanelController.draggedItem : null;
+      if (!item || typeof mainCanvas === "undefined" || !mainCanvas || typeof WorldConfig === "undefined") return;
 
-        this.ghostPreview.active = true;
-        this.ghostPreview.item = typeof CreatePanelController !== "undefined" ? CreatePanelController.draggedItem : null;
-        this.ghostPreview.worldX = Math.round(wx);
-        this.ghostPreview.worldY = Math.round(wy);
-      }
+      const rect = mainCanvas.elt.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const wx = WorldConfig.panX + (sx - width / 2) / WorldConfig.zoom;
+      const wy = WorldConfig.panY + (sy - height / 2) / WorldConfig.zoom;
+
+      this.ghostPreview.active = true;
+      this.ghostPreview.item = item;
+      this.ghostPreview.worldX = Math.round(wx);
+      this.ghostPreview.worldY = Math.round(wy);
     });
 
     container.addEventListener("dragleave", (e) => {
@@ -94,122 +57,73 @@ const WorldObjectsManager = {
       let item = typeof CreatePanelController !== "undefined" ? CreatePanelController.draggedItem : null;
       if (!item) {
         try {
-          const raw = e.dataTransfer.getData("application/json");
+          const raw = e.dataTransfer && e.dataTransfer.getData("application/json");
           if (raw) item = JSON.parse(raw);
         } catch (err) {
           console.warn("Could not parse dropped item JSON", err);
         }
       }
 
-      if (item && typeof mainCanvas !== "undefined" && mainCanvas && typeof WorldConfig !== "undefined") {
-        const rect = mainCanvas.elt.getBoundingClientRect();
-        const sx = e.clientX - rect.left;
-        const sy = e.clientY - rect.top;
-        const wx = WorldConfig.panX + (sx - width / 2) / WorldConfig.zoom;
-        const wy = WorldConfig.panY + (sy - height / 2) / WorldConfig.zoom;
-
-        this.addItem(item, wx, wy);
+      if (!item || typeof mainCanvas === "undefined" || !mainCanvas || typeof WorldConfig === "undefined") {
+        if (typeof CreatePanelController !== "undefined") CreatePanelController.draggedItem = null;
+        return;
       }
+
+      const rect = mainCanvas.elt.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const wx = WorldConfig.panX + (sx - width / 2) / WorldConfig.zoom;
+      const wy = WorldConfig.panY + (sy - height / 2) / WorldConfig.zoom;
+
+      this.addItem(item, wx, wy);
+      if (typeof CreatePanelController !== "undefined") CreatePanelController.draggedItem = null;
     });
-  },
-
-  initKeyboardListeners() {
-    window.addEventListener("keydown", (e) => {
-      if ((e.key === "Delete" || e.key === "Backspace") && this.selectedId && e.target.tagName !== "INPUT") {
-        e.preventDefault();
-        this.deleteSelected();
-      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d" && this.selectedId && e.target.tagName !== "INPUT") {
-        e.preventDefault();
-        this.duplicateSelected();
-      }
-    });
-  },
-
-  loadImageAsset(src, callback) {
-    return ObjectsStore.loadImageAsset(src, callback);
-  },
-
-  addItem(assetData, targetX, targetY) {
-    return ObjectsStore.addItem(assetData, targetX, targetY);
   },
 
   selectItem(id) {
-    return ObjectsStore.selectItem(id);
-  },
-
-  worldToLocal(item, wx, wy) {
-    return ObjectsTransform.worldToLocal(item, wx, wy);
-  },
-
-  getTransformTarget(item, wx, wy) {
-    return ObjectsTransform.getTransformTarget(item, wx, wy);
-  },
-
-  getItemAt(worldX, worldY) {
-    return ObjectsStore.getItemAt(worldX, worldY);
+    this.selectedId = id;
+    if (typeof AppModeController !== "undefined") AppModeController.activeTargetId = id || "global_stage";
+    const sel = this.getSelectedItem();
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(sel);
+    if (typeof LayersController !== "undefined") LayersController.update();
+    if (typeof AppModeController !== "undefined") AppModeController.updateTargetBadge();
+    if (sel && sel.poses && typeof SpritePosesController !== "undefined") SpritePosesController.open(sel);
+    else if (typeof SpritePosesController !== "undefined") SpritePosesController.hide();
+    if (typeof BlockPalette !== "undefined" && typeof BlockPalette.renderCategoryBlocks === "function") {
+      BlockPalette.renderCategoryBlocks(BlockPalette.activeCategory || "events");
+    }
   },
 
   getSelectedItem() {
-    return ObjectsStore.getSelectedItem();
+    for (const it of this.items) { if (it.id === this.selectedId) return it; }
+    return null;
   },
 
-  bringForward(targetId = null, count = 1) {
-    return ObjectsStore.bringForward(targetId, count);
+  getItemAt(wx, wy) {
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const it = this.items[i];
+      if (it.hidden) continue;
+      const local = typeof this.worldToLocal === "function"
+        ? this.worldToLocal(it, wx, wy)
+        : { lx: wx - it.x, ly: wy - it.y };
+      if (local.lx >= -(it.w || 40) / 2 && local.lx <= (it.w || 40) / 2 && local.ly >= -(it.h || 40) / 2 && local.ly <= (it.h || 40) / 2) return it;
+    }
+    return null;
   },
 
-  sendBackward(targetId = null, count = 1) {
-    return ObjectsStore.sendBackward(targetId, count);
+  addItem(assetData, x, y) {
+    const cam = (typeof getActiveStageCamera === "function") ? getActiveStageCamera() : { panX: 1000, panY: 750 };
+    const item = typeof ObjectsCrud !== "undefined"
+      ? ObjectsCrud.createItem(assetData, x ?? cam.panX - 160, y ?? cam.panY - 90)
+      : { id: "item_" + Date.now(), x: x ?? cam.panX - 160, y: y ?? cam.panY - 90, ...assetData };
+    this.items.push(item);
+    this.selectItem(item.id);
+    if (typeof this.saveHistory === "function") this.saveHistory();
+    if (typeof AppModeController !== "undefined") AppModeController.renderObjectsList();
+    return item;
   },
 
-  bringToFront(targetId = null) {
-    return ObjectsStore.bringToFront(targetId);
-  },
-
-  sendToBack(targetId = null) {
-    return ObjectsStore.sendToBack(targetId);
-  },
-
-  moveLayerFront(targetId, count = 1) {
-    return ObjectsStore.bringForward(targetId, count);
-  },
-
-  moveLayerBack(targetId, count = 1) {
-    return ObjectsStore.sendBackward(targetId, count);
-  },
-
-  duplicateSelected() {
-    return ObjectsStore.duplicateSelected();
-  },
-
-  deleteSelected() {
-    return ObjectsStore.deleteSelected();
-  },
-
-  clearAll() {
-    return ObjectsStore.clearAll();
-  },
-
-  serialize() {
-    return ObjectsStore.serialize();
-  },
-
-  deserialize(serializedItems) {
-    return ObjectsStore.deserialize(serializedItems);
-  },
-
-  saveHistory() {
-    return ObjectsStore.saveHistory();
-  },
-
-  drawGizmo(item) {
-    return ObjectsTransform.drawGizmo(item);
-  },
-
-  getSortedRenderList(isPlay = false) {
-    return ObjectsRenderer.getSortedRenderList(this.items, isPlay);
-  },
-
-  draw() {
-    return ObjectsRenderer.draw(this);
+  addItemFromPalette(assetData) {
+    return this.addItem(assetData);
   }
 };

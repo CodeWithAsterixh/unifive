@@ -6703,3 +6703,167 @@ body.standalone-player .game-player-pane {
   font-size: 0.85rem;
 }
 
+/* ------------------------------------------------------------------------
+   CREATE PANEL (Split Sidebar & Items Grid Gallery)
+   ------------------------------------------------------------------------ */
+.create-split-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.create-kinds-sidebar {
+  width: 90px;
+  flex-shrink: 0;
+  background-color: var(--burgundy-darkest);
+  border-right: 2px solid var(--burgundy-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  overflow-y: auto;
+}
+
+.create-cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background-color: var(--burgundy-dark);
+  border: 2px solid var(--burgundy-darkest);
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+  border-radius: 0px;
+  outline: none;
+}
+
+.create-cat-btn:hover {
+  background-color: var(--burgundy-mid);
+  color: var(--text-white);
+}
+
+.create-cat-btn.active {
+  background-color: var(--burgundy-base);
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 
+    inset 1px 1px 0px var(--gold-bright),
+    inset -1px -1px 0px var(--burgundy-darkest);
+}
+
+.create-cat-btn i {
+  font-size: 1.25rem;
+}
+
+.create-gallery-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--burgundy-darkest);
+}
+
+.create-gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--burgundy-dark);
+  border-bottom: 2px solid var(--burgundy-mid);
+}
+
+.gallery-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.gallery-count-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  background-color: var(--burgundy-darkest);
+  padding: 2px 6px;
+  border: 1px solid var(--burgundy-dark);
+}
+
+.create-items-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.create-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.create-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--burgundy-dark);
+  border: 2px solid var(--burgundy-mid);
+  padding: 6px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 0px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.create-item-card:hover {
+  border-color: var(--gold-bright);
+  background-color: var(--burgundy-base);
+  box-shadow: 
+    inset 1px 1px 0px var(--gold-bright),
+    0 0 8px rgba(253, 224, 71, 0.25);
+}
+
+.create-card-thumb {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--burgundy-darkest);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.create-card-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.create-card-label {
+  font-family: var(--font-pixel);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-white);
+  text-align: center;
+  line-height: 1.15;
+  word-break: break-word;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0px #000000;
+}
+
+

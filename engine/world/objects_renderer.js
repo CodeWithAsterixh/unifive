@@ -40,7 +40,10 @@
       return list;
     },
 
-    draw(manager) {
+    draw(managerOrItems, selectedId, dragState) {
+      const manager = Array.isArray(managerOrItems)
+        ? { items: managerOrItems, selectedId: selectedId, dragState: dragState, ghostPreview: { active: false } }
+        : (managerOrItems || (typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager : { items: [] }));
       if (!manager) return;
       const isPlay = typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying;
       const renderItems = this.getSortedRenderList(manager.items, isPlay);
@@ -189,13 +192,13 @@
           if (typeof CropController !== "undefined" && CropController.isActive && item.id === CropController.targetItemId) {
             CropController.drawCropOverlay(item);
           } else if (item.id === manager.selectedId) {
-            manager.drawGizmo(item);
+            if (typeof ObjectsTransform !== "undefined") { ObjectsTransform.drawGizmo(item); } else if (typeof manager.drawGizmo === "function") { manager.drawGizmo(item); }
           }
         }
       }
 
       // Drag & Drop Ghost Preview (Only in Editor Mode)
-      if (!isPlay && manager.ghostPreview.active) {
+      if (!isPlay && manager.ghostPreview && manager.ghostPreview.active) {
         push();
         const gw = 260;
         const gh = 160;
