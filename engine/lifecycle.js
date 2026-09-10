@@ -61,36 +61,3 @@ function windowResized() {
     resizeStageCanvas();
   }
 }
-
-function saveWorkspace() {
-  if (typeof SoundEngine !== "undefined") SoundEngine.playAction("save");
-  if (typeof mainCanvas !== "undefined" && mainCanvas) {
-    saveCanvas(mainCanvas, "unifive_pixel_workspace", "png");
-  }
-}
-
-function toggleFullscreenMode() {
-  const btn = document.getElementById("btn-fullscreen");
-  const icon = document.getElementById("fullscreen-icon");
-  const label = document.getElementById("fullscreen-label");
-
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().then(() => {
-      if (btn) btn.classList.add("active");
-      if (icon) icon.className = "ph ph-corners-in";
-      if (label) label.textContent = "WINDOWED";
-      if (typeof resizeStageCanvas === "function") setTimeout(resizeStageCanvas, 100);
-    }).catch(err => {
-      console.warn("Fullscreen error:", err);
-    });
-  } else {
-    document.exitFullscreen().then(() => {
-      if (btn) btn.classList.remove("active");
-      if (icon) icon.className = "ph ph-corners-out";
-      if (label) label.textContent = "FULLSCREEN";
-      if (typeof resizeStageCanvas === "function") setTimeout(resizeStageCanvas, 100);
-    }).catch(err => {
-      console.warn("Exit fullscreen error:", err);
-    });
-  }
-}

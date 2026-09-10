@@ -356,6 +356,43 @@
               </div>
             </div>
 
+            <!-- 2B. CONTROL VALUE (Only for Control-type items) -->
+            <div class="config-group" id="group-control-value" style="display: none;">
+              <div class="config-group-header">
+                <i class="ph ph-sliders"></i>
+                <span>CONTROL VALUE</span>
+                <span id="prop-control-type-badge" class="prop-badge-tag" style="margin-left: auto; background: #3b0764; color: #e9d5ff;">LABEL</span>
+              </div>
+              <div id="prop-control-value-text-wrap">
+                <div class="input-labeled">
+                  <span class="input-tag" title="Text value displayed on the control"><i class="ph ph-text-t"></i></span>
+                  <input id="prop-control-value-text" class="input-pixel" type="text" placeholder="Control text value" />
+                </div>
+              </div>
+              <div id="prop-control-value-slider-wrap" style="display: none;">
+                <div class="prop-rotation-row" style="margin-top: 4px;">
+                  <input id="prop-control-value-slider" class="range-pixel" type="range" min="0" max="100" step="1" value="50" />
+                  <div class="input-labeled prop-rot-input-wrap">
+                    <input id="prop-control-value-num" class="input-pixel" type="number" min="0" max="100" step="1" value="50" />
+                    <span class="input-tag">%</span>
+                  </div>
+                </div>
+                <div class="size-presets prop-rotation-presets" style="margin-top: 8px;">
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="0">0%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="25">25%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="50">50%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="75">75%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="100">100%</button>
+                </div>
+              </div>
+              <div id="prop-control-value-toggle-wrap" style="display: none;">
+                <label class="prop-checkbox-label" title="Toggle the control ON or OFF" style="margin-top: 4px;">
+                  <input type="checkbox" id="prop-control-value-toggle" class="pixel-checkbox" />
+                  <span class="prop-checkbox-text" id="prop-control-value-toggle-label">STATE: OFF</span>
+                </label>
+              </div>
+            </div>
+
             <!-- 3. Transform: Position (X, Y) -->
             <div class="config-group">
               <div class="config-group-header">
@@ -740,17 +777,17 @@
           <!-- Left: D-Pad -->
           <div class="vcontrol-group vcontrol-dpad" id="vcontrol-dpad" data-group="dpad">
             <button class="vcontrol-dpad-btn dpad-up" data-button="dpad_up" data-dir="up" aria-label="D-Pad Up">
-              <i class="ph ph-caret-up-bold"></i>
+              <i class="ph ph-caret-up"></i>
             </button>
             <button class="vcontrol-dpad-btn dpad-left" data-button="dpad_left" data-dir="left" aria-label="D-Pad Left">
-              <i class="ph ph-caret-left-bold"></i>
+              <i class="ph ph-caret-left"></i>
             </button>
             <div class="vcontrol-dpad-center"></div>
             <button class="vcontrol-dpad-btn dpad-right" data-button="dpad_right" data-dir="right" aria-label="D-Pad Right">
-              <i class="ph ph-caret-right-bold"></i>
+              <i class="ph ph-caret-right"></i>
             </button>
             <button class="vcontrol-dpad-btn dpad-down" data-button="dpad_down" data-dir="down" aria-label="D-Pad Down">
-              <i class="ph ph-caret-down-bold"></i>
+              <i class="ph ph-caret-down"></i>
             </button>
             <div class="vcontrol-resize-handle" data-group="dpad" title="Drag to Resize Scale"></div>
           </div>
@@ -777,16 +814,16 @@
           <!-- Right: Action Buttons (Triangle, Circle, Cross, Square) -->
           <div class="vcontrol-group vcontrol-actions" id="vcontrol-actions" data-group="actions">
             <button class="vcontrol-action-btn action-triangle" data-button="triangle" data-action="triangle" aria-label="Triangle Button">
-              <i class="ph ph-triangle-bold"></i>
+              <i class="ph ph-triangle"></i>
             </button>
             <button class="vcontrol-action-btn action-circle" data-button="circle" data-action="attack" aria-label="Circle Button">
-              <i class="ph ph-circle-bold"></i>
+              <i class="ph ph-circle"></i>
             </button>
             <button class="vcontrol-action-btn action-cross" data-button="cross" data-action="jump" aria-label="Cross Button">
-              <i class="ph ph-x-bold"></i>
+              <i class="ph ph-x"></i>
             </button>
             <button class="vcontrol-action-btn action-square" data-button="square" data-action="square" aria-label="Square Button">
-              <i class="ph ph-square-bold"></i>
+              <i class="ph ph-square"></i>
             </button>
             <div class="vcontrol-resize-handle" data-group="actions" title="Drag to Resize Scale"></div>
           </div>
@@ -993,10 +1030,10 @@
 
         <!-- Mouse Tool Mode (Move vs Select) -->
         <div class="dock-segmented-group" role="group" aria-label="Mouse Mode">
-          <button id="btn-tool-move" class="btn btn-pixel btn-dock-tool active" data-tool="move" title="Move & Pan World (M)">
+          <button id="btn-tool-move" class="btn btn-pixel btn-dock-tool" data-tool="move" title="Move & Pan World (M)">
             <i class="ph ph-hand-grabbing"></i>
           </button>
-          <button id="btn-tool-select" class="btn btn-pixel btn-dock-tool" data-tool="select" title="Select Tool (S)">
+          <button id="btn-tool-select" class="btn btn-pixel btn-dock-tool active" data-tool="select" title="Select Tool (S)">
             <i class="ph ph-cursor"></i>
           </button>
         </div>
@@ -1073,7 +1110,7 @@
               <span>Reset</span>
             </button>
             <button class="customizer-tool-btn customizer-btn-back" data-tool="back" id="btn-customizer-tool-back">
-              <span>Back</span>
+              <span>Save &amp; Exit</span>
             </button>
           </div>
         </aside>

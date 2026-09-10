@@ -1,36 +1,19 @@
 /**
  * UNIFIVE Engine - Mobile Navigation Controller Subsystem
- * Aggregator coordinating mobile bottom navigation (bottom_nav.js) and off-canvas sidebar drawer (drawer_navigation.js).
  */
 const MobileNavigationController = {
-  isDrawerOpen: false,
-
   init() {
-    if (typeof DrawerNavigation !== "undefined") {
-      DrawerNavigation.bindDrawerEvents(this);
-    }
-    if (typeof BottomNav !== "undefined") {
-      BottomNav.bindBottomNav(this);
-    }
+    if (typeof BottomNav !== "undefined") BottomNav.init(this);
   },
-
-  openDrawer() {
-    if (typeof DrawerNavigation !== "undefined") {
-      DrawerNavigation.openDrawer(this);
-    }
-  },
-
   closeDrawer() {
-    if (typeof DrawerNavigation !== "undefined") {
-      DrawerNavigation.closeDrawer(this);
-    }
+    const controlsPane = document.getElementById("controls-pane");
+    const codeToolbox = document.getElementById("code-toolbox-pane");
+    if (controlsPane) controlsPane.classList.remove("mobile-drawer-open");
+    if (codeToolbox) codeToolbox.classList.remove("mobile-drawer-open");
   },
-
-  toggleDrawer() {
-    if (this.isDrawerOpen) {
-      this.closeDrawer();
-    } else {
-      this.openDrawer();
+  switchMode(mode) {
+    if (typeof AppModeController !== "undefined") {
+      AppModeController.setMode(mode);
     }
   }
 };

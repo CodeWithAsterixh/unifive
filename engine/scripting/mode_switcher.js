@@ -36,6 +36,13 @@
         MobileNavigationController.closeDrawer();
       }
 
+      if (mode === "play") {
+        if (typeof GamePlayerEngine !== "undefined") {
+          GamePlayerEngine.enter();
+        }
+        return;
+      }
+
       if (mode === "code") {
         document.body.classList.add("mode-code");
         document.body.classList.remove("mode-canvas");

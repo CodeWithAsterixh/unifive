@@ -703,13 +703,23 @@ body.resizing {
   border-color: var(--burgundy-light);
 }
 
-.layer-item-card.active {
+.layer-item-card.active,
+.layer-item-card.selected {
   background-color: var(--burgundy-mid);
-  border: 2px solid var(--burgundy-darkest);
+  border: 2px solid var(--gold-bright);
   box-shadow: 
     inset 2px 2px 0px var(--gold-bright),
     inset -2px -2px 0px var(--burgundy-darkest),
     1px 1px 0px #000;
+}
+
+.layer-item-card.selected {
+  background-color: #7f1d3a;
+}
+
+.layer-item-card.selected .layer-name,
+.layer-item-card.selected .layer-icon {
+  color: var(--gold-bright);
 }
 
 .layer-item-card.locked {
@@ -5951,6 +5961,16 @@ body.standalone-player .game-player-pane {
   justify-content: center !important;
 }
 
+/* Keep the playable/customizable area clear of the customizer sidebar. */
+.game-player-pane.customizing-controls .player-canvas-container {
+  left: 130px;
+  width: calc(100% - 130px);
+}
+
+.game-player-pane.customizing-controls .player-floating-bar {
+  display: none !important;
+}
+
 /* Minimal Top-Right Floating Controls (Distraction-Free with Quit Button) */
 .player-floating-bar {
   position: absolute;
@@ -6085,7 +6105,7 @@ body.standalone-player .game-player-pane {
   grid-template-columns: 46px 46px 46px;
   grid-template-rows: 46px 46px 46px;
   gap: 2px;
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
+  filter: none;
 }
 
 .vcontrol-dpad-btn {
@@ -6129,7 +6149,7 @@ body.standalone-player .game-player-pane {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(42, 5, 18, 0.45) 0%, rgba(21, 3, 9, 0.75) 100%);
   border: 1.5px solid rgba(254, 240, 138, 0.5);
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.18);
   position: relative;
   display: flex;
   align-items: center;
@@ -6144,7 +6164,7 @@ body.standalone-player .game-player-pane {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(124, 11, 43, 0.85) 0%, rgba(42, 5, 18, 0.95) 100%);
   border: 1.5px solid rgba(254, 240, 138, 0.85);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
   position: absolute;
   pointer-events: none;
   transition: transform 0.05s ease;
@@ -6200,7 +6220,7 @@ body.standalone-player .game-player-pane {
   grid-template-columns: 50px 50px 50px;
   grid-template-rows: 50px 50px 50px;
   gap: 2px;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+  filter: none;
 }
 
 .vcontrol-action-btn {
@@ -6256,6 +6276,183 @@ body.standalone-player .game-player-pane {
 .action-cross:active, .action-cross.active { background: rgba(59, 130, 246, 0.65); }
 .action-square:active, .action-square.active { background: rgba(236, 72, 153, 0.65); }
 
+/* Light editable-control palette. Variables are set per virtual-control group
+   from the Props tab, so multi-part controls can be styled independently. */
+.vcontrol-shoulder-btn,
+.vcontrol-dpad-btn,
+.vcontrol-system-btn,
+.vcontrol-action-btn {
+  background: var(--vc-face, #e8eef7) !important;
+  border-color: var(--vc-border, #facc15) !important;
+  color: var(--vc-text, #3b0713) !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.55) !important;
+}
+.vcontrol-dpad .vcontrol-dpad-center {
+  background: var(--vc-center, #cbd5e1) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-stick-base {
+  background: radial-gradient(circle, var(--vc-outer, #f1f5f9) 0%, var(--vc-face, #94a3b8) 100%) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-stick-knob {
+  background: radial-gradient(circle, var(--vc-inner, #ffffff) 0%, var(--vc-face, #cbd5e1) 100%) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-actions .action-triangle { color: var(--vc-triangle, #059669) !important; border-color: var(--vc-triangle, #059669) !important; }
+.vcontrol-actions .action-circle { color: var(--vc-circle, #dc2626) !important; border-color: var(--vc-circle, #dc2626) !important; }
+.vcontrol-actions .action-cross { color: var(--vc-cross, #2563eb) !important; border-color: var(--vc-cross, #2563eb) !important; }
+.vcontrol-actions .action-square { color: var(--vc-square, #db2777) !important; border-color: var(--vc-square, #db2777) !important; }
+
+/* Icons and custom part content stay legible over the editable control face. */
+.vcontrol-dpad-btn i,
+.vcontrol-action-btn i,
+.vcontrol-shoulder-btn span,
+.vcontrol-system-btn span,
+.vcontrol-custom-content-text {
+  color: var(--vc-text, #3b0713) !important;
+  opacity: 1 !important;
+  line-height: 1;
+  display: block !important;
+  font-size: inherit !important;
+}
+.vcontrol-custom-content-text { display: block; font-family: var(--font-pixel); font-size: 0.72rem; text-align: center; }
+.vcontrol-custom-content-image { width: 65%; height: 65%; object-fit: contain; image-rendering: pixelated; pointer-events: none; }
+
+.prop-vcontrol-color-presets {
+  display: inline-flex;
+  gap: 3px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+/* Virtual-control inspector: compact cards that remain usable in the narrow
+   Props pane and on mobile. */
+#prop-vcontrol-inspector .prop-vcontrol-section {
+  margin-bottom: 10px;
+}
+
+#prop-vcontrol-inspector .prop-rotation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 8px;
+  align-items: center;
+}
+
+#prop-vcontrol-inspector .prop-rotation-presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+#prop-vcontrol-inspector .prop-rotation-presets .preset-chip {
+  min-width: 0;
+  height: 32px;
+  padding: 0 4px;
+  font-size: 0.68rem;
+}
+
+#prop-vcontrol-inspector .input-labeled {
+  min-width: 0;
+}
+
+#prop-vcontrol-inspector select.input-pixel {
+  width: 100%;
+  min-width: 0;
+  color: #fff7ed;
+  background-color: #21030e;
+  border-color: #facc15;
+  color-scheme: dark;
+}
+
+#prop-vcontrol-inspector select.input-pixel option {
+  color: #fff7ed;
+  background-color: #21030e;
+}
+
+#prop-vcontrol-colors {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.prop-vcontrol-color-row {
+  display: grid;
+  grid-template-columns: minmax(78px, 0.9fr) 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 6px;
+  background: #250510;
+  border: 1px solid #5c0f20;
+}
+
+.prop-vcontrol-color-row .input-tag {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prop-vcontrol-color-row input[type="color"] {
+  width: 34px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid #facc15;
+  background: #120308;
+  cursor: pointer;
+}
+
+.prop-vcontrol-color-presets {
+  margin: 0;
+  gap: 4px;
+  justify-content: flex-start;
+}
+
+.prop-vcontrol-color-preset {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 480px) {
+  #prop-vcontrol-inspector .prop-rotation-row {
+    grid-template-columns: 1fr 72px;
+  }
+  .prop-vcontrol-color-row {
+    grid-template-columns: minmax(68px, 0.9fr) 34px minmax(0, 1fr);
+    gap: 5px;
+    padding: 5px;
+  }
+  .prop-vcontrol-color-preset {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.prop-vcontrol-color-preset {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid var(--burgundy-darkest);
+  background: var(--preset-color);
+  cursor: pointer;
+}
+
+.prop-vcontrol-color-preset:hover {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 1px;
+}
+
+/* Keep editable controls crisp and flat; selection is conveyed by outlines. */
+.mobile-virtual-gamepad .vcontrol-shoulder-btn,
+.mobile-virtual-gamepad .vcontrol-dpad-btn,
+.mobile-virtual-gamepad .vcontrol-system-btn,
+.mobile-virtual-gamepad .vcontrol-action-btn,
+.mobile-virtual-gamepad .vcontrol-stick-base,
+.mobile-virtual-gamepad .vcontrol-stick-knob {
+  box-shadow: none !important;
+}
+
 /* ============================================================================
    CONTROLS LAYOUT CUSTOMIZER (PPSSPP STYLE) - Burgundy & Gold Pixel Theme
    ============================================================================ */
@@ -6265,7 +6462,9 @@ body.standalone-player .game-player-pane {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 3, 9, 0.35);
+  /* The sidebar occupies the first 130px. The opaque mask starts only over
+     the playable canvas, leaving both the sidebar and editable controls clear. */
+  background: var(--bg-deep);
   z-index: 250;
   pointer-events: none; /* Let pointer events pass directly to virtual gamepad */
   user-select: none;
@@ -6461,14 +6660,33 @@ body.standalone-player .game-player-pane {
 }
 
 /* Customization Mode Drag Bounds & Interactive Layer */
-.customizer-active.mobile-virtual-gamepad,
-.editor-preview-active.mobile-virtual-gamepad {
-  z-index: 120 !important;
+.customizer-active.mobile-virtual-gamepad {
+  /* Sit above the customizer backdrop, while the sidebar remains on top in
+     its separate left-hand area. */
+  z-index: 270 !important;
   pointer-events: none !important; /* CRITICAL: Allows touches/clicks on canvas, variables, and dock to pass through! */
 }
 
-.customizer-active .vcontrol-group,
+/* For editor preview, just lift z-index without making it unclickable if we wanted, but pointer-events: none is good to not block the canvas */
+.editor-preview-active.mobile-virtual-gamepad {
+  z-index: 120 !important;
+  pointer-events: none !important;
+}
+
+/* A preview is explicitly an editing surface: only its control groups receive
+   pointer input, so the remaining canvas can still be selected and panned. */
 .editor-preview-active .vcontrol-group {
+  pointer-events: auto !important;
+  cursor: grab !important;
+}
+
+.editor-preview-active .vcontrol-resize-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.customizer-active .vcontrol-group {
   outline: 1.5px dashed rgba(254, 240, 138, 0.65) !important;
   outline-offset: 3px;
   cursor: grab !important;
@@ -6478,26 +6696,45 @@ body.standalone-player .game-player-pane {
   pointer-events: auto !important;
 }
 
-.editor-preview-active .vcontrol-group:hover,
 .customizer-active .vcontrol-group:hover {
   outline: 1.5px dashed var(--gold-bright, #fef08a) !important;
   background: transparent !important;
 }
 
-.customizer-active .vcontrol-group.selected-for-edit,
-.editor-preview-active .vcontrol-group.selected-for-edit {
+.customizer-active .vcontrol-group.selected-for-edit {
   outline: 2px solid var(--gold-bright, #fef08a) !important;
-  box-shadow: 0 0 10px rgba(254, 240, 138, 0.6) !important;
+  box-shadow: none !important;
   background: transparent !important;
 }
 
+/* Selection is shared by the in-game customizer and the editor preview. */
+.editor-preview-active .vcontrol-group.selected-for-edit {
+  outline: 3px solid var(--gold-bright, #fef08a) !important;
+  outline-offset: 5px;
+  box-shadow: 0 0 0 2px rgba(55, 10, 25, 0.9) !important;
+  filter: brightness(1.06);
+}
+
+.editor-preview-active .vcontrol-group.selected-for-edit .vcontrol-resize-handle {
+  background: #ffffff !important;
+  transform: scale(1.25);
+  box-shadow: none !important;
+}
+
+.customizer-active .vcontrol-part-selected,
+.editor-preview-active .vcontrol-part-selected {
+  outline: 3px solid #ffffff !important;
+  outline-offset: 2px;
+  box-shadow: none !important;
+  position: relative;
+  z-index: 2;
+}
+
 .customizer-active .vcontrol-group:active,
-.customizer-active .vcontrol-group.dragging,
-.editor-preview-active .vcontrol-group:active,
-.editor-preview-active .vcontrol-group.dragging {
+.customizer-active .vcontrol-group.dragging {
   cursor: grabbing !important;
   outline: 2px solid var(--gold-bright, #fef08a) !important;
-  box-shadow: 0 0 12px rgba(254, 240, 138, 0.8) !important;
+  box-shadow: none !important;
   background: transparent !important;
 }
 
@@ -6531,8 +6768,7 @@ body.standalone-player .game-player-pane {
   pointer-events: none;
 }
 
-.customizer-active .vcontrol-resize-handle,
-.editor-preview-active .vcontrol-resize-handle {
+.customizer-active .vcontrol-resize-handle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6703,3 +6939,165 @@ body.standalone-player .game-player-pane {
   font-size: 0.85rem;
 }
 
+/* ------------------------------------------------------------------------
+   CREATE PANEL (Split Sidebar & Items Grid Gallery)
+   ------------------------------------------------------------------------ */
+.create-split-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.create-kinds-sidebar {
+  width: 90px;
+  flex-shrink: 0;
+  background-color: var(--burgundy-darkest);
+  border-right: 2px solid var(--burgundy-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  overflow-y: auto;
+}
+
+.create-cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background-color: var(--burgundy-dark);
+  border: 2px solid var(--burgundy-darkest);
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+  border-radius: 0px;
+  outline: none;
+}
+
+.create-cat-btn:hover {
+  background-color: var(--burgundy-mid);
+  color: var(--text-white);
+}
+
+.create-cat-btn.active {
+  background-color: var(--burgundy-base);
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 
+    inset 1px 1px 0px var(--gold-bright),
+    inset -1px -1px 0px var(--burgundy-darkest);
+}
+
+.create-cat-btn i {
+  font-size: 1.25rem;
+}
+
+.create-gallery-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--burgundy-darkest);
+}
+
+.create-gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--burgundy-dark);
+  border-bottom: 2px solid var(--burgundy-mid);
+}
+
+.gallery-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.gallery-count-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  background-color: var(--burgundy-darkest);
+  padding: 2px 6px;
+  border: 1px solid var(--burgundy-dark);
+}
+
+.create-items-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.create-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.create-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--burgundy-dark);
+  border: 2px solid var(--burgundy-mid);
+  padding: 6px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 0px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.create-item-card:hover {
+  border-color: var(--gold-bright);
+  background-color: var(--burgundy-base);
+  box-shadow: 
+    inset 1px 1px 0px var(--gold-bright),
+    0 0 8px rgba(253, 224, 71, 0.25);
+}
+
+.create-card-thumb {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--burgundy-darkest);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.create-card-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.create-card-label {
+  font-family: var(--font-pixel);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-white);
+  text-align: center;
+  line-height: 1.15;
+  word-break: break-word;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0px #000000;
+}

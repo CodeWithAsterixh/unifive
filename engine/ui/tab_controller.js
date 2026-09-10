@@ -1,54 +1,47 @@
+/**
+ * UNIFIVE Engine - Tab Controller Subsystem
+ */
 const TabController = {
-  currentTab: "create", // "create" | "layers" | "properties" | "config"
-
+  activeTab: "create",
   init() {
-    const tabBtns = document.querySelectorAll(".panel-tab-btn");
-    tabBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const targetTab = btn.getAttribute("data-tab");
-        if (targetTab) this.setTab(targetTab);
+    const tabs = document.querySelectorAll(".panel-tab-btn");
+    for (const tab of tabs) {
+      tab.addEventListener("click", () => {
+        const targetTab = tab.getAttribute("data-tab");
+        this.switchTab(targetTab);
       });
-    });
-  },
-
-  setTab(tabId) {
-    this.currentTab = tabId;
-
-    const tabBtns = document.querySelectorAll(".panel-tab-btn");
-    const tabPanes = document.querySelectorAll(".tab-pane");
-
-    tabBtns.forEach(btn => {
-      const isTarget = btn.getAttribute("data-tab") === tabId;
-      btn.classList.toggle("active", isTarget);
-      btn.setAttribute("aria-selected", isTarget ? "true" : "false");
-    });
-
-    tabPanes.forEach(pane => {
-      const isTarget = pane.id === `tab-pane-${tabId}`;
-      pane.classList.toggle("active", isTarget);
-    });
-
-    switch (tabId) {
-      case "layers":
-        if (typeof LayersController !== "undefined") LayersController.update();
-        break;
-      case "properties":
-        if (typeof PropertiesController !== "undefined") {
-          PropertiesController.updateFromSelected(typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null);
-        }
-        break;
-      case "config":
-        if (typeof ConfigController !== "undefined") ConfigController.syncUIFromWorldConfig();
-        if (typeof U5Compiler !== "undefined") U5Compiler.updateStats();
-        break;
-      default:
-        break;
     }
-
-    SoundEngine.playChiptuneTone(380, "square", 0.06, 0.1);
+  },
+  switchTab(tabId) {
+    this.activeTab = tabId;
+    const tabs = document.querySelectorAll(".panel-tab-btn");
+    for (const t of tabs) {
+      const isActive = t.getAttribute("data-tab") === tabId;
+      t.classList.toggle("active", isActive);
+      t.setAttribute("aria-selected", isActive ? "true" : "false");
+    }
+    const panes = document.querySelectorAll(".tab-pane");
+    for (const p of panes) {
+      const isTarget = p.id === "tab-pane-" + tabId;
+      p.classList.toggle("active", isTarget);
+    }
+    if (tabId === "layers" && typeof LayersController !== "undefined") LayersController.update();
+    // Re-sync the inspector when it becomes visible. This matters when an
+    // item was selected on the canvas before the user opened the Props tab.
+    if (tabId === "properties" && typeof PropertiesController !== "undefined") {
+      const virtualKey = typeof MobileControlsManager !== "undefined"
+        ? MobileControlsManager.selectedGroup
+        : null;
+      if (virtualKey) {
+        PropertiesController.updateFromVirtualControl(MobileControlsManager, virtualKey, MobileControlsManager.selectedPart || null);
+        return;
+      }
+      const selected = typeof WorldObjectsManager !== "undefined"
+        && typeof WorldObjectsManager.getSelectedItem === "function"
+        ? WorldObjectsManager.getSelectedItem()
+        : null;
+      PropertiesController.updateFromSelected(selected);
+    }
+    if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(500, "square", 0.04, 0.08);
   }
 };
-
-// ============================================================================
-// 5B. LAYERS CONTROLLER (Visual Stacking Order, Drag-and-Drop Reordering, Visibility, Locking)
-// ============================================================================

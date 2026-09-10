@@ -40,7 +40,198 @@
       return list;
     },
 
-    draw(manager) {
+    drawControlVisual(item) {
+      const w = item.w;
+      const h = item.h;
+      const ct = item.controlType || "label";
+      const val = item.value;
+
+      noSmooth();
+
+      if (ct === "button") {
+        const label = val !== undefined ? String(val) : "BUTTON";
+        const bgTop = color(64, 156, 255);
+        const bgBot = color(37, 99, 235);
+        const r = Math.min(10, h / 3);
+
+        stroke(17, 24, 39);
+        strokeWeight(2);
+
+        for (let y = -h / 2; y < h / 2; y++) {
+          const t = (y + h / 2) / Math.max(1, h);
+          const cx1 = color(
+            red(bgTop) * (1 - t) + red(bgBot) * t,
+            green(bgTop) * (1 - t) + green(bgBot) * t,
+            blue(bgTop) * (1 - t) + blue(bgBot) * t
+          );
+          stroke(cx1);
+          line(-w / 2 + r, y, w / 2 - r, y);
+        }
+
+        stroke(17, 24, 39);
+        strokeWeight(2);
+        noFill();
+        rect(-w / 2, -h / 2, w, h, r);
+
+        fill(255, 255, 255, 120);
+        noStroke();
+        rect(-w / 2 + 3, -h / 2 + 3, w - 6, Math.max(2, h / 3), r, r, 0, 0);
+
+        fill(255, 251, 235);
+        stroke(23, 37, 84);
+        strokeWeight(1.5);
+        textSize(Math.max(10, Math.min(18, Math.floor(h * 0.4))));
+        textAlign(CENTER, CENTER);
+        text(label, 0, 1);
+
+      } else if (ct === "label") {
+        const label = val !== undefined ? String(val) : "Label";
+        fill(255, 255, 255, 0);
+        noStroke();
+        rect(-w / 2, -h / 2, w, h);
+
+        fill(13, 2, 5);
+        stroke(173, 32, 77);
+        strokeWeight(1.2);
+        textSize(Math.max(11, Math.min(22, Math.floor(h * 0.55))));
+        textAlign(LEFT, CENTER);
+        text(label, -w / 2 + 4, 0);
+
+      } else if (ct === "slider") {
+        const pct = Math.max(0, Math.min(100, parseInt(val) || 0));
+        const trackH = Math.max(6, Math.floor(h * 0.28));
+        const trackY = 0 - trackH / 2;
+        const trackL = -w / 2 + 6;
+        const trackR = w / 2 - 6;
+        const trackW = trackR - trackL;
+
+        stroke(46, 8, 20);
+        strokeWeight(2);
+        fill(30, 41, 59);
+        rect(trackL, trackY, trackW, trackH, trackH / 2);
+
+        const fillW = Math.max(0, (pct / 100) * trackW);
+        noStroke();
+        const grad1 = color(251, 146, 60);
+        const grad2 = color(239, 68, 68);
+        for (let x = 0; x < fillW; x++) {
+          const t = x / Math.max(1, fillW);
+          const cc = color(
+            red(grad1) * (1 - t) + red(grad2) * t,
+            green(grad1) * (1 - t) + green(grad2) * t,
+            blue(grad1) * (1 - t) + blue(grad2) * t
+          );
+          stroke(cc);
+          line(trackL + x, trackY + 2, trackL + x, trackY + trackH - 2);
+        }
+
+        const thumbX = trackL + fillW;
+        const thumbR = Math.min(12, h * 0.38);
+        noStroke();
+        fill(254, 204, 27);
+        stroke(13, 2, 5);
+        strokeWeight(2);
+        circle(thumbX, 0, thumbR * 2);
+        fill(13, 2, 5);
+        noStroke();
+        circle(thumbX, 0, Math.max(3, thumbR * 0.35));
+
+        fill(254, 204, 27);
+        stroke(13, 2, 5);
+        strokeWeight(1);
+        textSize(Math.max(9, Math.min(13, Math.floor(h * 0.28))));
+        textAlign(CENTER, TOP);
+        text(`${pct}%`, 0, h / 2 - Math.max(10, Math.floor(h * 0.28)) - 1);
+
+      } else if (ct === "toggle") {
+        const isOn = !!val;
+        const pillW = Math.max(40, w - 10);
+        const pillH = Math.max(22, Math.floor(h * 0.55));
+        const pillX = -pillW / 2;
+        const pillY = -pillH / 2;
+        const knobR = Math.max(8, Math.floor(pillH * 0.4));
+        const knobOffX = pillX + knobR + 2;
+        const knobOnX = pillX + pillW - knobR - 2;
+        const knobX = isOn ? knobOnX : knobOffX;
+
+        const bgOn = color(34, 197, 94);
+        const bgOff = color(75, 85, 99);
+        stroke(17, 24, 39);
+        strokeWeight(2);
+        fill(isOn ? bgOn : bgOff);
+        rect(pillX, pillY, pillW, pillH, pillH / 2);
+
+        noStroke();
+        fill(255, 255, 255, isOn ? 80 : 50);
+        rect(pillX + 2, pillY + 2, pillW - 4, pillH / 3, pillH / 2 - 1, pillH / 2 - 1, 0, 0);
+
+        fill(250, 250, 250);
+        stroke(17, 24, 39);
+        strokeWeight(2);
+        circle(knobX, 0, knobR * 2);
+        fill(isOn ? 34 : 156, isOn ? 197 : 163, isOn ? 94 : 175, isOn ? 255 : 255);
+        noStroke();
+        circle(knobX, 0, Math.max(3, knobR * 0.4));
+
+        fill(isOn ? 255 : 209, isOn ? 255 : 213, isOn ? 255 : 219);
+        noStroke();
+        textSize(Math.max(9, Math.min(12, Math.floor(h * 0.25))));
+        textAlign(CENTER, BOTTOM);
+        text(isOn ? "ON" : "OFF", 0, pillY - 3);
+
+      } else if (ct === "textinput") {
+        const label = val !== undefined ? String(val) : "";
+        const pad = 6;
+
+        fill(248, 250, 252);
+        stroke(46, 8, 20);
+        strokeWeight(2);
+        rect(-w / 2, -h / 2, w, h, 5);
+
+        stroke(203, 213, 225);
+        strokeWeight(1);
+        line(-w / 2 + 3, h / 2 - 4, w / 2 - 3, h / 2 - 4);
+        stroke(15, 23, 42);
+        strokeWeight(1);
+        line(-w / 2 + 3, -h / 2 + 3, w / 2 - 3, -h / 2 + 3);
+
+        fill(15, 23, 42);
+        noStroke();
+        textSize(Math.max(11, Math.min(18, Math.floor(h * 0.45))));
+        textAlign(LEFT, CENTER);
+        const textX = -w / 2 + pad;
+        const textMaxW = w - pad * 2;
+        let displayText = label;
+        const tSize = Math.max(11, Math.min(18, Math.floor(h * 0.45)));
+        while (displayText.length > 0 && textWidth(displayText) > textMaxW) {
+          displayText = displayText.slice(1);
+        }
+        if (displayText !== label && displayText.length > 1) {
+          displayText = "…" + displayText.slice(1);
+        }
+        text(displayText, textX, 0);
+
+        const blink = (Math.floor(millis() / 500) % 2 === 0);
+        if (blink) {
+          const curX = textX + Math.min(textMaxW, textWidth(label));
+          const curH = tSize + 2;
+          noStroke();
+          fill(15, 23, 42);
+          rect(curX + 1, -curH / 2, 1.5, curH);
+        }
+
+        fill(148, 163, 184);
+        noStroke();
+        textSize(Math.max(8, 10));
+        textAlign(RIGHT, TOP);
+        text("TXT", w / 2 - 4, -h / 2 + 3);
+      }
+    },
+
+    draw(managerOrItems, selectedId, dragState) {
+      const manager = Array.isArray(managerOrItems)
+        ? { items: managerOrItems, selectedId: selectedId, dragState: dragState, ghostPreview: { active: false } }
+        : (managerOrItems || (typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager : { items: [] }));
       if (!manager) return;
       const isPlay = typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying;
       const renderItems = this.getSortedRenderList(manager.items, isPlay);
@@ -56,7 +247,9 @@
         rotate(radians(item.rotation || 0));
         scale(item.flipH ? -1 : 1, item.flipV ? -1 : 1);
 
-        if (item.loaded && item.p5Img) {
+        if (item.type === "control") {
+          ObjectsRenderer.drawControlVisual(item);
+        } else if (item.loaded && item.p5Img) {
           if (typeof CropController !== "undefined" && CropController.isActive && item.id === CropController.targetItemId) {
             tint(255, 90);
             image(item.p5Img, -item.w / 2, -item.h / 2, item.w, item.h);
@@ -189,13 +382,13 @@
           if (typeof CropController !== "undefined" && CropController.isActive && item.id === CropController.targetItemId) {
             CropController.drawCropOverlay(item);
           } else if (item.id === manager.selectedId) {
-            manager.drawGizmo(item);
+            if (typeof ObjectsTransform !== "undefined") { ObjectsTransform.drawGizmo(item); } else if (typeof manager.drawGizmo === "function") { manager.drawGizmo(item); }
           }
         }
       }
 
       // Drag & Drop Ghost Preview (Only in Editor Mode)
-      if (!isPlay && manager.ghostPreview.active) {
+      if (!isPlay && manager.ghostPreview && manager.ghostPreview.active) {
         push();
         const gw = 260;
         const gh = 160;

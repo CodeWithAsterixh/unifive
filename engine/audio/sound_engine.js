@@ -1,59 +1,32 @@
 /**
- * UNIFIVE Engine - Sound Engine Subsystem
- * Aggregator coordinating audio context synthesis (synth_core.js) and game sound effects (sound_effects.js).
+ * UNIFIVE Engine - Master Sound Engine Subsystem
  */
 const SoundEngine = {
-  enabled: true,
-
-  get audioCtx() {
-    return typeof SynthCore !== "undefined" ? SynthCore.audioCtx : null;
-  },
-  set audioCtx(val) {
-    if (typeof SynthCore !== "undefined") SynthCore.audioCtx = val;
-  },
+  get enabled() { return typeof SynthCore !== "undefined" ? SynthCore.enabled : false; },
+  set enabled(val) { if (typeof SynthCore !== "undefined") SynthCore.enabled = val; },
 
   init() {
     if (typeof SynthCore !== "undefined") SynthCore.init();
   },
 
-  playChiptuneTone(freq, type = "square", duration = 0.08, volume = 0.1) {
-    if (typeof SynthCore !== "undefined") {
-      SynthCore.playChiptuneTone(this.enabled, freq, type, duration, volume);
-    }
+  playChiptuneTone(freq, type, duration, vol) {
+    if (typeof SynthCore !== "undefined") SynthCore.playChiptuneTone(freq, type, duration, vol);
   },
 
-  playAction(action) {
-    if (typeof SoundEffects !== "undefined") {
-      SoundEffects.playAction(this, action);
-    }
+  playAction(actionName) {
+    if (typeof SoundEffects !== "undefined") SoundEffects.playAction(this, actionName);
   },
 
-  playSoundEffect(name) {
-    if (typeof SoundEffects !== "undefined") {
-      SoundEffects.playSoundEffect(this, name);
-    }
+  playSound(id) {
+    this.playSoundEffect(id);
+  },
+
+  playSoundEffect(id) {
+    if (typeof SoundEffects !== "undefined") SoundEffects.playSoundEffect(this, id);
   },
 
   toggle() {
     this.enabled = !this.enabled;
-    const btn = document.getElementById("btn-sound");
-    const icon = document.getElementById("sound-icon");
-    const label = document.getElementById("sound-label");
-
-    if (this.enabled) {
-      this.playAction("toggle_on");
-      if (btn) btn.classList.add("active");
-      if (icon) icon.className = "ph ph-speaker-high";
-      if (label) label.textContent = "AUDIO: ON";
-    } else {
-      if (btn) btn.classList.remove("active");
-      if (icon) icon.className = "ph ph-speaker-slash";
-      if (label) label.textContent = "AUDIO: OFF";
-    }
-    return this.enabled;
-  },
-
-  toggleMute() {
-    return this.toggle();
+    if (typeof SoundIndicator !== "undefined") SoundIndicator.update();
   }
 };

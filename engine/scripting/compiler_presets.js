@@ -1,6 +1,5 @@
 /**
  * UNIFIVE Scripting - Compiler Presets Subsystem
- * Manages preset catalog retrieval, modal dialogs, and preset loading.
  */
 (function (global) {
   'use strict';
@@ -14,9 +13,7 @@
 
       modal.style.display = "flex";
       if (statusEl) statusEl.style.display = "none";
-      if (typeof SoundEngine !== "undefined") {
-        SoundEngine.playChiptuneTone(520, "square", 0.05, 0.08);
-      }
+      if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(520, "square", 0.05, 0.08);
 
       if (gridEl) {
         gridEl.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gold-bright); font-family: var(--font-pixel);"><i class="ph ph-spinner ph-spin"></i> Loading presets catalog...</div>';
@@ -77,9 +74,7 @@
           const btnLoad = card.querySelector(".btn-load-preset");
           if (btnLoad) {
             btnLoad.addEventListener("click", () => {
-              if (compiler) {
-                compiler.loadPresetFile(preset.file || "assets/presets/sidefacing_metropolis_quest.json");
-              }
+              this.loadPresetFile(compiler, preset.file || "assets/presets/sidefacing_metropolis_quest.json");
             });
           }
 
@@ -94,6 +89,10 @@
     },
 
     async loadPresetFile(compiler, presetFilePath) {
+      if (typeof compiler === "string") {
+        presetFilePath = compiler;
+        compiler = typeof U5Compiler !== "undefined" ? U5Compiler : null;
+      }
       const statusEl = document.getElementById("presets-loading-status");
       const statusText = document.getElementById("presets-loading-text");
       if (statusEl) statusEl.style.display = "flex";
@@ -107,10 +106,12 @@
         const blob = await resp.blob();
 
         if (statusText) statusText.textContent = "Unpacking layers & code scripts...";
-        if (compiler) {
+        if (compiler && typeof compiler.decompressAndLoad === "function") {
           await compiler.decompressAndLoad(blob);
-          this.closePresetsModal();
+        } else if (typeof U5Compiler !== "undefined" && typeof U5Compiler.decompressAndLoad === "function") {
+          await U5Compiler.decompressAndLoad(blob);
         }
+        this.closePresetsModal();
         if (typeof SoundEngine !== "undefined") {
           SoundEngine.playChiptuneTone(1046, "triangle", 0.1, 0.2);
           setTimeout(() => SoundEngine.playChiptuneTone(1318, "triangle", 0.15, 0.2), 80);

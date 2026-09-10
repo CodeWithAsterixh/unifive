@@ -71,6 +71,47 @@ const PropertiesInspector = {
       CropController.updateUI();
     }
 
+    const groupCtrlVal = document.getElementById("group-control-value");
+    const ctrlTypeBadge = document.getElementById("prop-control-type-badge");
+    const ctrlValTextWrap = document.getElementById("prop-control-value-text-wrap");
+    const ctrlValSliderWrap = document.getElementById("prop-control-value-slider-wrap");
+    const ctrlValToggleWrap = document.getElementById("prop-control-value-toggle-wrap");
+    const ctrlValText = document.getElementById("prop-control-value-text");
+    const ctrlValSlider = document.getElementById("prop-control-value-slider");
+    const ctrlValNum = document.getElementById("prop-control-value-num");
+    const ctrlValToggle = document.getElementById("prop-control-value-toggle");
+    const ctrlValToggleLabel = document.getElementById("prop-control-value-toggle-label");
+
+    if (groupCtrlVal) {
+      groupCtrlVal.style.display = (item.type === "control") ? "block" : "none";
+    }
+    if (item.type === "control") {
+      const ct = item.controlType || "label";
+      if (ctrlTypeBadge) ctrlTypeBadge.textContent = String(ct).toUpperCase();
+
+      const useText = (ct === "button" || ct === "label" || ct === "textinput");
+      const useSlider = (ct === "slider");
+      const useToggle = (ct === "toggle");
+
+      if (ctrlValTextWrap) ctrlValTextWrap.style.display = useText ? "flex" : "none";
+      if (ctrlValSliderWrap) ctrlValSliderWrap.style.display = useSlider ? "flex" : "none";
+      if (ctrlValToggleWrap) ctrlValToggleWrap.style.display = useToggle ? "flex" : "none";
+
+      if (useText && ctrlValText) {
+        ctrlValText.value = item.value !== undefined && item.value !== null ? String(item.value) : "";
+      }
+      if (useSlider) {
+        const n = Math.max(0, Math.min(100, parseInt(item.value) || 0));
+        if (ctrlValSlider) ctrlValSlider.value = n;
+        if (ctrlValNum) ctrlValNum.value = n;
+      }
+      if (useToggle) {
+        const on = !!item.value;
+        if (ctrlValToggle) ctrlValToggle.checked = on;
+        if (ctrlValToggleLabel) ctrlValToggleLabel.textContent = on ? "STATE: ON" : "STATE: OFF";
+      }
+    }
+
     controller.isUpdatingUI = false;
   }
 };
