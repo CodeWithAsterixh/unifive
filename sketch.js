@@ -826,6 +826,20 @@ const CreatePanelController = {
             { id: "sprite_swordsman", name: "Swordsman", theme: "Fantasy Chibi Male", type: "sprite", src: "assets/sprites/single-frames/sprite_swordsman.png", defaultPose: "Idle" },
             { id: "sprite_wizard", name: "Wizard", theme: "Fantasy Chibi Male", type: "sprite", src: "assets/sprites/single-frames/sprite_wizard.png", defaultPose: "Idle" }
           ]
+        },
+        {
+          id: "controls",
+          name: "Controls",
+          icon: "ph-faders-horizontal",
+          description: "Interactive UI controls with editable values",
+          folder: "ui-controls",
+          items: [
+            { id: "ctrl_button", name: "Button", type: "control", controlType: "button", src: "", defaultValue: "CLICK ME" },
+            { id: "ctrl_label", name: "Label", type: "control", controlType: "label", src: "", defaultValue: "Label Text" },
+            { id: "ctrl_slider", name: "Slider", type: "control", controlType: "slider", src: "", defaultValue: 50 },
+            { id: "ctrl_toggle", name: "Toggle", type: "control", controlType: "toggle", src: "", defaultValue: true },
+            { id: "ctrl_text", name: "Text Input", type: "control", controlType: "textinput", src: "", defaultValue: "Enter text..." }
+          ]
         }
       ],
       topdown: [
@@ -847,6 +861,20 @@ const CreatePanelController = {
             { id: "sprite_fox", name: "Red Fox", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/fox/single_frame.png", defaultPose: "Idle Front" },
             { id: "sprite_hare", name: "Field Hare", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/hare/single_frame.png", defaultPose: "Idle Front" },
             { id: "sprite_black_grouse", name: "Black Grouse", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/black_grouse/single_frame.png", defaultPose: "Idle Front" }
+          ]
+        },
+        {
+          id: "controls",
+          name: "Controls",
+          icon: "ph-faders-horizontal",
+          description: "Interactive UI controls with editable values",
+          folder: "ui-controls",
+          items: [
+            { id: "ctrl_button", name: "Button", type: "control", controlType: "button", src: "", defaultValue: "CLICK ME" },
+            { id: "ctrl_label", name: "Label", type: "control", controlType: "label", src: "", defaultValue: "Label Text" },
+            { id: "ctrl_slider", name: "Slider", type: "control", controlType: "slider", src: "", defaultValue: 50 },
+            { id: "ctrl_toggle", name: "Toggle", type: "control", controlType: "toggle", src: "", defaultValue: true },
+            { id: "ctrl_text", name: "Text Input", type: "control", controlType: "textinput", src: "", defaultValue: "Enter text..." }
           ]
         }
       ]
@@ -1776,6 +1804,68 @@ const PropertiesController = {
       });
     }
 
+    // Control Value: Text input (button, label, textinput)
+    const ctrlValText = document.getElementById("prop-control-value-text");
+    if (ctrlValText) {
+      ctrlValText.addEventListener("input", (e) => {
+        const item = WorldObjectsManager.getSelectedItem();
+        if (item && !this.isUpdatingUI && item.type === "control") {
+          item.value = e.target.value;
+          WorldObjectsManager.saveHistory();
+        }
+      });
+    }
+
+    // Control Value: Slider + Number (slider)
+    const ctrlValSlider = document.getElementById("prop-control-value-slider");
+    const ctrlValNum = document.getElementById("prop-control-value-num");
+    const updateCtrlSliderVal = (val) => {
+      const item = WorldObjectsManager.getSelectedItem();
+      if (item && !this.isUpdatingUI && item.type === "control") {
+        let n = parseInt(val) || 0;
+        n = Math.max(0, Math.min(100, n));
+        item.value = n;
+        if (ctrlValSlider) ctrlValSlider.value = n;
+        if (ctrlValNum) ctrlValNum.value = n;
+        WorldObjectsManager.saveHistory();
+      }
+    };
+    if (ctrlValSlider) {
+      ctrlValSlider.addEventListener("input", (e) => updateCtrlSliderVal(e.target.value));
+    }
+    if (ctrlValNum) {
+      ctrlValNum.addEventListener("input", (e) => updateCtrlSliderVal(e.target.value));
+    }
+
+    // Control Value: Slider preset chips
+    const ctrlValChips = document.querySelectorAll(".prop-ctrl-val-chip");
+    ctrlValChips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        const v = parseInt(chip.getAttribute("data-val"));
+        if (!isNaN(v)) {
+          updateCtrlSliderVal(v);
+          SoundEngine.playChiptuneTone(540, "square", 0.04, 0.08);
+        }
+      });
+    });
+
+    // Control Value: Toggle checkbox (toggle)
+    const ctrlValToggle = document.getElementById("prop-control-value-toggle");
+    const ctrlValToggleLabel = document.getElementById("prop-control-value-toggle-label");
+    if (ctrlValToggle) {
+      ctrlValToggle.addEventListener("change", (e) => {
+        const item = WorldObjectsManager.getSelectedItem();
+        if (item && !this.isUpdatingUI && item.type === "control") {
+          item.value = !!e.target.checked;
+          if (ctrlValToggleLabel) {
+            ctrlValToggleLabel.textContent = item.value ? "STATE: ON" : "STATE: OFF";
+          }
+          WorldObjectsManager.saveHistory();
+          SoundEngine.playChiptuneTone(item.value ? 720 : 420, "square", 0.04, 0.08);
+        }
+      });
+    }
+
     // Initialize Crop Controller
     CropController.init();
   },
@@ -1835,6 +1925,49 @@ const PropertiesController = {
     if (chkPlayable) chkPlayable.checked = !!item.isPlayable;
     if (selectDeviceVis) selectDeviceVis.value = item.deviceVisibility || "all";
     if (selectCollision) selectCollision.value = item.isSolid ? "solid" : "pass_through";
+
+    const groupCtrlVal = document.getElementById("group-control-value");
+    const ctrlTypeBadge = document.getElementById("prop-control-type-badge");
+    const ctrlTextWrap = document.getElementById("prop-control-value-text-wrap");
+    const ctrlSliderWrap = document.getElementById("prop-control-value-slider-wrap");
+    const ctrlToggleWrap = document.getElementById("prop-control-value-toggle-wrap");
+    const ctrlValText = document.getElementById("prop-control-value-text");
+    const ctrlValSlider = document.getElementById("prop-control-value-slider");
+    const ctrlValNum = document.getElementById("prop-control-value-num");
+    const ctrlValToggle = document.getElementById("prop-control-value-toggle");
+    const ctrlValToggleLabel = document.getElementById("prop-control-value-toggle-label");
+
+    if (groupCtrlVal) {
+      if (item.type === "control") {
+        groupCtrlVal.style.display = "block";
+        const ct = item.controlType || "label";
+        if (ctrlTypeBadge) ctrlTypeBadge.textContent = ct.toUpperCase();
+
+        const useText = (ct === "button" || ct === "label" || ct === "textinput");
+        const useSlider = (ct === "slider");
+        const useToggle = (ct === "toggle");
+
+        if (ctrlTextWrap) ctrlTextWrap.style.display = useText ? "block" : "none";
+        if (ctrlSliderWrap) ctrlSliderWrap.style.display = useSlider ? "block" : "none";
+        if (ctrlToggleWrap) ctrlToggleWrap.style.display = useToggle ? "block" : "none";
+
+        if (useText && ctrlValText) {
+          ctrlValText.value = item.value !== undefined ? String(item.value) : "";
+        }
+        if (useSlider) {
+          const n = Math.max(0, Math.min(100, parseInt(item.value) || 0));
+          if (ctrlValSlider) ctrlValSlider.value = n;
+          if (ctrlValNum) ctrlValNum.value = n;
+        }
+        if (useToggle) {
+          const isOn = !!item.value;
+          if (ctrlValToggle) ctrlValToggle.checked = isOn;
+          if (ctrlValToggleLabel) ctrlValToggleLabel.textContent = isOn ? "STATE: ON" : "STATE: OFF";
+        }
+      } else {
+        groupCtrlVal.style.display = "none";
+      }
+    }
 
     const nw = item.naturalW || item.w;
     const nh = item.naturalH || item.h;
@@ -2793,12 +2926,26 @@ const WorldObjectsManager = {
   },
 
   addItem(assetData, targetX, targetY) {
+    const isControl = assetData.type === "control";
+    const controlDefaults = {
+      button:  { w: 200, h: 60 },
+      label:   { w: 220, h: 40 },
+      slider:  { w: 260, h: 44 },
+      toggle:  { w: 110, h: 54 },
+      textinput: { w: 260, h: 52 }
+    };
+    const defDims = isControl && assetData.controlType
+      ? (controlDefaults[assetData.controlType] || { w: 200, h: 50 })
+      : { w: 320, h: 180 };
+
     const newItem = {
       id: "item_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
       assetId: assetData.id,
       name: assetData.name || "Asset",
       src: assetData.src,
       type: assetData.type || "image",
+      controlType: assetData.controlType || null,
+      value: (assetData.defaultValue !== undefined) ? assetData.defaultValue : "",
       theme: assetData.theme || null,
       defaultPose: assetData.defaultPose || "Idle",
       poses: assetData.poses || null,
@@ -2809,60 +2956,65 @@ const WorldObjectsManager = {
       hidden: false,
       x: 0,
       y: 0,
-      w: 320,
-      h: 180,
-      naturalW: 320,
-      naturalH: 180,
+      w: defDims.w,
+      h: defDims.h,
+      naturalW: defDims.w,
+      naturalH: defDims.h,
       rotation: 0,
       flipH: false,
       flipV: false,
-      crop: { x: 0, y: 0, w: 320, h: 180, isCropped: false },
+      crop: { x: 0, y: 0, w: defDims.w, h: defDims.h, isCropped: false },
       p5Img: null,
-      loaded: false
+      loaded: isControl ? true : false
     };
 
-    this.loadImageAsset(assetData.src, (cacheEntry) => {
-      if (cacheEntry.loaded && cacheEntry.img) {
-        newItem.p5Img = cacheEntry.img;
-        newItem.loaded = true;
-        newItem.naturalW = cacheEntry.naturalW;
-        newItem.naturalH = cacheEntry.naturalH;
-        newItem.crop = { x: 0, y: 0, w: cacheEntry.naturalW, h: cacheEntry.naturalH, isCropped: false };
+    if (isControl) {
+      newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, Math.round(targetX - newItem.w / 2)));
+      newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, Math.round(targetY - newItem.h / 2)));
+      if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(newItem);
+    } else if (assetData.src) {
+      this.loadImageAsset(assetData.src, (cacheEntry) => {
+        if (cacheEntry.loaded && cacheEntry.img) {
+          newItem.p5Img = cacheEntry.img;
+          newItem.loaded = true;
+          newItem.naturalW = cacheEntry.naturalW;
+          newItem.naturalH = cacheEntry.naturalH;
+          newItem.crop = { x: 0, y: 0, w: cacheEntry.naturalW, h: cacheEntry.naturalH, isCropped: false };
 
-        let nw = cacheEntry.naturalW;
-        let nh = cacheEntry.naturalH;
+          let nw = cacheEntry.naturalW;
+          let nh = cacheEntry.naturalH;
 
-        if (newItem.type === "sprite" || (newItem.assetId && newItem.assetId.startsWith("sprite_")) || newItem.poses) {
-          // Standard crisp pixel scaling: 1.5x of natural character size (or appropriate scale for hi-res)
-          let spriteScale = 1.5;
-          if (nh > 600) {
-            spriteScale = 140 / nh;
-          } else if (nh <= 32) {
-            spriteScale = 2.5;
+          if (newItem.type === "sprite" || (newItem.assetId && newItem.assetId.startsWith("sprite_")) || newItem.poses) {
+            let spriteScale = 1.5;
+            if (nh > 600) {
+              spriteScale = 140 / nh;
+            } else if (nh <= 32) {
+              spriteScale = 2.5;
+            }
+            nw = Math.max(20, Math.round(nw * spriteScale));
+            nh = Math.max(20, Math.round(nh * spriteScale));
+          } else {
+            const maxDim = 640;
+            if (nw > maxDim || nh > maxDim) {
+              const ratio = Math.min(maxDim / nw, maxDim / nh);
+              nw = Math.round(nw * ratio);
+              nh = Math.round(nh * ratio);
+            }
           }
-          nw = Math.max(20, Math.round(nw * spriteScale));
-          nh = Math.max(20, Math.round(nh * spriteScale));
-        } else {
-          const maxDim = 640;
-          if (nw > maxDim || nh > maxDim) {
-            const ratio = Math.min(maxDim / nw, maxDim / nh);
-            nw = Math.round(nw * ratio);
-            nh = Math.round(nh * ratio);
-          }
+
+          newItem.w = nw;
+          newItem.h = nh;
         }
 
-        newItem.w = nw;
-        newItem.h = nh;
-      }
+        newItem.x = Math.round(targetX - newItem.w / 2);
+        newItem.y = Math.round(targetY - newItem.h / 2);
 
-      newItem.x = Math.round(targetX - newItem.w / 2);
-      newItem.y = Math.round(targetY - newItem.h / 2);
-
-      newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, newItem.x));
-      newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, newItem.y));
-      
-      PropertiesController.updateFromSelected(newItem);
-    });
+        newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, newItem.x));
+        newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, newItem.y));
+        
+        if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(newItem);
+      });
+    }
 
     newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, Math.round(targetX - newItem.w / 2)));
     newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, Math.round(targetY - newItem.h / 2)));
@@ -3319,6 +3471,194 @@ const WorldObjectsManager = {
     pop();
   },
 
+  drawControlVisual(item) {
+    const w = item.w;
+    const h = item.h;
+    const ct = item.controlType || "label";
+    const val = item.value;
+
+    noSmooth();
+
+    if (ct === "button") {
+      const label = val !== undefined ? String(val) : "BUTTON";
+      const bgTop = color(64, 156, 255);
+      const bgBot = color(37, 99, 235);
+      const r = Math.min(10, h / 3);
+
+      stroke(17, 24, 39);
+      strokeWeight(2);
+
+      for (let y = -h / 2; y < h / 2; y++) {
+        const t = (y + h / 2) / Math.max(1, h);
+        const cx1 = color(
+          red(bgTop) * (1 - t) + red(bgBot) * t,
+          green(bgTop) * (1 - t) + green(bgBot) * t,
+          blue(bgTop) * (1 - t) + blue(bgBot) * t
+        );
+        stroke(cx1);
+        line(-w / 2 + r, y, w / 2 - r, y);
+      }
+
+      stroke(17, 24, 39);
+      strokeWeight(2);
+      noFill();
+      rect(-w / 2, -h / 2, w, h, r);
+
+      fill(255, 255, 255, 120);
+      noStroke();
+      rect(-w / 2 + 3, -h / 2 + 3, w - 6, Math.max(2, h / 3), r, r, 0, 0);
+
+      fill(255, 251, 235);
+      stroke(23, 37, 84);
+      strokeWeight(1.5);
+      textSize(Math.max(10, Math.min(18, Math.floor(h * 0.4))));
+      textAlign(CENTER, CENTER);
+      text(label, 0, 1);
+
+    } else if (ct === "label") {
+      const label = val !== undefined ? String(val) : "Label";
+      fill(255, 255, 255, 0);
+      noStroke();
+      rect(-w / 2, -h / 2, w, h);
+
+      fill(13, 2, 5);
+      stroke(173, 32, 77);
+      strokeWeight(1.2);
+      textSize(Math.max(11, Math.min(22, Math.floor(h * 0.55))));
+      textAlign(LEFT, CENTER);
+      text(label, -w / 2 + 4, 0);
+
+    } else if (ct === "slider") {
+      const pct = Math.max(0, Math.min(100, parseInt(val) || 0));
+      const trackH = Math.max(6, Math.floor(h * 0.28));
+      const trackY = 0 - trackH / 2;
+      const trackL = -w / 2 + 6;
+      const trackR = w / 2 - 6;
+      const trackW = trackR - trackL;
+
+      stroke(46, 8, 20);
+      strokeWeight(2);
+      fill(30, 41, 59);
+      rect(trackL, trackY, trackW, trackH, trackH / 2);
+
+      const fillW = Math.max(0, (pct / 100) * trackW);
+      noStroke();
+      const grad1 = color(251, 146, 60);
+      const grad2 = color(239, 68, 68);
+      for (let x = 0; x < fillW; x++) {
+        const t = x / Math.max(1, fillW);
+        const cc = color(
+          red(grad1) * (1 - t) + red(grad2) * t,
+          green(grad1) * (1 - t) + green(grad2) * t,
+          blue(grad1) * (1 - t) + blue(grad2) * t
+        );
+        stroke(cc);
+        line(trackL + x, trackY + 2, trackL + x, trackY + trackH - 2);
+      }
+
+      const thumbX = trackL + fillW;
+      const thumbR = Math.min(12, h * 0.38);
+      noStroke();
+      fill(254, 204, 27);
+      stroke(13, 2, 5);
+      strokeWeight(2);
+      circle(thumbX, 0, thumbR * 2);
+      fill(13, 2, 5);
+      noStroke();
+      circle(thumbX, 0, Math.max(3, thumbR * 0.35));
+
+      fill(254, 204, 27);
+      stroke(13, 2, 5);
+      strokeWeight(1);
+      textSize(Math.max(9, Math.min(13, Math.floor(h * 0.28))));
+      textAlign(CENTER, TOP);
+      text(`${pct}%`, 0, h / 2 - Math.max(10, Math.floor(h * 0.28)) - 1);
+
+    } else if (ct === "toggle") {
+      const isOn = !!val;
+      const pillW = Math.max(40, w - 10);
+      const pillH = Math.max(22, Math.floor(h * 0.55));
+      const pillX = -pillW / 2;
+      const pillY = -pillH / 2;
+      const knobR = Math.max(8, Math.floor(pillH * 0.4));
+      const knobOffX = pillX + knobR + 2;
+      const knobOnX = pillX + pillW - knobR - 2;
+      const knobX = isOn ? knobOnX : knobOffX;
+
+      const bgOn = color(34, 197, 94);
+      const bgOff = color(75, 85, 99);
+      stroke(17, 24, 39);
+      strokeWeight(2);
+      fill(isOn ? bgOn : bgOff);
+      rect(pillX, pillY, pillW, pillH, pillH / 2);
+
+      noStroke();
+      fill(255, 255, 255, isOn ? 80 : 50);
+      rect(pillX + 2, pillY + 2, pillW - 4, pillH / 3, pillH / 2 - 1, pillH / 2 - 1, 0, 0);
+
+      fill(250, 250, 250);
+      stroke(17, 24, 39);
+      strokeWeight(2);
+      circle(knobX, 0, knobR * 2);
+      fill(isOn ? 34 : 156, isOn ? 197 : 163, isOn ? 94 : 175, isOn ? 255 : 255);
+      noStroke();
+      circle(knobX, 0, Math.max(3, knobR * 0.4));
+
+      fill(isOn ? 255 : 209, isOn ? 255 : 213, isOn ? 255 : 219);
+      noStroke();
+      textSize(Math.max(9, Math.min(12, Math.floor(h * 0.25))));
+      textAlign(CENTER, BOTTOM);
+      text(isOn ? "ON" : "OFF", 0, pillY - 3);
+
+    } else if (ct === "textinput") {
+      const label = val !== undefined ? String(val) : "";
+      const pad = 6;
+
+      fill(248, 250, 252);
+      stroke(46, 8, 20);
+      strokeWeight(2);
+      rect(-w / 2, -h / 2, w, h, 5);
+
+      stroke(203, 213, 225);
+      strokeWeight(1);
+      line(-w / 2 + 3, h / 2 - 4, w / 2 - 3, h / 2 - 4);
+      stroke(15, 23, 42);
+      strokeWeight(1);
+      line(-w / 2 + 3, -h / 2 + 3, w / 2 - 3, -h / 2 + 3);
+
+      fill(15, 23, 42);
+      noStroke();
+      textSize(Math.max(11, Math.min(18, Math.floor(h * 0.45))));
+      textAlign(LEFT, CENTER);
+      const textX = -w / 2 + pad;
+      const textMaxW = w - pad * 2;
+      let displayText = label;
+      const tSize = Math.max(11, Math.min(18, Math.floor(h * 0.45)));
+      while (displayText.length > 0 && textWidth(displayText) > textMaxW) {
+        displayText = displayText.slice(1);
+      }
+      if (displayText !== label && displayText.length > 1) {
+        displayText = "…" + displayText.slice(1);
+      }
+      text(displayText, textX, 0);
+
+      const blink = (Math.floor(millis() / 500) % 2 === 0);
+      if (blink) {
+        const curX = textX + Math.min(textMaxW, textWidth(label));
+        const curH = tSize + 2;
+        noStroke();
+        fill(15, 23, 42);
+        rect(curX + 1, -curH / 2, 1.5, curH);
+      }
+
+      fill(148, 163, 184);
+      noStroke();
+      textSize(Math.max(8, 10));
+      textAlign(RIGHT, TOP);
+      text("TXT", w / 2 - 4, -h / 2 + 3);
+    }
+  },
+
   getSortedRenderList(isPlay = false) {
     if (!this.items || this.items.length === 0) return [];
     const isResponsive = WorldConfig.responsiveLayering !== false;
@@ -3371,7 +3711,9 @@ const WorldObjectsManager = {
       rotate(radians(item.rotation || 0));
       scale(item.flipH ? -1 : 1, item.flipV ? -1 : 1);
 
-      if (item.loaded && item.p5Img) {
+      if (item.type === "control") {
+        this.drawControlVisual(item);
+      } else if (item.loaded && item.p5Img) {
         if (CropController.isActive && item.id === CropController.targetItemId) {
           // In Crop Mode: draw dimmed full image (the overlay will handle highlight and brackets)
           tint(255, 90);

@@ -93,6 +93,20 @@ const CreateFallbackData = {
             { id: "sprite_swordsman", name: "Swordsman", theme: "Fantasy Chibi Male", type: "sprite", src: "assets/sprites/single-frames/sprite_swordsman.png", defaultPose: "Idle" },
             { id: "sprite_wizard", name: "Wizard", theme: "Fantasy Chibi Male", type: "sprite", src: "assets/sprites/single-frames/sprite_wizard.png", defaultPose: "Idle" }
           ]
+        },
+        {
+          id: "controls",
+          name: "Controls",
+          icon: "ph-faders-horizontal",
+          description: "Interactive UI controls with editable values",
+          folder: "ui-controls",
+          items: [
+            { id: "ctrl_button", name: "Button", type: "control", controlType: "button", src: "", defaultValue: "CLICK ME" },
+            { id: "ctrl_label", name: "Label", type: "control", controlType: "label", src: "", defaultValue: "Label Text" },
+            { id: "ctrl_slider", name: "Slider", type: "control", controlType: "slider", src: "", defaultValue: 50 },
+            { id: "ctrl_toggle", name: "Toggle", type: "control", controlType: "toggle", src: "", defaultValue: true },
+            { id: "ctrl_text", name: "Text Input", type: "control", controlType: "textinput", src: "", defaultValue: "Enter text..." }
+          ]
         }
       ],
       topdown: [
@@ -114,6 +128,20 @@ const CreateFallbackData = {
             { id: "sprite_fox", name: "Red Fox", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/fox/single_frame.png", defaultPose: "Idle Front" },
             { id: "sprite_hare", name: "Field Hare", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/hare/single_frame.png", defaultPose: "Idle Front" },
             { id: "sprite_black_grouse", name: "Black Grouse", theme: "Top-Down Animals", type: "sprite", src: "assets/sprites/topdown/black_grouse/single_frame.png", defaultPose: "Idle Front" }
+          ]
+        },
+        {
+          id: "controls",
+          name: "Controls",
+          icon: "ph-faders-horizontal",
+          description: "Interactive UI controls with editable values",
+          folder: "ui-controls",
+          items: [
+            { id: "ctrl_button", name: "Button", type: "control", controlType: "button", src: "", defaultValue: "CLICK ME" },
+            { id: "ctrl_label", name: "Label", type: "control", controlType: "label", src: "", defaultValue: "Label Text" },
+            { id: "ctrl_slider", name: "Slider", type: "control", controlType: "slider", src: "", defaultValue: 50 },
+            { id: "ctrl_toggle", name: "Toggle", type: "control", controlType: "toggle", src: "", defaultValue: true },
+            { id: "ctrl_text", name: "Text Input", type: "control", controlType: "textinput", src: "", defaultValue: "Enter text..." }
           ]
         }
       ]

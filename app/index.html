@@ -356,6 +356,43 @@
               </div>
             </div>
 
+            <!-- 2B. CONTROL VALUE (Only for Control-type items) -->
+            <div class="config-group" id="group-control-value" style="display: none;">
+              <div class="config-group-header">
+                <i class="ph ph-sliders"></i>
+                <span>CONTROL VALUE</span>
+                <span id="prop-control-type-badge" class="prop-badge-tag" style="margin-left: auto; background: #3b0764; color: #e9d5ff;">LABEL</span>
+              </div>
+              <div id="prop-control-value-text-wrap">
+                <div class="input-labeled">
+                  <span class="input-tag" title="Text value displayed on the control"><i class="ph ph-text-t"></i></span>
+                  <input id="prop-control-value-text" class="input-pixel" type="text" placeholder="Control text value" />
+                </div>
+              </div>
+              <div id="prop-control-value-slider-wrap" style="display: none;">
+                <div class="prop-rotation-row" style="margin-top: 4px;">
+                  <input id="prop-control-value-slider" class="range-pixel" type="range" min="0" max="100" step="1" value="50" />
+                  <div class="input-labeled prop-rot-input-wrap">
+                    <input id="prop-control-value-num" class="input-pixel" type="number" min="0" max="100" step="1" value="50" />
+                    <span class="input-tag">%</span>
+                  </div>
+                </div>
+                <div class="size-presets prop-rotation-presets" style="margin-top: 8px;">
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="0">0%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="25">25%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="50">50%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="75">75%</button>
+                  <button class="preset-chip prop-ctrl-val-chip" data-val="100">100%</button>
+                </div>
+              </div>
+              <div id="prop-control-value-toggle-wrap" style="display: none;">
+                <label class="prop-checkbox-label" title="Toggle the control ON or OFF" style="margin-top: 4px;">
+                  <input type="checkbox" id="prop-control-value-toggle" class="pixel-checkbox" />
+                  <span class="prop-checkbox-text" id="prop-control-value-toggle-label">STATE: OFF</span>
+                </label>
+              </div>
+            </div>
+
             <!-- 3. Transform: Position (X, Y) -->
             <div class="config-group">
               <div class="config-group-header">

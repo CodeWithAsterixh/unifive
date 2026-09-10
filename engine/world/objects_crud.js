@@ -3,12 +3,29 @@
  */
 const ObjectsCrud = {
   createItem(assetData, targetX, targetY) {
+    const isControl = assetData.type === "control";
+    const controlDefaults = {
+      button:    { w: 200, h: 60 },
+      label:     { w: 220, h: 40 },
+      slider:    { w: 260, h: 44 },
+      toggle:    { w: 110, h: 54 },
+      textinput: { w: 260, h: 52 }
+    };
+    const defDims = isControl && assetData.controlType
+      ? (controlDefaults[assetData.controlType] || { w: 200, h: 50 })
+      : { w: 320, h: 180 };
+
+    const tx = targetX || 0;
+    const ty = targetY || 0;
+
     const newItem = {
       id: "item_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
       assetId: assetData.id,
       name: assetData.name || "Asset",
       src: assetData.src,
       type: assetData.type || "image",
+      controlType: assetData.controlType || null,
+      value: (assetData.defaultValue !== undefined) ? assetData.defaultValue : "",
       theme: assetData.theme || null,
       defaultPose: assetData.defaultPose || "Idle",
       poses: assetData.poses || null,
@@ -17,21 +34,26 @@ const ObjectsCrud = {
       animSpeed: 100,
       locked: false,
       hidden: false,
-      x: targetX || 0,
-      y: targetY || 0,
-      w: 320,
-      h: 180,
-      naturalW: 320,
-      naturalH: 180,
+      x: Math.max(0, Math.round(tx - defDims.w / 2)),
+      y: Math.max(0, Math.round(ty - defDims.h / 2)),
+      w: defDims.w,
+      h: defDims.h,
+      naturalW: defDims.w,
+      naturalH: defDims.h,
       rotation: 0,
       flipH: false,
       flipV: false,
-      crop: { x: 0, y: 0, w: 320, h: 180, isCropped: false },
+      crop: { x: 0, y: 0, w: defDims.w, h: defDims.h, isCropped: false },
       p5Img: null,
-      loaded: false
+      loaded: isControl ? true : false
     };
 
-    if (typeof ObjectsAssetLoader !== "undefined") {
+    if (isControl) {
+      if (typeof WorldConfig !== "undefined") {
+        newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, newItem.x));
+        newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, newItem.y));
+      }
+    } else if (assetData.src && typeof ObjectsAssetLoader !== "undefined") {
       ObjectsAssetLoader.loadImageAsset(assetData.src, (cacheEntry) => {
         if (cacheEntry.loaded && cacheEntry.img) {
           newItem.p5Img = cacheEntry.img;
@@ -52,6 +74,10 @@ const ObjectsCrud = {
           }
           newItem.w = nw;
           newItem.h = nh;
+          if (typeof WorldConfig !== "undefined") {
+            newItem.x = Math.max(0, Math.min(WorldConfig.worldWidth - newItem.w, newItem.x));
+            newItem.y = Math.max(0, Math.min(WorldConfig.worldHeight - newItem.h, newItem.y));
+          }
         }
       });
     }
