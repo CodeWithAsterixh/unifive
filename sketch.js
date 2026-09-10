@@ -7688,19 +7688,20 @@ const U5Compiler = {
 
     try {
       const arrayBuffer = await fileOrBlob.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
       let jsonStr;
 
-      // 1. Attempt Decompression with DecompressionStream('gzip')
-      if (typeof DecompressionStream !== "undefined") {
+      // 1. Attempt Decompression if GZIP magic header (0x1F 0x8B) is present
+      const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+      if (isGzip && typeof DecompressionStream !== "undefined") {
         try {
           const ds = new DecompressionStream("gzip");
           const writer = ds.writable.getWriter();
-          writer.write(new Uint8Array(arrayBuffer));
+          writer.write(bytes);
           writer.close();
           const decompressedBlob = await new Response(ds.readable).blob();
           jsonStr = await decompressedBlob.text();
         } catch (dsErr) {
-          // If GZIP fails, fallback to direct text decoding
           jsonStr = new TextDecoder().decode(arrayBuffer);
         }
       } else {

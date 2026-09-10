@@ -49,10 +49,13 @@ const VControlDom = {
     const pad = document.getElementById("mobile-virtual-gamepad");
     if (!pad) return;
 
+    const wasHidden = pad.style.display === "none" || pad.style.display === "";
+
     if (manager.isCustomizing) {
       pad.style.display = "block";
       pad.classList.add("customizer-active");
       pad.classList.remove("editor-preview-active");
+      if (wasHidden) this.applyLayout(manager);
       return;
     }
     pad.classList.remove("customizer-active");
@@ -60,6 +63,7 @@ const VControlDom = {
     if (manager.editorPreviewVisible) {
       pad.style.display = "block";
       pad.classList.add("editor-preview-active");
+      if (wasHidden) this.applyLayout(manager);
       return;
     }
     pad.classList.remove("editor-preview-active");
@@ -68,6 +72,7 @@ const VControlDom = {
       pad.style.display = "block";
       const isPlay = typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying;
       pad.classList.toggle("editor-preview-active", !isPlay);
+      if (wasHidden) this.applyLayout(manager);
       return;
     }
     if (manager.visibilityMode === "hide") {
@@ -82,6 +87,7 @@ const VControlDom = {
     if (isPlayingOrRunning && manager.isMobile()) {
       pad.style.display = "block";
       pad.classList.remove("editor-preview-active");
+      if (wasHidden) this.applyLayout(manager);
     } else {
       pad.style.display = "none";
       pad.classList.remove("editor-preview-active");

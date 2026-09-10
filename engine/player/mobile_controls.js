@@ -26,17 +26,45 @@ const MobileControlsManager = {
     if (typeof VControlCustomizer !== "undefined") VControlCustomizer.bindUI(this);
     if (typeof VControlResize !== "undefined") VControlResize.init(this);
     if (typeof VControlDom !== "undefined") VControlDom.applyLayout(this);
+
+    // Wire toggle buttons for editor-mode virtual controls preview
+    const self = this;
+    const bindToggleBtn = (id) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener("click", () => self.toggleEditorPreview());
+      }
+    };
+    bindToggleBtn("btn-dock-toggle-vcontrols");
+    bindToggleBtn("btn-toggle-preview-vcontrols");
+  },
+
+  toggleEditorPreview() {
+    this.editorPreviewVisible = !this.editorPreviewVisible;
+    // Sync active state on both toggle buttons
+    ["btn-dock-toggle-vcontrols", "btn-toggle-preview-vcontrols"].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.classList.toggle("active", this.editorPreviewVisible);
+    });
+    if (typeof VControlDom !== "undefined") VControlDom.updateGamepadVisibility(this);
+    if (typeof SoundEngine !== "undefined") {
+      SoundEngine.playChiptuneTone(this.editorPreviewVisible ? 540 : 380, "square", 0.04, 0.07);
+    }
   },
 
   isMobile() { return this.isTouchDevice || this.isMobileScreen; },
   isDraggable() { return this.isCustomizing || this.editorPreviewVisible; },
   openCustomizer() {
     this.isCustomizing = true;
+    const overlay = document.getElementById("vcontrols-customizer-overlay");
+    if (overlay) overlay.style.display = "block";
     if (typeof VControlCustomizer !== "undefined") VControlCustomizer.setCustomizerTool(this, "move");
     if (typeof VControlDom !== "undefined") VControlDom.updateGamepadVisibility(this);
   },
   closeCustomizer() {
     this.isCustomizing = false;
+    const overlay = document.getElementById("vcontrols-customizer-overlay");
+    if (overlay) overlay.style.display = "none";
     if (typeof VControlDom !== "undefined") VControlDom.updateGamepadVisibility(this);
   }
 };

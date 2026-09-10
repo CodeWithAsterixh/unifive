@@ -9,14 +9,28 @@ const BuiltinExtended = {
     if (["say_text", "switch_costume", "next_costume", "change_size", "set_size", "move_layer_front", "move_layer_back", "go_to_layer"].includes(bid)) {
       if (!targetItem) return;
       if (bid === "say_text") {
-        targetItem.speechBubble = { text: value(0, "Hello!"), type: "say", timestamp: Date.now() };
-        await engine.sleep(Math.max(100, (Number(value(1, 2)) || 2) * 1000));
-        if (targetItem.speechBubble) delete targetItem.speechBubble;
+        const text = String(value(0, "Hello!"));
+        const secs = Number(value(1, 2)) || 2;
+        targetItem.speechBubble = { text: text, expiresAt: Date.now() + secs * 1000 };
+        await engine.sleep(Math.max(100, secs * 1000));
       } else if (bid === "switch_costume") {
-        targetItem.currentPose = value(0, targetItem.currentPose || "Idle");
+        const poseName = String(value(0, "Attack"));
+        if (targetItem.poses && targetItem.poses[poseName] && typeof SpritePosesController !== "undefined") {
+          SpritePosesController.selectPose(targetItem, poseName, targetItem.poses[poseName]);
+        } else {
+          targetItem.currentPose = poseName;
+        }
       } else if (bid === "next_costume") {
         const poses = targetItem.poses ? Object.keys(targetItem.poses) : [];
-        if (poses.length) targetItem.currentPose = poses[(poses.indexOf(targetItem.currentPose) + 1) % poses.length];
+        if (poses.length) {
+          const curIdx = poses.indexOf(targetItem.currentPose || poses[0]);
+          const nextPose = poses[(curIdx + 1) % poses.length];
+          if (typeof SpritePosesController !== "undefined" && targetItem.poses[nextPose]) {
+            SpritePosesController.selectPose(targetItem, nextPose, targetItem.poses[nextPose]);
+          } else {
+            targetItem.currentPose = nextPose;
+          }
+        }
       } else if (bid === "change_size") {
         const scale = 1 + (Number(value(0, 10)) || 0) / 100;
         targetItem.w = Math.max(8, Math.round(targetItem.w * scale));
@@ -26,12 +40,16 @@ const BuiltinExtended = {
         const ratio = targetItem.naturalW && targetItem.naturalH ? targetItem.naturalW / targetItem.naturalH : targetItem.w / targetItem.h;
         targetItem.w = Math.max(8, Math.round((targetItem.naturalW || targetItem.w) * scale));
         targetItem.h = Math.max(8, Math.round((targetItem.naturalH || targetItem.w / ratio) * scale));
-      } else if (typeof ObjectsZOrder !== "undefined" && typeof WorldObjectsManager !== "undefined") {
-        if (bid === "move_layer_front") ObjectsZOrder.bringForward(WorldObjectsManager.items, targetItem.id);
-        if (bid === "move_layer_back") ObjectsZOrder.sendBackward(WorldObjectsManager.items, targetItem.id);
+      } else if (typeof WorldObjectsManager !== "undefined") {
+        const count = Math.max(1, Math.floor(Number(value(0, 1)) || 1));
+        if (bid === "move_layer_front") WorldObjectsManager.moveLayerFront ? WorldObjectsManager.moveLayerFront(targetItem.id, count) : (typeof ObjectsZOrder !== "undefined" && ObjectsZOrder.bringForward(WorldObjectsManager.items, targetItem.id));
+        if (bid === "move_layer_back") WorldObjectsManager.moveLayerBack ? WorldObjectsManager.moveLayerBack(targetItem.id, count) : (typeof ObjectsZOrder !== "undefined" && ObjectsZOrder.sendBackward(WorldObjectsManager.items, targetItem.id));
         if (bid === "go_to_layer") {
-          if (String(value(0, "front")).toLowerCase() === "back") ObjectsZOrder.sendToBack(WorldObjectsManager.items, targetItem.id);
-          else ObjectsZOrder.bringToFront(WorldObjectsManager.items, targetItem.id);
+          if (String(value(0, "front")).toLowerCase() === "back") {
+            WorldObjectsManager.sendToBack ? WorldObjectsManager.sendToBack(targetItem.id) : (typeof ObjectsZOrder !== "undefined" && ObjectsZOrder.sendToBack(WorldObjectsManager.items, targetItem.id));
+          } else {
+            WorldObjectsManager.bringToFront ? WorldObjectsManager.bringToFront(targetItem.id) : (typeof ObjectsZOrder !== "undefined" && ObjectsZOrder.bringToFront(WorldObjectsManager.items, targetItem.id));
+          }
         }
         if (typeof LayersController !== "undefined") LayersController.update();
       }

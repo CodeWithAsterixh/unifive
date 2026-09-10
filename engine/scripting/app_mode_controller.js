@@ -48,13 +48,9 @@ const AppModeController = {
   },
 
   handleModeClick(e) {
-    const target = e.target.closest("#btn-mode-canvas, #btn-mode-code, #btn-mode-play, #btn-mobile-nav-canvas, #btn-mobile-nav-code, #btn-mobile-nav-play");
+    const target = e.target.closest("#btn-mode-canvas, #btn-mode-code, #btn-mobile-nav-canvas, #btn-mobile-nav-code");
     if (!target) return;
-    if (target.id.includes("play")) {
-      if (typeof GamePlayerEngine !== "undefined") GamePlayerEngine.togglePlay();
-    } else {
-      this.setMode(target.id.includes("code") ? "code" : "canvas");
-    }
+    this.setMode(target.id.includes("code") ? "code" : "canvas");
   },
 
   isCodeMode() {

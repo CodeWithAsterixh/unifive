@@ -88,8 +88,60 @@ const U5Compiler = {
   loadPresetFile(path) {
     if (typeof CompilerPresets !== "undefined") return CompilerPresets.loadPresetFile(this, path);
   },
-  async decompressAndLoad(blob) {
-    const text = await blob.text();
-    return typeof CompilerLoader !== "undefined" ? CompilerLoader.loadProjectJSON(text) : false;
+  async decompressAndLoad(fileOrBlob) {
+    if (this.isLoading) return false;
+    this.isLoading = true;
+    const btnHeader = document.getElementById("btn-import-u5");
+    const btnCfg = document.getElementById("btn-cfg-import-u5");
+    if (btnHeader) btnHeader.classList.add("btn-loading");
+    if (btnCfg) {
+      btnCfg.disabled = true;
+      btnCfg.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>OPENING...</span>';
+    }
+
+    try {
+      const arrayBuffer = await fileOrBlob.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let jsonStr;
+
+      const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+      if (isGzip && typeof DecompressionStream !== "undefined") {
+        try {
+          const ds = new DecompressionStream("gzip");
+          const writer = ds.writable.getWriter();
+          writer.write(bytes);
+          writer.close();
+          const decompressedBlob = await new Response(ds.readable).blob();
+          jsonStr = await decompressedBlob.text();
+        } catch (dsErr) {
+          jsonStr = new TextDecoder().decode(arrayBuffer);
+        }
+      } else {
+        jsonStr = new TextDecoder().decode(arrayBuffer);
+      }
+
+      if (typeof CompilerLoader !== "undefined") {
+        const ok = await CompilerLoader.loadProjectJSON(jsonStr);
+        if (!ok) throw new Error("Invalid .u5 file format.");
+      }
+
+      if (typeof SoundEngine !== "undefined") {
+        SoundEngine.playAction("save");
+        SoundEngine.playChiptuneTone(880, "square", 0.08, 0.15);
+        setTimeout(() => SoundEngine.playChiptuneTone(1174, "square", 0.12, 0.18), 80);
+      }
+      return true;
+    } catch (err) {
+      console.error("Decompress & Load failed:", err);
+      alert("Failed to load .u5 project: " + err.message);
+      return false;
+    } finally {
+      this.isLoading = false;
+      if (btnHeader) btnHeader.classList.remove("btn-loading");
+      if (btnCfg) {
+        btnCfg.disabled = false;
+        btnCfg.innerHTML = '<i class="ph ph-folder-open"></i><span>OPEN .U5 FILE</span>';
+      }
+    }
   }
 };

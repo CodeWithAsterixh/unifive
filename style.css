@@ -6461,14 +6461,18 @@ body.standalone-player .game-player-pane {
 }
 
 /* Customization Mode Drag Bounds & Interactive Layer */
-.customizer-active.mobile-virtual-gamepad,
-.editor-preview-active.mobile-virtual-gamepad {
+.customizer-active.mobile-virtual-gamepad {
   z-index: 120 !important;
   pointer-events: none !important; /* CRITICAL: Allows touches/clicks on canvas, variables, and dock to pass through! */
 }
 
-.customizer-active .vcontrol-group,
-.editor-preview-active .vcontrol-group {
+/* For editor preview, just lift z-index without making it unclickable if we wanted, but pointer-events: none is good to not block the canvas */
+.editor-preview-active.mobile-virtual-gamepad {
+  z-index: 120 !important;
+  pointer-events: none !important;
+}
+
+.customizer-active .vcontrol-group {
   outline: 1.5px dashed rgba(254, 240, 138, 0.65) !important;
   outline-offset: 3px;
   cursor: grab !important;
@@ -6478,23 +6482,19 @@ body.standalone-player .game-player-pane {
   pointer-events: auto !important;
 }
 
-.editor-preview-active .vcontrol-group:hover,
 .customizer-active .vcontrol-group:hover {
   outline: 1.5px dashed var(--gold-bright, #fef08a) !important;
   background: transparent !important;
 }
 
-.customizer-active .vcontrol-group.selected-for-edit,
-.editor-preview-active .vcontrol-group.selected-for-edit {
+.customizer-active .vcontrol-group.selected-for-edit {
   outline: 2px solid var(--gold-bright, #fef08a) !important;
   box-shadow: 0 0 10px rgba(254, 240, 138, 0.6) !important;
   background: transparent !important;
 }
 
 .customizer-active .vcontrol-group:active,
-.customizer-active .vcontrol-group.dragging,
-.editor-preview-active .vcontrol-group:active,
-.editor-preview-active .vcontrol-group.dragging {
+.customizer-active .vcontrol-group.dragging {
   cursor: grabbing !important;
   outline: 2px solid var(--gold-bright, #fef08a) !important;
   box-shadow: 0 0 12px rgba(254, 240, 138, 0.8) !important;
@@ -6531,8 +6531,7 @@ body.standalone-player .game-player-pane {
   pointer-events: none;
 }
 
-.customizer-active .vcontrol-resize-handle,
-.editor-preview-active .vcontrol-resize-handle {
+.customizer-active .vcontrol-resize-handle {
   display: flex;
   align-items: center;
   justify-content: center;

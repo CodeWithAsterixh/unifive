@@ -30,10 +30,22 @@ const BuiltinMotion = {
       targetItem.y = Math.max(0, Math.min(wHeight - targetItem.h, Number(evalInput(2, targetItem.y)) || targetItem.y));
       await engine.sleep(duration);
     } else if (bid === "point_dir") {
-      targetItem.rotation = Number(evalInput(0, 90)) || 90;
+      targetItem.rotation = ((Number(evalInput(0, 90)) % 360) + 360) % 360;
     } else if (bid === "bounce_edge") {
-      if (targetItem.x <= 0 || targetItem.x + targetItem.w >= wWidth) targetItem.flipH = !targetItem.flipH;
-      if (targetItem.y <= 0 || targetItem.y + targetItem.h >= wHeight) targetItem.flipV = !targetItem.flipV;
+      let bounced = false;
+      if (targetItem.x <= 0 || targetItem.x + targetItem.w >= wWidth) {
+        targetItem.rotation = (360 - (targetItem.rotation || 0)) % 360;
+        targetItem.x = Math.max(0, Math.min(wWidth - targetItem.w, targetItem.x));
+        bounced = true;
+      }
+      if (targetItem.y <= 0 || targetItem.y + targetItem.h >= wHeight) {
+        targetItem.rotation = (180 - (targetItem.rotation || 0) + 360) % 360;
+        targetItem.y = Math.max(0, Math.min(wHeight - targetItem.h, targetItem.y));
+        bounced = true;
+      }
+      if (bounced && typeof SoundEngine !== "undefined") {
+        SoundEngine.playChiptuneTone(400, "triangle", 0.04, 0.1);
+      }
     }
     await engine.sleep(16);
   }

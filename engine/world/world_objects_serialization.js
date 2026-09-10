@@ -16,8 +16,16 @@ const WorldObjectsSerialization = {
     }
     WorldObjectsManager.selectedId = null;
     for (const it of WorldObjectsManager.items) {
-      if (it.src && typeof ObjectsAssetLoader !== "undefined") {
-        ObjectsAssetLoader.loadImageAsset(it.src, function(c) { if (c.loaded && c.img) it.p5Img = c.img; });
+      if (it.src) {
+        // Use WorldObjectsManager.loadImageAsset → ObjectsAssetLoader → shared imageCache
+        WorldObjectsManager.loadImageAsset(it.src, function(c) {
+          if (c.loaded && c.img) {
+            it.p5Img = c.img;
+            it.loaded = true;
+            if (!it.naturalW) it.naturalW = c.naturalW;
+            if (!it.naturalH) it.naturalH = c.naturalH;
+          }
+        });
       }
     }
   },

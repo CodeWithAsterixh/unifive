@@ -1,8 +1,16 @@
 /**
  * UNIFIVE World - Objects Asset Loader Subsystem
+ * Uses WorldObjectsManager.imageCache as the shared backing store so that
+ * images pre-populated by CompilerLoader, ObjectsCrud, and Serialization
+ * all hit the same cache without redundant network fetches.
  */
 const ObjectsAssetLoader = {
-  imageCache: {},
+  // Lazy getter — resolves to WorldObjectsManager.imageCache once it exists
+  get imageCache() {
+    return (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.imageCache)
+      ? WorldObjectsManager.imageCache
+      : (this._fallbackCache = this._fallbackCache || {});
+  },
   loadImageAsset(src, callback) {
     if (this.imageCache[src]) { callback(this.imageCache[src]); return; }
     if (typeof loadImage === "function") {
@@ -23,3 +31,4 @@ const ObjectsAssetLoader = {
     }
   }
 };
+

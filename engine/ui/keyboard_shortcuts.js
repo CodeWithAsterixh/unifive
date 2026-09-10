@@ -28,7 +28,7 @@ const KeyboardShortcuts = {
         e.preventDefault();
         if (typeof saveWorkspace === "function") saveWorkspace();
       } else if (e.key.toLowerCase() === "v" && !e.ctrlKey && !e.metaKey) {
-        if (typeof ViewController !== "undefined") ViewController.toggleView();
+        if (typeof MobileControlsManager !== "undefined") MobileControlsManager.toggleEditorPreview();
       } else if ((e.key.toLowerCase() === "m" || e.key.toLowerCase() === "h") && !e.ctrlKey && !e.metaKey) {
         if (typeof MouseToolController !== "undefined") MouseToolController.setTool("move");
       } else if (e.key.toLowerCase() === "s" && !e.ctrlKey && !e.metaKey) {
@@ -36,7 +36,7 @@ const KeyboardShortcuts = {
       } else if (e.key.toLowerCase() === "g" && !e.ctrlKey && !e.metaKey) {
         if (typeof MouseToolController !== "undefined") MouseToolController.toggleGrid();
       } else if (e.key.toLowerCase() === "p") {
-        if (typeof AppModeController !== "undefined") AppModeController.setMode("play");
+        if (typeof GamePlayerEngine !== "undefined") GamePlayerEngine.togglePlay();
       }
     });
 

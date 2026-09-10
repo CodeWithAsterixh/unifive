@@ -4,6 +4,7 @@
 const WorldObjectsManager = {
   items: [],
   selectedId: null,
+  imageCache: {},  // Shared image cache — also used by ObjectsAssetLoader (wired after load)
   dragState: { isDragging: false, mode: null, handle: null, startX: 0, startY: 0, startItemX: 0, startItemY: 0, startItemW: 0, startItemH: 0 },
   ghostPreview: { active: false, worldX: 0, worldY: 0, item: null },
 
