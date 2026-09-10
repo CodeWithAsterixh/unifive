@@ -20,6 +20,26 @@ const VControlDom = {
         else el.style.removeProperty(variable);
       }
 
+      const partOverrides = cfg.parts || {};
+      const partDefs = typeof VControlState !== "undefined" ? (VControlState.partDefinitions[groupKey] || []) : [];
+      const partOrder = cfg.partOrder || partDefs.map(part => part.key);
+      for (const part of partDefs) {
+        const partEl = el.querySelector(part.selector);
+        const override = partOverrides[part.key] || {};
+        if (!partEl) continue;
+        partEl.style.display = override.visible === false ? "none" : "";
+        partEl.style.zIndex = String(Math.max(1, partOrder.indexOf(part.key) + 1));
+        partEl.style.transform = part.scale && override.scale && override.scale !== 1 ? `scale(${override.scale})` : "";
+        if (override.colors) {
+          const faceVariable = groupKey === "stick" && part.key === "outer" ? "--vc-outer"
+            : groupKey === "stick" && part.key === "inner" ? "--vc-inner" : "--vc-face";
+          if (override.colors.face) partEl.style.setProperty(faceVariable, override.colors.face); else partEl.style.removeProperty(faceVariable);
+          if (override.colors.border) partEl.style.setProperty("--vc-border", override.colors.border); else partEl.style.removeProperty("--vc-border");
+          if (override.colors.text) partEl.style.setProperty("--vc-text", override.colors.text); else partEl.style.removeProperty("--vc-text");
+        }
+        this.applyPartContent(partEl, override);
+      }
+
       el.style.removeProperty("top");
       el.style.removeProperty("bottom");
       el.style.removeProperty("left");
@@ -55,6 +75,31 @@ const VControlDom = {
       }
       el.style.display = cfg.visible !== false ? "" : "none";
     }
+  },
+  applyPartContent(partEl, override) {
+    const mode = override.contentMode || "icon";
+    const icon = partEl.querySelector("i");
+    const defaultText = partEl.querySelector("span:not(.vcontrol-custom-content-text)");
+    let customText = partEl.querySelector(".vcontrol-custom-content-text");
+    let customImage = partEl.querySelector(".vcontrol-custom-content-image");
+    if (!customText) {
+      customText = document.createElement("span");
+      customText.className = "vcontrol-custom-content-text";
+      partEl.appendChild(customText);
+    }
+    if (!customImage) {
+      customImage = document.createElement("img");
+      customImage.className = "vcontrol-custom-content-image";
+      customImage.alt = "";
+      partEl.appendChild(customImage);
+    }
+    if (icon && override.icon) icon.className = `ph ph-${String(override.icon).replace(/-bold$/, "")}`;
+    if (icon) icon.style.display = mode === "icon" ? "" : "none";
+    if (defaultText) defaultText.style.display = mode === "icon" ? "" : "none";
+    customText.textContent = override.text || "";
+    customText.style.display = mode === "text" ? "" : "none";
+    if (override.image) customImage.src = override.image;
+    customImage.style.display = mode === "image" && !!override.image ? "block" : "none";
   },
   updateGamepadVisibility(manager) {
     const pad = document.getElementById("mobile-virtual-gamepad");

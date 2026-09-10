@@ -82,6 +82,9 @@ const WorldObjectsManager = {
   },
 
   selectItem(id) {
+    if (typeof MobileControlsManager !== "undefined") {
+      MobileControlsManager.clearPartSelection();
+    }
     this.selectedId = id;
     if (typeof AppModeController !== "undefined") AppModeController.activeTargetId = id || "global_stage";
     const sel = this.getSelectedItem();

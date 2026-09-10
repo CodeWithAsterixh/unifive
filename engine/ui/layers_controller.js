@@ -10,6 +10,20 @@ const LayersController = {
     listEl.addEventListener("click", (e) => {
       const card = e.target.closest(".layer-item-card");
       if (!card) return;
+      const vGroup = card.getAttribute("data-vcontrol-group");
+      const vPart = card.getAttribute("data-vcontrol-part");
+      if (vGroup && vPart && typeof MobileControlsManager !== "undefined") {
+        const actionBtn = e.target.closest(".layer-btn");
+        if (actionBtn) {
+          const action = actionBtn.getAttribute("data-action");
+          if (action === "up") MobileControlsManager.movePart(vGroup, vPart, 1);
+          else if (action === "down") MobileControlsManager.movePart(vGroup, vPart, -1);
+          else if (action === "toggle-vis") MobileControlsManager.togglePartVisibility(vGroup, vPart);
+          return;
+        }
+        MobileControlsManager.selectPart(vGroup, vPart);
+        return;
+      }
       const id = card.getAttribute("data-id");
       if (!id) return;
 

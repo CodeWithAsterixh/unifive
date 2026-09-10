@@ -5,6 +5,11 @@ const LayersTree = {
   renderList() {
     const listEl = document.getElementById("layers-items-list");
     if (!listEl || typeof WorldObjectsManager === "undefined") return;
+    const vGroup = typeof MobileControlsManager !== "undefined" ? MobileControlsManager.selectedGroup : null;
+    if (vGroup && typeof VControlState !== "undefined") {
+      this.renderVirtualControlParts(listEl, vGroup);
+      return;
+    }
     const items = WorldObjectsManager.items || [];
     listEl.innerHTML = "";
 
@@ -17,6 +22,31 @@ const LayersTree = {
     for (let i = 0; i < reversed.length; i++) {
       const item = reversed[i];
       const card = this.createLayerCard(item, i);
+      listEl.appendChild(card);
+    }
+  },
+  renderVirtualControlParts(listEl, groupKey) {
+    const cfg = MobileControlsManager.currentLayout[groupKey] || {};
+    const definitions = VControlState.partDefinitions[groupKey] || [];
+    const order = (cfg.partOrder || definitions.map(part => part.key)).slice().reverse();
+    listEl.innerHTML = "";
+    for (const partKey of order) {
+      const part = VControlState.getPart(groupKey, partKey);
+      if (!part) continue;
+      const override = (cfg.parts || {})[partKey] || {};
+      const card = document.createElement("div");
+      card.className = "layer-item-card" + (MobileControlsManager.selectedPart === partKey ? " selected" : "");
+      card.setAttribute("data-vcontrol-group", groupKey);
+      card.setAttribute("data-vcontrol-part", partKey);
+      card.innerHTML = `
+        <div class="layer-drag-grip"><i class="ph ph-dots-six-vertical"></i></div>
+        <div class="layer-icon"><i class="ph ph-shapes"></i></div>
+        <div class="layer-name">${part.label}</div>
+        <div class="layer-actions">
+          <button class="layer-btn" data-action="up" title="Bring Forward"><i class="ph ph-caret-up"></i></button>
+          <button class="layer-btn" data-action="down" title="Send Backward"><i class="ph ph-caret-down"></i></button>
+          <button class="layer-btn" data-action="toggle-vis" title="Toggle Visibility"><i class="ph ${override.visible === false ? "ph-eye-slash" : "ph-eye"}"></i></button>
+        </div>`;
       listEl.appendChild(card);
     }
   },

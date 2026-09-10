@@ -703,13 +703,23 @@ body.resizing {
   border-color: var(--burgundy-light);
 }
 
-.layer-item-card.active {
+.layer-item-card.active,
+.layer-item-card.selected {
   background-color: var(--burgundy-mid);
-  border: 2px solid var(--burgundy-darkest);
+  border: 2px solid var(--gold-bright);
   box-shadow: 
     inset 2px 2px 0px var(--gold-bright),
     inset -2px -2px 0px var(--burgundy-darkest),
     1px 1px 0px #000;
+}
+
+.layer-item-card.selected {
+  background-color: #7f1d3a;
+}
+
+.layer-item-card.selected .layer-name,
+.layer-item-card.selected .layer-icon {
+  color: var(--gold-bright);
 }
 
 .layer-item-card.locked {
@@ -6095,7 +6105,7 @@ body.standalone-player .game-player-pane {
   grid-template-columns: 46px 46px 46px;
   grid-template-rows: 46px 46px 46px;
   gap: 2px;
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
+  filter: none;
 }
 
 .vcontrol-dpad-btn {
@@ -6139,7 +6149,7 @@ body.standalone-player .game-player-pane {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(42, 5, 18, 0.45) 0%, rgba(21, 3, 9, 0.75) 100%);
   border: 1.5px solid rgba(254, 240, 138, 0.5);
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.18);
   position: relative;
   display: flex;
   align-items: center;
@@ -6154,7 +6164,7 @@ body.standalone-player .game-player-pane {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(124, 11, 43, 0.85) 0%, rgba(42, 5, 18, 0.95) 100%);
   border: 1.5px solid rgba(254, 240, 138, 0.85);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
   position: absolute;
   pointer-events: none;
   transition: transform 0.05s ease;
@@ -6210,7 +6220,7 @@ body.standalone-player .game-player-pane {
   grid-template-columns: 50px 50px 50px;
   grid-template-rows: 50px 50px 50px;
   gap: 2px;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+  filter: none;
 }
 
 .vcontrol-action-btn {
@@ -6275,7 +6285,7 @@ body.standalone-player .game-player-pane {
   background: var(--vc-face, #e8eef7) !important;
   border-color: var(--vc-border, #facc15) !important;
   color: var(--vc-text, #3b0713) !important;
-  box-shadow: 0 3px 10px rgba(255, 255, 255, 0.24), inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.55) !important;
 }
 .vcontrol-dpad .vcontrol-dpad-center {
   background: var(--vc-center, #cbd5e1) !important;
@@ -6293,6 +6303,155 @@ body.standalone-player .game-player-pane {
 .vcontrol-actions .action-circle { color: var(--vc-circle, #dc2626) !important; border-color: var(--vc-circle, #dc2626) !important; }
 .vcontrol-actions .action-cross { color: var(--vc-cross, #2563eb) !important; border-color: var(--vc-cross, #2563eb) !important; }
 .vcontrol-actions .action-square { color: var(--vc-square, #db2777) !important; border-color: var(--vc-square, #db2777) !important; }
+
+/* Icons and custom part content stay legible over the editable control face. */
+.vcontrol-dpad-btn i,
+.vcontrol-action-btn i,
+.vcontrol-shoulder-btn span,
+.vcontrol-system-btn span,
+.vcontrol-custom-content-text {
+  color: var(--vc-text, #3b0713) !important;
+  opacity: 1 !important;
+  line-height: 1;
+  display: block !important;
+  font-size: inherit !important;
+}
+.vcontrol-custom-content-text { display: block; font-family: var(--font-pixel); font-size: 0.72rem; text-align: center; }
+.vcontrol-custom-content-image { width: 65%; height: 65%; object-fit: contain; image-rendering: pixelated; pointer-events: none; }
+
+.prop-vcontrol-color-presets {
+  display: inline-flex;
+  gap: 3px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+/* Virtual-control inspector: compact cards that remain usable in the narrow
+   Props pane and on mobile. */
+#prop-vcontrol-inspector .prop-vcontrol-section {
+  margin-bottom: 10px;
+}
+
+#prop-vcontrol-inspector .prop-rotation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 8px;
+  align-items: center;
+}
+
+#prop-vcontrol-inspector .prop-rotation-presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+#prop-vcontrol-inspector .prop-rotation-presets .preset-chip {
+  min-width: 0;
+  height: 32px;
+  padding: 0 4px;
+  font-size: 0.68rem;
+}
+
+#prop-vcontrol-inspector .input-labeled {
+  min-width: 0;
+}
+
+#prop-vcontrol-inspector select.input-pixel {
+  width: 100%;
+  min-width: 0;
+  color: #fff7ed;
+  background-color: #21030e;
+  border-color: #facc15;
+  color-scheme: dark;
+}
+
+#prop-vcontrol-inspector select.input-pixel option {
+  color: #fff7ed;
+  background-color: #21030e;
+}
+
+#prop-vcontrol-colors {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.prop-vcontrol-color-row {
+  display: grid;
+  grid-template-columns: minmax(78px, 0.9fr) 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 6px;
+  background: #250510;
+  border: 1px solid #5c0f20;
+}
+
+.prop-vcontrol-color-row .input-tag {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prop-vcontrol-color-row input[type="color"] {
+  width: 34px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid #facc15;
+  background: #120308;
+  cursor: pointer;
+}
+
+.prop-vcontrol-color-presets {
+  margin: 0;
+  gap: 4px;
+  justify-content: flex-start;
+}
+
+.prop-vcontrol-color-preset {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 480px) {
+  #prop-vcontrol-inspector .prop-rotation-row {
+    grid-template-columns: 1fr 72px;
+  }
+  .prop-vcontrol-color-row {
+    grid-template-columns: minmax(68px, 0.9fr) 34px minmax(0, 1fr);
+    gap: 5px;
+    padding: 5px;
+  }
+  .prop-vcontrol-color-preset {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.prop-vcontrol-color-preset {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid var(--burgundy-darkest);
+  background: var(--preset-color);
+  cursor: pointer;
+}
+
+.prop-vcontrol-color-preset:hover {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 1px;
+}
+
+/* Keep editable controls crisp and flat; selection is conveyed by outlines. */
+.mobile-virtual-gamepad .vcontrol-shoulder-btn,
+.mobile-virtual-gamepad .vcontrol-dpad-btn,
+.mobile-virtual-gamepad .vcontrol-system-btn,
+.mobile-virtual-gamepad .vcontrol-action-btn,
+.mobile-virtual-gamepad .vcontrol-stick-base,
+.mobile-virtual-gamepad .vcontrol-stick-knob {
+  box-shadow: none !important;
+}
 
 /* ============================================================================
    CONTROLS LAYOUT CUSTOMIZER (PPSSPP STYLE) - Burgundy & Gold Pixel Theme
@@ -6544,7 +6703,7 @@ body.standalone-player .game-player-pane {
 
 .customizer-active .vcontrol-group.selected-for-edit {
   outline: 2px solid var(--gold-bright, #fef08a) !important;
-  box-shadow: 0 0 10px rgba(254, 240, 138, 0.6) !important;
+  box-shadow: none !important;
   background: transparent !important;
 }
 
@@ -6552,21 +6711,30 @@ body.standalone-player .game-player-pane {
 .editor-preview-active .vcontrol-group.selected-for-edit {
   outline: 3px solid var(--gold-bright, #fef08a) !important;
   outline-offset: 5px;
-  box-shadow: 0 0 0 2px rgba(55, 10, 25, 0.9), 0 0 16px rgba(254, 204, 27, 0.9) !important;
-  filter: brightness(1.2) drop-shadow(0 0 6px rgba(254, 204, 27, 0.75));
+  box-shadow: 0 0 0 2px rgba(55, 10, 25, 0.9) !important;
+  filter: brightness(1.06);
 }
 
 .editor-preview-active .vcontrol-group.selected-for-edit .vcontrol-resize-handle {
   background: #ffffff !important;
   transform: scale(1.25);
-  box-shadow: 0 0 10px rgba(254, 204, 27, 1) !important;
+  box-shadow: none !important;
+}
+
+.customizer-active .vcontrol-part-selected,
+.editor-preview-active .vcontrol-part-selected {
+  outline: 3px solid #ffffff !important;
+  outline-offset: 2px;
+  box-shadow: none !important;
+  position: relative;
+  z-index: 2;
 }
 
 .customizer-active .vcontrol-group:active,
 .customizer-active .vcontrol-group.dragging {
   cursor: grabbing !important;
   outline: 2px solid var(--gold-bright, #fef08a) !important;
-  box-shadow: 0 0 12px rgba(254, 240, 138, 0.8) !important;
+  box-shadow: none !important;
   background: transparent !important;
 }
 

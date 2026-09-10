@@ -20,14 +20,6 @@ const VControlResize = {
 
   bindPointerEvents(manager) {
     const groups = document.querySelectorAll(".vcontrol-group");
-    const selectGroup = (groupEl) => {
-      document.querySelectorAll(".vcontrol-group.selected-for-edit").forEach(el => el.classList.remove("selected-for-edit"));
-      groupEl.classList.add("selected-for-edit");
-      manager.selectedGroup = groupEl.getAttribute("data-group");
-      if (typeof PropertiesController !== "undefined") {
-        PropertiesController.updateFromVirtualControl(manager, manager.selectedGroup);
-      }
-    };
 
     for (const groupEl of groups) {
       groupEl.addEventListener("pointerdown", (event) => {
@@ -38,7 +30,9 @@ const VControlResize = {
 
         event.preventDefault();
         event.stopPropagation();
-        selectGroup(groupEl);
+        const definitions = typeof VControlState !== "undefined" ? (VControlState.partDefinitions[groupKey] || []) : [];
+        const part = definitions.find(def => event.target.closest(def.selector));
+        manager.selectPart(groupKey, part ? part.key : null);
         groupEl.setPointerCapture?.(event.pointerId);
 
         if (event.target.closest(".vcontrol-resize-handle")) {

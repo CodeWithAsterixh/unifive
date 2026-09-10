@@ -25,14 +25,15 @@ const TabController = {
       const isTarget = p.id === "tab-pane-" + tabId;
       p.classList.toggle("active", isTarget);
     }
+    if (tabId === "layers" && typeof LayersController !== "undefined") LayersController.update();
     // Re-sync the inspector when it becomes visible. This matters when an
     // item was selected on the canvas before the user opened the Props tab.
     if (tabId === "properties" && typeof PropertiesController !== "undefined") {
-      const virtualKey = typeof MobileControlsManager !== "undefined" && MobileControlsManager.editorPreviewVisible
+      const virtualKey = typeof MobileControlsManager !== "undefined"
         ? MobileControlsManager.selectedGroup
         : null;
       if (virtualKey) {
-        PropertiesController.updateFromVirtualControl(MobileControlsManager, virtualKey);
+        PropertiesController.updateFromVirtualControl(MobileControlsManager, virtualKey, MobileControlsManager.selectedPart || null);
         return;
       }
       const selected = typeof WorldObjectsManager !== "undefined"

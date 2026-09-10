@@ -30,6 +30,15 @@ const LifecycleMouseEvents = {
     const sy = e.clientY - rect.top;
     const spacePressed = this.getSpacePressed();
 
+    // A click on the canvas itself deselects a virtual-control part. The
+    // controls are DOM overlays, so clicks on another control never reach
+    // this handler and continue to select that control instead.
+    if (e.button === 0 && e.target === canvasEl && typeof MobileControlsManager !== "undefined"
+      && MobileControlsManager.selectedGroup && MobileControlsManager.isDraggable()) {
+      MobileControlsManager.clearPartSelection();
+      return;
+    }
+
     if (typeof VariableManager !== "undefined" && VariableManager.handleMouseDown(sx, sy)) return;
 
     const cam = (typeof getActiveStageCamera === "function") ? getActiveStageCamera() : { panX: 1000, panY: 750, zoom: 1.0 };

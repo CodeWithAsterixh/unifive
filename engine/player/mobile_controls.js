@@ -57,6 +57,57 @@ const MobileControlsManager = {
   applyLayout() {
     if (typeof VControlDom !== "undefined") VControlDom.applyLayout(this);
   },
+  selectPart(groupKey, partKey = null) {
+    this.selectedGroup = groupKey;
+    this.selectedPart = partKey;
+    document.querySelectorAll(".vcontrol-group.selected-for-edit").forEach(el => el.classList.remove("selected-for-edit"));
+    document.querySelectorAll(".vcontrol-part-selected").forEach(el => el.classList.remove("vcontrol-part-selected"));
+    const groupEl = document.getElementById("vcontrol-" + groupKey);
+    if (groupEl) {
+      groupEl.classList.add("selected-for-edit");
+      const definition = partKey && typeof VControlState !== "undefined" ? VControlState.getPart(groupKey, partKey) : null;
+      const partEl = definition ? groupEl.querySelector(definition.selector) : null;
+      if (partEl) partEl.classList.add("vcontrol-part-selected");
+    }
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromVirtualControl(this, groupKey, partKey);
+    if (typeof LayersController !== "undefined") LayersController.update();
+  },
+  clearPartSelection() {
+    if (!this.selectedGroup) return false;
+    this.selectedGroup = null;
+    this.selectedPart = null;
+    document.querySelectorAll(".vcontrol-group.selected-for-edit, .vcontrol-part-selected").forEach(el => {
+      el.classList.remove("selected-for-edit", "vcontrol-part-selected");
+    });
+    const selectedWorldItem = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(selectedWorldItem);
+    if (typeof LayersController !== "undefined") LayersController.update();
+    return true;
+  },
+  movePart(groupKey, partKey, direction) {
+    const cfg = this.currentLayout && this.currentLayout[groupKey];
+    const definitions = typeof VControlState !== "undefined" ? (VControlState.partDefinitions[groupKey] || []) : [];
+    if (!cfg || !partKey || definitions.length === 0) return;
+    const order = cfg.partOrder || definitions.map(part => part.key);
+    const index = order.indexOf(partKey);
+    const next = index + direction;
+    if (index < 0 || next < 0 || next >= order.length) return;
+    [order[index], order[next]] = [order[next], order[index]];
+    cfg.partOrder = order;
+    this.applyLayout();
+    if (typeof VControlState !== "undefined") VControlState.saveLayout(this);
+    if (typeof LayersController !== "undefined") LayersController.update();
+  },
+  togglePartVisibility(groupKey, partKey) {
+    const cfg = this.currentLayout && this.currentLayout[groupKey];
+    if (!cfg || !partKey) return;
+    cfg.parts = cfg.parts || {};
+    const part = cfg.parts[partKey] = cfg.parts[partKey] || {};
+    part.visible = part.visible === false;
+    this.applyLayout();
+    if (typeof VControlState !== "undefined") VControlState.saveLayout(this);
+    if (typeof LayersController !== "undefined") LayersController.update();
+  },
   openCustomizer() {
     this.isCustomizing = true;
     // Customization is live: dismiss the pause dialog and resume the game so
