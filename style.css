@@ -5951,6 +5951,16 @@ body.standalone-player .game-player-pane {
   justify-content: center !important;
 }
 
+/* Keep the playable/customizable area clear of the customizer sidebar. */
+.game-player-pane.customizing-controls .player-canvas-container {
+  left: 130px;
+  width: calc(100% - 130px);
+}
+
+.game-player-pane.customizing-controls .player-floating-bar {
+  display: none !important;
+}
+
 /* Minimal Top-Right Floating Controls (Distraction-Free with Quit Button) */
 .player-floating-bar {
   position: absolute;
@@ -6256,6 +6266,34 @@ body.standalone-player .game-player-pane {
 .action-cross:active, .action-cross.active { background: rgba(59, 130, 246, 0.65); }
 .action-square:active, .action-square.active { background: rgba(236, 72, 153, 0.65); }
 
+/* Light editable-control palette. Variables are set per virtual-control group
+   from the Props tab, so multi-part controls can be styled independently. */
+.vcontrol-shoulder-btn,
+.vcontrol-dpad-btn,
+.vcontrol-system-btn,
+.vcontrol-action-btn {
+  background: var(--vc-face, #e8eef7) !important;
+  border-color: var(--vc-border, #facc15) !important;
+  color: var(--vc-text, #3b0713) !important;
+  box-shadow: 0 3px 10px rgba(255, 255, 255, 0.24), inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+}
+.vcontrol-dpad .vcontrol-dpad-center {
+  background: var(--vc-center, #cbd5e1) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-stick-base {
+  background: radial-gradient(circle, var(--vc-outer, #f1f5f9) 0%, var(--vc-face, #94a3b8) 100%) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-stick-knob {
+  background: radial-gradient(circle, var(--vc-inner, #ffffff) 0%, var(--vc-face, #cbd5e1) 100%) !important;
+  border-color: var(--vc-border, #facc15) !important;
+}
+.vcontrol-actions .action-triangle { color: var(--vc-triangle, #059669) !important; border-color: var(--vc-triangle, #059669) !important; }
+.vcontrol-actions .action-circle { color: var(--vc-circle, #dc2626) !important; border-color: var(--vc-circle, #dc2626) !important; }
+.vcontrol-actions .action-cross { color: var(--vc-cross, #2563eb) !important; border-color: var(--vc-cross, #2563eb) !important; }
+.vcontrol-actions .action-square { color: var(--vc-square, #db2777) !important; border-color: var(--vc-square, #db2777) !important; }
+
 /* ============================================================================
    CONTROLS LAYOUT CUSTOMIZER (PPSSPP STYLE) - Burgundy & Gold Pixel Theme
    ============================================================================ */
@@ -6265,7 +6303,9 @@ body.standalone-player .game-player-pane {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 3, 9, 0.35);
+  /* The sidebar occupies the first 130px. The opaque mask starts only over
+     the playable canvas, leaving both the sidebar and editable controls clear. */
+  background: var(--bg-deep);
   z-index: 250;
   pointer-events: none; /* Let pointer events pass directly to virtual gamepad */
   user-select: none;
@@ -6462,7 +6502,9 @@ body.standalone-player .game-player-pane {
 
 /* Customization Mode Drag Bounds & Interactive Layer */
 .customizer-active.mobile-virtual-gamepad {
-  z-index: 120 !important;
+  /* Sit above the customizer backdrop, while the sidebar remains on top in
+     its separate left-hand area. */
+  z-index: 270 !important;
   pointer-events: none !important; /* CRITICAL: Allows touches/clicks on canvas, variables, and dock to pass through! */
 }
 
@@ -6470,6 +6512,19 @@ body.standalone-player .game-player-pane {
 .editor-preview-active.mobile-virtual-gamepad {
   z-index: 120 !important;
   pointer-events: none !important;
+}
+
+/* A preview is explicitly an editing surface: only its control groups receive
+   pointer input, so the remaining canvas can still be selected and panned. */
+.editor-preview-active .vcontrol-group {
+  pointer-events: auto !important;
+  cursor: grab !important;
+}
+
+.editor-preview-active .vcontrol-resize-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .customizer-active .vcontrol-group {
@@ -6491,6 +6546,20 @@ body.standalone-player .game-player-pane {
   outline: 2px solid var(--gold-bright, #fef08a) !important;
   box-shadow: 0 0 10px rgba(254, 240, 138, 0.6) !important;
   background: transparent !important;
+}
+
+/* Selection is shared by the in-game customizer and the editor preview. */
+.editor-preview-active .vcontrol-group.selected-for-edit {
+  outline: 3px solid var(--gold-bright, #fef08a) !important;
+  outline-offset: 5px;
+  box-shadow: 0 0 0 2px rgba(55, 10, 25, 0.9), 0 0 16px rgba(254, 204, 27, 0.9) !important;
+  filter: brightness(1.2) drop-shadow(0 0 6px rgba(254, 204, 27, 0.75));
+}
+
+.editor-preview-active .vcontrol-group.selected-for-edit .vcontrol-resize-handle {
+  background: #ffffff !important;
+  transform: scale(1.25);
+  box-shadow: 0 0 10px rgba(254, 204, 27, 1) !important;
 }
 
 .customizer-active .vcontrol-group:active,
@@ -6864,5 +6933,3 @@ body.standalone-player .game-player-pane {
   text-transform: uppercase;
   text-shadow: 1px 1px 0px #000000;
 }
-
-

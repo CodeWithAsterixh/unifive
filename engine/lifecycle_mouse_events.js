@@ -68,37 +68,48 @@ const LifecycleMouseEvents = {
       const wx = cam.panX + (sx - width / 2) / cam.zoom;
       const wy = cam.panY + (sy - height / 2) / cam.zoom;
       const selectedItem = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
+      // Resolve the visible topmost item before giving the current selection
+      // its move target. Without this, a selected background consumes clicks
+      // on a control that sits above it, making controls impossible to select.
+      const hit = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getItemAt(wx, wy) : null;
 
       if (selectedItem) {
         const target = WorldObjectsManager.getTransformTarget(selectedItem, wx, wy);
         if (target) {
-          if (target.mode === "locked_only") {
-            if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(320, "square", 0.05, 0.08);
+          const anotherItemIsOnTop = hit && hit.id !== selectedItem.id;
+          // Resize/rotate handles remain owned by the selected item, but its
+          // body (and a locked item's body) must not block selecting a higher
+          // layer beneath the pointer.
+          if ((target.mode === "move" || target.mode === "locked_only") && anotherItemIsOnTop) {
+            // Continue to the normal topmost-item selection below.
+          } else {
+            if (target.mode === "locked_only") {
+              if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(320, "square", 0.05, 0.08);
+              return;
+            }
+            const cx = selectedItem.x + selectedItem.w / 2;
+            const cy = selectedItem.y + selectedItem.h / 2;
+
+            WorldObjectsManager.dragState.isDragging = true;
+            WorldObjectsManager.dragState.mode = target.mode;
+            WorldObjectsManager.dragState.handle = target.handle;
+            WorldObjectsManager.dragState.startX = wx;
+            WorldObjectsManager.dragState.startY = wy;
+            WorldObjectsManager.dragState.startItemX = selectedItem.x;
+            WorldObjectsManager.dragState.startItemY = selectedItem.y;
+            WorldObjectsManager.dragState.startItemW = selectedItem.w;
+            WorldObjectsManager.dragState.startItemH = selectedItem.h;
+            WorldObjectsManager.dragState.anchorX = cx;
+            WorldObjectsManager.dragState.anchorY = cy;
+            WorldObjectsManager.dragState.initialAngle = selectedItem.rotation || 0;
+
+            if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(target.mode === "rotate" ? 640 : 540, "square", 0.05, 0.08);
             return;
           }
-          const cx = selectedItem.x + selectedItem.w / 2;
-          const cy = selectedItem.y + selectedItem.h / 2;
-
-          WorldObjectsManager.dragState.isDragging = true;
-          WorldObjectsManager.dragState.mode = target.mode;
-          WorldObjectsManager.dragState.handle = target.handle;
-          WorldObjectsManager.dragState.startX = wx;
-          WorldObjectsManager.dragState.startY = wy;
-          WorldObjectsManager.dragState.startItemX = selectedItem.x;
-          WorldObjectsManager.dragState.startItemY = selectedItem.y;
-          WorldObjectsManager.dragState.startItemW = selectedItem.w;
-          WorldObjectsManager.dragState.startItemH = selectedItem.h;
-          WorldObjectsManager.dragState.anchorX = cx;
-          WorldObjectsManager.dragState.anchorY = cy;
-          WorldObjectsManager.dragState.initialAngle = selectedItem.rotation || 0;
-
-          if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(target.mode === "rotate" ? 640 : 540, "square", 0.05, 0.08);
-          return;
         }
       }
 
       // If no gizmo handle hit, test all items in world
-      const hit = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getItemAt(wx, wy) : null;
       if (hit) {
         WorldObjectsManager.selectItem(hit.id);
         const cx = hit.x + hit.w / 2;

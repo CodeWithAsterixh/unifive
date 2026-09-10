@@ -9,6 +9,17 @@ const VControlDom = {
       const el = document.getElementById("vcontrol-" + groupKey);
       if (!el || !cfg) continue;
 
+      const colors = cfg.colors || {};
+      const colorVars = {
+        face: "--vc-face", border: "--vc-border", text: "--vc-text", center: "--vc-center",
+        outer: "--vc-outer", inner: "--vc-inner", triangle: "--vc-triangle", circle: "--vc-circle",
+        cross: "--vc-cross", square: "--vc-square"
+      };
+      for (const [key, variable] of Object.entries(colorVars)) {
+        if (colors[key]) el.style.setProperty(variable, colors[key]);
+        else el.style.removeProperty(variable);
+      }
+
       el.style.removeProperty("top");
       el.style.removeProperty("bottom");
       el.style.removeProperty("left");

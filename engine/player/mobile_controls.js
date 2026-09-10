@@ -54,8 +54,20 @@ const MobileControlsManager = {
 
   isMobile() { return this.isTouchDevice || this.isMobileScreen; },
   isDraggable() { return this.isCustomizing || this.editorPreviewVisible; },
+  applyLayout() {
+    if (typeof VControlDom !== "undefined") VControlDom.applyLayout(this);
+  },
   openCustomizer() {
     this.isCustomizing = true;
+    // Customization is live: dismiss the pause dialog and resume the game so
+    // players can place controls against the active scene.
+    if (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying) {
+      GamePlayerEngine.isPaused = false;
+    }
+    const pauseModal = document.getElementById("modal-player-pause");
+    if (pauseModal) pauseModal.style.display = "none";
+    const playerPane = document.getElementById("game-player-pane");
+    if (playerPane) playerPane.classList.add("customizing-controls");
     const overlay = document.getElementById("vcontrols-customizer-overlay");
     if (overlay) overlay.style.display = "block";
     if (typeof VControlCustomizer !== "undefined") VControlCustomizer.setCustomizerTool(this, "move");
@@ -63,8 +75,17 @@ const MobileControlsManager = {
   },
   closeCustomizer() {
     this.isCustomizing = false;
+    const playerPane = document.getElementById("game-player-pane");
+    if (playerPane) playerPane.classList.remove("customizing-controls");
     const overlay = document.getElementById("vcontrols-customizer-overlay");
     if (overlay) overlay.style.display = "none";
     if (typeof VControlDom !== "undefined") VControlDom.updateGamepadVisibility(this);
+    // Saving/exiting customization returns to the pause menu. The player can
+    // then choose when to resume gameplay.
+    if (typeof GamePlayerEngine !== "undefined" && GamePlayerEngine.isPlaying) {
+      GamePlayerEngine.isPaused = true;
+      const pauseModal = document.getElementById("modal-player-pause");
+      if (pauseModal) pauseModal.style.display = "flex";
+    }
   }
 };

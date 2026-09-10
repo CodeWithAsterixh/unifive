@@ -8,6 +8,7 @@ const VControlTouch = {
   },
 
   handlePointerDown(e) {
+    if (typeof MobileControlsManager !== "undefined" && MobileControlsManager.isDraggable()) return;
     const btn = e.target.closest(".vcontrol-dpad-btn, .vcontrol-action-btn, .vcontrol-shoulder-btn, .vcontrol-system-btn");
     if (!btn) return;
     const btnId = btn.getAttribute("data-button");
