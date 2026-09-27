@@ -5,11 +5,37 @@
       "id": "sidefacing_desert_oasis_expanse",
       "name": "The Great Desert Oasis Expanse",
       "perspective": "sidefacing",
+      "category": "Adventure",
+      "featured": true,
+      "badge": "STAFF PICK",
+      "rating": 4.9,
       "file": "assets/presets/sidefacing_desert_oasis_expanse.json",
       "thumbnail": "assets/presets/desert_oasis_preview.png",
       "author": "Paul Peter (@asterixh)",
       "assetCount": 21,
-      "description": "A vast 5760x1080 panoramic desert world featuring golden rolling dunes, lush palm oases, crystal mountain springs, nomad traders, and patrolling dune raiders."
+      "layerCount": 8,
+      "dimensions": "5760 × 1080",
+      "scriptsCount": 4,
+      "description": "A vast 5760x1080 panoramic desert world featuring golden rolling dunes, lush palm oases, crystal mountain springs, nomad traders, and patrolling dune raiders with full player controller scripts.",
+      "tags": ["Desert", "Platformer", "Parallax", "Player Physics", "Dune Raiders"]
+    },
+    {
+      "id": "sidefacing_metropolis_quest",
+      "name": "Cyberpunk Metropolis Quest",
+      "perspective": "sidefacing",
+      "category": "Cyberpunk",
+      "featured": false,
+      "badge": "POPULAR",
+      "rating": 5.0,
+      "file": "assets/presets/sidefacing_metropolis_quest.json",
+      "thumbnail": "assets/sidefacing-assets/city-backgrounds/city_1_composite_hd.png",
+      "author": "Paul Peter (@asterixh)",
+      "assetCount": 68,
+      "layerCount": 12,
+      "dimensions": "3840 × 2160",
+      "scriptsCount": 6,
+      "description": "A bustling, multi-layered side-scrolling cyberpunk metropolis platformer world with 72 parallax skylines, illuminated megastructures, street overpasses, animated patrolling police, vendor stalls, and hero characters.",
+      "tags": ["Cyberpunk", "City", "Parallax", "Animated NPCs", "Neon"]
     }
   ]
 }

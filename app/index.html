@@ -1269,27 +1269,76 @@
     </div>
   </div>
 
-  <!-- Modal: Presets Gallery Browser -->
-  <div id="modal-presets-browser" class="pixel-modal-backdrop" style="display: none;">
-    <div class="pixel-modal-box presets-browser-modal-box">
-      <div class="pixel-modal-header">
-        <div class="pixel-modal-title">
-          <i class="ph ph-sparkle"></i>
-          <span>WORLD PRESETS GALLERY</span>
+  <!-- Modal: Presets Gallery & World Marketplace -->
+  <div id="modal-presets-browser" class="pixel-modal-backdrop marketplace-modal-backdrop" style="display: none;">
+    <div class="pixel-modal-box presets-browser-modal-box marketplace-modal-box">
+      
+      <!-- Marketplace Header Bar -->
+      <div class="pixel-modal-header marketplace-header">
+        <div class="marketplace-title-group">
+          <div class="marketplace-logo-icon">
+            <i class="ph ph-storefront"></i>
+          </div>
+          <div class="marketplace-title-text-wrap">
+            <div class="pixel-modal-title marketplace-title">
+              <span>UNIFIVE WORLD MARKETPLACE</span>
+              <span class="marketplace-version-badge">COMMUNITY & TEMPLATES</span>
+            </div>
+            <div class="marketplace-subtitle">Explore, preview, and instantly load ready-to-play world templates with parallax layers and visual block code.</div>
+          </div>
         </div>
-        <button id="btn-close-presets-modal" class="btn-icon-pixel" title="Close">
+        <button id="btn-close-presets-modal" class="btn-icon-pixel btn-close-marketplace" title="Close Marketplace">
           <i class="ph ph-x"></i>
         </button>
       </div>
-      <div class="pixel-modal-body presets-modal-body">
-        <div class="presets-modal-intro">
-          <span class="presets-intro-text">Choose a pre-built side-facing or top-down world template to load into UNIFIVE:</span>
+
+      <!-- Marketplace Subheader: Search, Filter Chips & Stats -->
+      <div class="marketplace-toolbar">
+        <div class="marketplace-search-wrap">
+          <i class="ph ph-magnifying-glass search-icon"></i>
+          <input type="text" id="presets-search-input" class="marketplace-search-input" placeholder="Search templates, environments, tags, mechanics, or creators..." autocomplete="off" />
+          <button id="btn-clear-presets-search" class="btn-clear-search" title="Clear Search" style="display: none;">
+            <i class="ph ph-x-circle"></i>
+          </button>
         </div>
+
+        <div class="marketplace-filter-chips" role="tablist" aria-label="Perspective Filter">
+          <button class="mkt-filter-chip active" data-filter="all" role="tab" aria-selected="true">
+            <i class="ph ph-sparkle"></i>
+            <span>ALL TEMPLATES</span>
+          </button>
+          <button class="mkt-filter-chip" data-filter="sidefacing" role="tab" aria-selected="false">
+            <i class="ph ph-panorama"></i>
+            <span>SIDE-FACING</span>
+          </button>
+          <button class="mkt-filter-chip" data-filter="topdown" role="tab" aria-selected="false">
+            <i class="ph ph-arrows-out-cardinal"></i>
+            <span>TOP-DOWN</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Marketplace Scrollable Content Body -->
+      <div class="pixel-modal-body presets-modal-body marketplace-body">
         
-        <div id="presets-cards-grid" class="presets-cards-grid">
+        <!-- Featured Hero Spotlight Container -->
+        <div id="marketplace-featured-container" class="marketplace-featured-container"></div>
+
+        <!-- Catalog Header Bar -->
+        <div class="marketplace-section-bar">
+          <div class="marketplace-section-title">
+            <i class="ph ph-cards"></i>
+            <span id="marketplace-results-title">BROWSE CATALOG</span>
+          </div>
+          <div class="marketplace-results-count" id="marketplace-results-count">2 WORLDS AVAILABLE</div>
+        </div>
+
+        <!-- Marketplace Cards Grid -->
+        <div id="presets-cards-grid" class="presets-cards-grid marketplace-cards-grid">
           <!-- Dynamically populated from assets/presets/index.json -->
         </div>
 
+        <!-- Loading / Unpacking State -->
         <div id="presets-loading-status" class="presets-loading-status" style="display: none;">
           <div class="presets-spinner-box">
             <i class="ph ph-spinner ph-spin"></i>
@@ -1297,9 +1346,16 @@
           <span id="presets-loading-text">Loading world preset...</span>
         </div>
       </div>
-      <div class="pixel-modal-footer">
-        <button id="btn-cancel-presets-modal" class="btn btn-pixel btn-modal-cancel">CLOSE</button>
+
+      <!-- Marketplace Footer -->
+      <div class="pixel-modal-footer marketplace-footer">
+        <div class="marketplace-footer-hint">
+          <i class="ph ph-check-circle"></i>
+          <span>All templates include full layer hierarchies, high-resolution pixel assets, and interactive block code.</span>
+        </div>
+        <button id="btn-cancel-presets-modal" class="btn btn-pixel btn-modal-cancel">CLOSE MARKETPLACE</button>
       </div>
+
     </div>
   </div>
 
