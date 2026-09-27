@@ -42,6 +42,9 @@ const TabController = {
         : null;
       PropertiesController.updateFromSelected(selected);
     }
+    if (tabId === "config" && typeof ConfigController !== "undefined" && typeof ConfigController.syncUIFromWorldConfig === "function") {
+      ConfigController.syncUIFromWorldConfig();
+    }
     if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(500, "square", 0.04, 0.08);
   }
 };

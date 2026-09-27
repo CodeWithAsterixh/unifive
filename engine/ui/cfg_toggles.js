@@ -24,5 +24,20 @@ const CfgToggles = {
         if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(540, "sine", 0.04, 0.08);
       });
     }
+  },
+
+  syncUI(controller) {
+    if (typeof WorldConfig === "undefined") return;
+    const layeringCheckbox = document.getElementById("cfg-responsive-layering");
+    if (layeringCheckbox) {
+      layeringCheckbox.checked = WorldConfig.responsiveLayering !== false;
+    }
+    const autoGoAroundCheckbox = document.getElementById("cfg-auto-go-around");
+    if (autoGoAroundCheckbox) {
+      autoGoAroundCheckbox.checked = WorldConfig.autoGoAround !== false;
+    }
   }
 };
+
+if (typeof window !== "undefined") window.CfgToggles = CfgToggles;
+if (typeof globalThis !== "undefined") globalThis.CfgToggles = CfgToggles;

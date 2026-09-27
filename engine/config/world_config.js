@@ -34,5 +34,7 @@ const WorldConfig = {
   },
 
   setBgColor(hex) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setBgColor(this, hex); },
-  setWorldSize(w, h) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setWorldSize(this, w, h); }
+  setWorldSize(w, h) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setWorldSize(this, w, h); },
+  setResponsiveLayering(enabled) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setResponsiveLayering(this, enabled); },
+  setAutoGoAround(enabled) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setAutoGoAround(this, enabled); }
 };
