@@ -409,8 +409,8 @@ body.resizing {
    LEFT PANE: CREATE / CONFIG Tabs (Seamless Matching Colors)
    ------------------------------------------------------------------------ */
 .panel-controls {
-  width: 320px;
-  min-width: 220px;
+  width: 340px;
+  min-width: 260px;
   max-width: 650px;
   height: 100%;
   background-color: var(--bg-panel);
@@ -420,6 +420,8 @@ body.resizing {
   position: relative;
   z-index: 10;
   box-shadow: inset -2px 0px 0px var(--burgundy-base);
+  container-type: inline-size;
+  container-name: panel-controls;
 }
 
 .panel-header-tabs {
@@ -428,22 +430,25 @@ body.resizing {
   align-items: stretch;
   background-color: var(--burgundy-dark);
   border-bottom: 2px solid var(--burgundy-darkest);
-  padding: 3px 4px 0 4px;
-  gap: 3px;
+  padding: 3px 3px 0 3px;
+  gap: 2px;
   flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .panel-tab-btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.35rem;
+  gap: 0.25rem;
+  padding: 0.4rem 0.2rem;
   font-family: var(--font-pixel);
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   border-radius: 0px;
   border: 2px solid transparent;
@@ -454,6 +459,18 @@ body.resizing {
   outline: none;
   transition: none;
   white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.panel-tab-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-tab-btn i {
+  flex-shrink: 0;
+  font-size: 0.95rem;
 }
 
 .panel-tab-btn:hover:not(.active) {
@@ -479,6 +496,35 @@ body.resizing {
 
 .panel-tab-btn.active i {
   color: var(--gold-bright);
+}
+
+/* Responsive Panel Tabs when sidebar is resized */
+@container panel-controls (max-width: 320px) {
+  .panel-header-tabs {
+    gap: 2px;
+    padding: 2px 2px 0 2px;
+  }
+  .panel-tab-btn {
+    padding: 0.35rem 0.15rem;
+    gap: 0.15rem;
+    font-size: 0.7rem;
+  }
+  .panel-tab-btn i {
+    font-size: 0.85rem;
+  }
+}
+
+@container panel-controls (max-width: 275px) {
+  .panel-tab-btn span {
+    display: none;
+  }
+  .panel-tab-btn {
+    padding: 0.4rem 0.1rem;
+    justify-content: center;
+  }
+  .panel-tab-btn i {
+    font-size: 1.15rem;
+  }
 }
 
 /* Panel Body */

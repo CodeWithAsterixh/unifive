@@ -13,7 +13,14 @@ const SplitterController = {
     const getActivePane = () => document.body.classList.contains("mode-code") ? codeToolboxPane : controlsPane;
 
     const savedWidth = localStorage.getItem("unifive_canvas_split_width") || localStorage.getItem("unifive_split_width");
-    if (savedWidth) controlsPane.style.width = savedWidth;
+    if (savedWidth) {
+      const parsed = parseInt(savedWidth, 10);
+      if (!isNaN(parsed)) {
+        controlsPane.style.width = Math.max(260, Math.min(650, parsed)) + "px";
+      } else {
+        controlsPane.style.width = savedWidth;
+      }
+    }
 
     splitter.addEventListener("mousedown", (e) => {
       isResizing = true;
@@ -26,8 +33,8 @@ const SplitterController = {
       if (!isResizing) return;
       const rect = workspace.getBoundingClientRect();
       const activePane = getActivePane();
-      const minWidth = document.body.classList.contains("mode-code") ? 360 : 220;
-      const maxWidth = Math.max(minWidth, rect.width - 200);
+      const minWidth = document.body.classList.contains("mode-code") ? 360 : 260;
+      const maxWidth = Math.max(minWidth, Math.min(650, rect.width - 200));
       const newWidth = Math.max(minWidth, Math.min(maxWidth, e.clientX - rect.left));
       if (activePane) activePane.style.width = newWidth + "px";
       if (typeof resizeStageCanvas === "function") resizeStageCanvas();
