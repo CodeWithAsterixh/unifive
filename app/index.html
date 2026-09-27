@@ -356,6 +356,38 @@
               </div>
             </div>
 
+            <!-- 2A. CHARACTER PHYSICS & DYNAMICS -->
+            <div class="config-group" id="group-physics-dynamics">
+              <div class="config-group-header">
+                <i class="ph ph-gauge"></i>
+                <span>PHYSICS & DYNAMICS</span>
+              </div>
+              <div class="config-two-col">
+                <div class="input-labeled" title="Movement and walking speed">
+                  <span class="input-tag">SPEED</span>
+                  <input id="prop-speed" class="input-pixel" type="number" min="0.5" max="30" step="0.5" value="6.5" />
+                </div>
+                <div class="input-labeled" title="Character weight/mass (affects inertia and gravity)">
+                  <span class="input-tag">WEIGHT</span>
+                  <input id="prop-weight" class="input-pixel" type="number" min="0.1" max="10" step="0.1" value="1.0" />
+                </div>
+              </div>
+              <div class="config-two-col" style="margin-top: 8px;">
+                <div class="input-labeled" title="Jump upward impulse force">
+                  <span class="input-tag">JUMP</span>
+                  <input id="prop-jump-force" class="input-pixel" type="number" min="0" max="35" step="0.5" value="12" />
+                </div>
+                <div class="input-labeled" title="Downward gravity acceleration factor">
+                  <span class="input-tag">GRAV</span>
+                  <input id="prop-gravity" class="input-pixel" type="number" min="0" max="3" step="0.05" value="0.65" />
+                </div>
+              </div>
+              <div class="input-labeled" style="margin-top: 8px;" title="Ground traction / deceleration friction (0.1 to 0.98)">
+                <span class="input-tag">FRICTION</span>
+                <input id="prop-friction" class="input-pixel" type="number" min="0.1" max="0.98" step="0.02" value="0.82" />
+              </div>
+            </div>
+
             <!-- 2B. CONTROL VALUE (Only for Control-type items) -->
             <div class="config-group" id="group-control-value" style="display: none;">
               <div class="config-group-header">

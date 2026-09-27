@@ -65,6 +65,18 @@ const PropertiesInspector = {
     if (selectDeviceVis) selectDeviceVis.value = item.deviceVisibility || "all";
     if (selectCollision) selectCollision.value = item.isSolid ? "solid" : "pass_through";
 
+    const speedInput = document.getElementById("prop-speed");
+    const weightInput = document.getElementById("prop-weight");
+    const jumpForceInput = document.getElementById("prop-jump-force");
+    const gravityInput = document.getElementById("prop-gravity");
+    const frictionInput = document.getElementById("prop-friction");
+
+    if (speedInput) speedInput.value = item.speed !== undefined ? item.speed : 6.5;
+    if (weightInput) weightInput.value = item.weight !== undefined ? item.weight : 1.0;
+    if (jumpForceInput) jumpForceInput.value = item.jumpForce !== undefined ? item.jumpForce : 12.0;
+    if (gravityInput) gravityInput.value = item.gravity !== undefined ? item.gravity : 0.65;
+    if (frictionInput) frictionInput.value = item.friction !== undefined ? item.friction : 0.82;
+
     const nw = item.naturalW || item.w;
     const nh = item.naturalH || item.h;
     const c = item.crop || { x: 0, y: 0, w: nw, h: nh, isCropped: false };

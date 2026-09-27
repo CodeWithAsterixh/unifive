@@ -1,5 +1,5 @@
 /**
- * UNIFIVE Scripting - Builtin Motion Handlers
+ * UNIFIVE Scripting - Builtin Motion & Physics Handlers
  */
 const BuiltinMotion = {
   async execute(engine, block, targetItem, evalInput) {
@@ -46,7 +46,25 @@ const BuiltinMotion = {
       if (bounced && typeof SoundEngine !== "undefined") {
         SoundEngine.playChiptuneTone(400, "triangle", 0.04, 0.1);
       }
+    } else if (bid === "set_speed") {
+      targetItem.speed = Math.max(0.1, Math.min(30, Number(evalInput(0, 6.5)) || 6.5));
+    } else if (bid === "change_speed") {
+      targetItem.speed = Math.max(0.1, Math.min(30, (targetItem.speed || 6.5) + (Number(evalInput(0, 1)) || 1)));
+    } else if (bid === "set_weight") {
+      targetItem.weight = Math.max(0.1, Math.min(10, Number(evalInput(0, 1.0)) || 1.0));
+    } else if (bid === "set_velocity") {
+      targetItem.vx = Number(evalInput(0, 0)) || 0;
+      targetItem.vy = Number(evalInput(1, 0)) || 0;
+    } else if (bid === "set_jump_force") {
+      targetItem.jumpForce = Math.max(0, Math.min(35, Number(evalInput(0, 12)) || 12));
+    } else if (bid === "set_gravity") {
+      targetItem.gravity = Math.max(0, Math.min(3.0, Number(evalInput(0, 0.65)) || 0.65));
+    } else if (bid === "set_friction") {
+      targetItem.friction = Math.max(0.1, Math.min(0.98, Number(evalInput(0, 0.82)) || 0.82));
     }
     await engine.sleep(16);
   }
 };
+
+if (typeof window !== "undefined") window.BuiltinMotion = BuiltinMotion;
+if (typeof globalThis !== "undefined") globalThis.BuiltinMotion = BuiltinMotion;

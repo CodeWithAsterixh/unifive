@@ -45,7 +45,15 @@ const ObjectsCrud = {
       flipV: false,
       crop: { x: 0, y: 0, w: defDims.w, h: defDims.h, isCropped: false },
       p5Img: null,
-      loaded: isControl ? true : false
+      loaded: isControl ? true : false,
+      speed: assetData.speed !== undefined ? assetData.speed : 6.5,
+      weight: assetData.weight !== undefined ? assetData.weight : 1.0,
+      jumpForce: assetData.jumpForce !== undefined ? assetData.jumpForce : 12.0,
+      gravity: assetData.gravity !== undefined ? assetData.gravity : 0.65,
+      friction: assetData.friction !== undefined ? assetData.friction : 0.82,
+      vx: 0,
+      vy: 0,
+      isGrounded: true
     };
 
     if (isControl) {

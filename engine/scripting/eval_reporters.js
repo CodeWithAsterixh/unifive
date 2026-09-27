@@ -34,6 +34,14 @@ const EvalReporters = {
     if (bid === "op_sin") return Math.sin((Number(r(0, 90)) * Math.PI) / 180);
     if (bid === "op_cos") return Math.cos((Number(r(0, 0)) * Math.PI) / 180);
     if (bid === "op_tan") return Math.tan((Number(r(0, 45)) * Math.PI) / 180);
+    if (bid === "get_velocity_x" && targetItem) return targetItem.vx || 0;
+    if (bid === "get_velocity_y" && targetItem) return targetItem.vy || 0;
+    if (bid === "get_speed" && targetItem) return targetItem.speed !== undefined ? targetItem.speed : 6.5;
+    if (bid === "get_weight" && targetItem) return targetItem.weight !== undefined ? targetItem.weight : 1.0;
     return 0;
   }
 };
+
+if (typeof window !== "undefined") window.EvalReporters = EvalReporters;
+if (typeof globalThis !== "undefined") globalThis.EvalReporters = EvalReporters;
+

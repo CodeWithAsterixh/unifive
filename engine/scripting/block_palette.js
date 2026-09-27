@@ -21,7 +21,14 @@ const BlockPalette = {
       { id: "goto_xy", name: "go to x: (0) y: (0)", scope: "object", color: "#3b82f6", icon: "ph-crosshair" },
       { id: "glide_xy", name: "glide (1) secs to x: (0) y: (0)", scope: "object", color: "#3b82f6", icon: "ph-paper-plane-tilt" },
       { id: "point_dir", name: "point in direction (90)", scope: "sprite", color: "#3b82f6", icon: "ph-compass" },
-      { id: "bounce_edge", name: "if on edge, bounce", scope: "sprite", color: "#3b82f6", icon: "ph-arrows-left-right" }
+      { id: "bounce_edge", name: "if on edge, bounce", scope: "sprite", color: "#3b82f6", icon: "ph-arrows-left-right" },
+      { id: "set_speed", name: "set speed to (6.5)", scope: "sprite", color: "#3b82f6", icon: "ph-gauge" },
+      { id: "change_speed", name: "change speed by (1)", scope: "sprite", color: "#3b82f6", icon: "ph-trend-up" },
+      { id: "set_weight", name: "set weight to (1.0)", scope: "sprite", color: "#3b82f6", icon: "ph-scales" },
+      { id: "set_velocity", name: "set velocity x: (0) y: (0)", scope: "sprite", color: "#3b82f6", icon: "ph-speedometer" },
+      { id: "set_jump_force", name: "set jump force to (12)", scope: "sprite", color: "#3b82f6", icon: "ph-arrow-fat-lines-up" },
+      { id: "set_gravity", name: "set gravity to (0.65)", scope: "sprite", color: "#3b82f6", icon: "ph-arrow-fat-lines-down" },
+      { id: "set_friction", name: "set friction to (0.82)", scope: "sprite", color: "#3b82f6", icon: "ph-activity" }
     ],
     looks: [
       { id: "say_for_secs", name: "say [Hello!] for (2) secs", scope: "sprite", color: "#a855f7", icon: "ph-chat-circle-dots" },
