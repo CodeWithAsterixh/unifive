@@ -8,6 +8,12 @@ const WorldObjectsManager = {
   dragState: { isDragging: false, mode: null, handle: null, startX: 0, startY: 0, startItemX: 0, startItemY: 0, startItemW: 0, startItemH: 0 },
   ghostPreview: { active: false, worldX: 0, worldY: 0, item: null },
 
+  loadImageAsset(src, callback) {
+    if (typeof ObjectsAssetLoader !== "undefined" && typeof ObjectsAssetLoader.loadImageAsset === "function") {
+      return ObjectsAssetLoader.loadImageAsset(src, callback);
+    }
+  },
+
   init() {
     this.initCanvasDropListeners();
     if (typeof CropController !== "undefined") CropController.init();

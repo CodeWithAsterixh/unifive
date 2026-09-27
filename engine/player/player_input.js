@@ -38,7 +38,7 @@ const PlayerInputManager = {
     if (actionName === "right") return !!(this.keysDown["ArrowRight"] || this.keysDown["KeyD"] || this.virtualKeys["right"]);
     if (actionName === "up") return !!(this.keysDown["ArrowUp"] || this.keysDown["KeyW"] || this.virtualKeys["up"]);
     if (actionName === "down") return !!(this.keysDown["ArrowDown"] || this.keysDown["KeyS"] || this.virtualKeys["down"]);
-    if (actionName === "jump" || actionName === "action_a") return !!(this.keysDown["Space"] || this.keysDown["ArrowUp"] || this.keysDown["KeyW"] || this.virtualKeys["jump"] || this.virtualKeys["action_a"]);
+    if (actionName === "jump" || actionName === "action_a") return !!(this.keysDown["Space"] || this.virtualKeys["jump"] || this.virtualKeys["action_a"]);
     if (actionName === "attack" || actionName === "action_b") return !!(this.keysDown["KeyZ"] || this.keysDown["KeyJ"] || this.virtualKeys["attack"] || this.virtualKeys["action_b"]);
     if (actionName === "interact") return !!(this.keysDown["KeyX"] || this.keysDown["KeyE"] || this.virtualKeys["interact"]);
     return false;
@@ -51,3 +51,7 @@ const PlayerInputManager = {
     }
   }
 };
+
+if (typeof window !== "undefined") window.PlayerInputManager = PlayerInputManager;
+if (typeof globalThis !== "undefined") globalThis.PlayerInputManager = PlayerInputManager;
+

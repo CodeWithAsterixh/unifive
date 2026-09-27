@@ -419,7 +419,130 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Arrow": {
+          "name": "Arrow",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_arrow.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Arrow.png",
+          "frameCount": 1,
+          "frameWidth": 48,
+          "frameHeight": 48,
+          "totalWidth": 48,
+          "totalHeight": 48
+        },
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Attack_1.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Dead.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Idle_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Jump.png",
+          "frameCount": 9,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1152,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot 1": {
+          "name": "Shot 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_shot_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Shot_1.png",
+          "frameCount": 14,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1792,
+          "totalHeight": 128
+        },
+        "Shot 2": {
+          "name": "Shot 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_shot_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Shot_2.png",
+          "frameCount": 13,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1664,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_oasis_merchant",
@@ -444,7 +567,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Approval.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Dialogue.png",
+          "frameCount": 16,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 2048,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle_2.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle_3.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_caravan_guard",
@@ -469,7 +649,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_1.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_3.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Dead.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Idle.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Idle_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Jump.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_desert_sage",
@@ -494,7 +786,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_1.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_3.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Hurt.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Idle_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Jump.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_nomad_aya",
@@ -519,7 +923,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Approval.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Dialogue.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle.png",
+          "frameCount": 14,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1792,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle_2.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle_3.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_silk_merchant",
@@ -544,7 +1005,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Approval.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Dialogue.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle_2.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle_3.png",
+          "frameCount": 15,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1920,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_scout",
@@ -569,7 +1087,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Attack_1.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Attack_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Hurt.png",
+          "frameCount": 2,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 256,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Jump.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Recharge": {
+          "name": "Recharge",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_recharge.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Recharge.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot": {
+          "name": "Shot",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_shot.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Shot.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_enforcer",
@@ -594,7 +1224,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack": {
+          "name": "Attack",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_attack.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Attack.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Dead.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Idle.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Jump.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        },
+        "Recharge": {
+          "name": "Recharge",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_recharge.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Recharge.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot 1": {
+          "name": "Shot 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_shot_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Shot_1.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Shot 2": {
+          "name": "Shot 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_shot_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Shot_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_warlord",
@@ -619,7 +1361,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_1.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_3.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Hurt.png",
+          "frameCount": 2,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 256,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Idle_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Jump.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     }
   ],
   "items": [
@@ -1021,7 +1875,130 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Arrow": {
+          "name": "Arrow",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_arrow.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Arrow.png",
+          "frameCount": 1,
+          "frameWidth": 48,
+          "frameHeight": 48,
+          "totalWidth": 48,
+          "totalHeight": 48
+        },
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Attack_1.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Dead.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Idle_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Jump.png",
+          "frameCount": 9,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1152,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot 1": {
+          "name": "Shot 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_shot_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Shot_1.png",
+          "frameCount": 14,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1792,
+          "totalHeight": 128
+        },
+        "Shot 2": {
+          "name": "Shot 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_shot_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Shot_2.png",
+          "frameCount": 13,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1664,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_archer_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Archer/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_oasis_merchant",
@@ -1046,7 +2023,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Approval.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Dialogue.png",
+          "frameCount": 16,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 2048,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle_2.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_1_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_1/Idle_3.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_caravan_guard",
@@ -1071,7 +2105,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_1.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Attack_3.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Dead.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Idle.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Idle_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Jump.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_swordsman_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Swordsman/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_desert_sage",
@@ -1096,7 +2242,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_1.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Attack_3.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Hurt.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Idle_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Jump.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_wizard_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/fantasy-chibi-male-sprites/Wizard/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_nomad_aya",
@@ -1121,7 +2379,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Approval.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Dialogue.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle.png",
+          "frameCount": 14,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1792,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle_2.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_2_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_2/Idle_3.png",
+          "frameCount": 10,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1280,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_silk_merchant",
@@ -1146,7 +2461,64 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Approval": {
+          "name": "Approval",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_approval.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Approval.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Dialogue": {
+          "name": "Dialogue",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_dialogue.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Dialogue.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle_2.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 3": {
+          "name": "Idle 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_trader_3_idle_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/city-trader-character-sprite-sheets/Trader_3/Idle_3.png",
+          "frameCount": 15,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1920,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_scout",
@@ -1171,7 +2543,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Attack_1.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Attack_2.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Hurt.png",
+          "frameCount": 2,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 256,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Jump.png",
+          "frameCount": 11,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1408,
+          "totalHeight": 128
+        },
+        "Recharge": {
+          "name": "Recharge",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_recharge.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Recharge.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot": {
+          "name": "Shot",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_shot.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Shot.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_1_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_1/Walk.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_enforcer",
@@ -1196,7 +2680,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack": {
+          "name": "Attack",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_attack.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Attack.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Dead.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Hurt.png",
+          "frameCount": 3,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 384,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Idle.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Jump.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        },
+        "Recharge": {
+          "name": "Recharge",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_recharge.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Recharge.png",
+          "frameCount": 12,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1536,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Shot 1": {
+          "name": "Shot 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_shot_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Shot_1.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Shot 2": {
+          "name": "Shot 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_shot_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Shot_2.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_2_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_2/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     },
     {
       "id": "item_raider_warlord",
@@ -1221,7 +2817,119 @@
       "naturalH": 128,
       "rotation": 0,
       "flipH": false,
-      "flipV": false
+      "flipV": false,
+      "poses": {
+        "Attack 1": {
+          "name": "Attack 1",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_1.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_1.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Attack 2": {
+          "name": "Attack 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Attack 3": {
+          "name": "Attack 3",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_attack_3.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Attack_3.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Dead": {
+          "name": "Dead",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_dead.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Dead.png",
+          "frameCount": 4,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 512,
+          "totalHeight": 128
+        },
+        "Hurt": {
+          "name": "Hurt",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_hurt.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Hurt.png",
+          "frameCount": 2,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 256,
+          "totalHeight": 128
+        },
+        "Idle": {
+          "name": "Idle",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_idle.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Idle.png",
+          "frameCount": 6,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 768,
+          "totalHeight": 128
+        },
+        "Idle 2": {
+          "name": "Idle 2",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_idle_2.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Idle_2.png",
+          "frameCount": 5,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 640,
+          "totalHeight": 128
+        },
+        "Jump": {
+          "name": "Jump",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_jump.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Jump.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Run": {
+          "name": "Run",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_run.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Run.png",
+          "frameCount": 8,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 1024,
+          "totalHeight": 128
+        },
+        "Walk": {
+          "name": "Walk",
+          "type": "sheet",
+          "preview": "assets/sprites/pose-previews/sprite_raider_3_walk.png",
+          "sheet": "assets/sprites/sidefacing-sprites/raider-sprite-sheets/Raider_3/Walk.png",
+          "frameCount": 7,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "totalWidth": 896,
+          "totalHeight": 128
+        }
+      }
     }
   ],
   "code": {

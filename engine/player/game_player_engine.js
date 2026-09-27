@@ -229,76 +229,10 @@ const GamePlayerEngine = {
   },
 
   updatePlayerMovement() {
-    if (!this.activePlayableItem || !this.isControlEnabled) return;
-    const hero = this.activePlayableItem;
-    const view = (typeof ViewController !== "undefined" && ViewController.currentView) ? ViewController.currentView : "sidefacing";
-
-    const moveLeft = typeof PlayerInputManager !== "undefined" && PlayerInputManager.isActionActive("left");
-    const moveRight = typeof PlayerInputManager !== "undefined" && PlayerInputManager.isActionActive("right");
-    const moveUp = typeof PlayerInputManager !== "undefined" && PlayerInputManager.isActionActive("up");
-    const moveDown = typeof PlayerInputManager !== "undefined" && PlayerInputManager.isActionActive("down");
-
-    let dx = 0;
-    let dy = 0;
-
-    if (view === "topdown") {
-      if (moveLeft) dx -= this.playerSpeed;
-      if (moveRight) dx += this.playerSpeed;
-      if (moveUp) dy -= this.playerSpeed;
-      if (moveDown) dy += this.playerSpeed;
-
-      if (dx !== 0 && dy !== 0) {
-        dx *= 0.7071;
-        dy *= 0.7071;
-      }
-
-      this.applyMovementWithCollision(hero, dx, dy);
-
-      if (hero.poses) {
-        if (dx < 0) hero.currentPose = "Walk Left";
-        else if (dx > 0) hero.currentPose = "Walk Right";
-        else if (dy < 0) hero.currentPose = "Walk Back";
-        else if (dy > 0) hero.currentPose = "Walk Front";
-        else {
-          if (hero.currentPose && hero.currentPose.startsWith("Walk")) {
-            hero.currentPose = hero.currentPose.replace("Walk", "Idle");
-          }
-        }
-      }
-    } else {
-      if (moveLeft) {
-        dx -= this.playerSpeed;
-        hero.flipH = true;
-        if (hero.poses && (!hero.currentPose || hero.currentPose === "Idle" || hero.currentPose.startsWith("Walk"))) {
-          hero.currentPose = "Walk";
-        }
-      } else if (moveRight) {
-        dx += this.playerSpeed;
-        hero.flipH = false;
-        if (hero.poses && (!hero.currentPose || hero.currentPose === "Idle" || hero.currentPose.startsWith("Walk"))) {
-          hero.currentPose = "Walk";
-        }
-      } else {
-        if (hero.poses && hero.currentPose === "Walk") {
-          hero.currentPose = "Idle";
-        }
-      }
-
-      if (moveUp) {
-        dy -= this.playerSpeed * 0.75;
-      } else if (moveDown) {
-        dy += this.playerSpeed * 0.75;
-      }
-
-      this.applyMovementWithCollision(hero, dx, dy);
+    if (typeof PlayerPhysics !== "undefined" && typeof PlayerPhysics.updateMovement === "function") {
+      PlayerPhysics.updateMovement(this);
+      return;
     }
-
-    const marginX = Math.min(16, (hero.w || 40) * 0.2);
-    const marginY = Math.min(16, (hero.h || 40) * 0.2);
-    const wWidth = typeof WorldConfig !== "undefined" ? WorldConfig.worldWidth : 2000;
-    const wHeight = typeof WorldConfig !== "undefined" ? WorldConfig.worldHeight : 1500;
-    hero.x = Math.max(marginX, Math.min(wWidth - marginX, hero.x));
-    hero.y = Math.max(marginY, Math.min(wHeight - marginY, hero.y));
   },
 
   updateCameraFollow() {
@@ -306,8 +240,8 @@ const GamePlayerEngine = {
       PlayerCamera.updateCameraFollow(this);
     } else {
       if (this.activePlayableItem) {
-        this.targetCamX = this.activePlayableItem.x;
-        this.targetCamY = this.activePlayableItem.y;
+        this.targetCamX = this.activePlayableItem.x + (this.activePlayableItem.w || 40) / 2;
+        this.targetCamY = this.activePlayableItem.y + (this.activePlayableItem.h || 40) / 2;
       }
       this.camX += (this.targetCamX - this.camX) * this.lerpFactor;
       this.camY += (this.targetCamY - this.camY) * this.lerpFactor;

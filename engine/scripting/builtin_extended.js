@@ -15,20 +15,21 @@ const BuiltinExtended = {
         await engine.sleep(Math.max(100, secs * 1000));
       } else if (bid === "switch_costume") {
         const poseName = String(value(0, "Attack"));
-        if (targetItem.poses && targetItem.poses[poseName] && typeof SpritePosesController !== "undefined") {
-          SpritePosesController.selectPose(targetItem, poseName, targetItem.poses[poseName]);
+        if (typeof PoseAnimator !== "undefined") {
+          PoseAnimator.setPose(targetItem, poseName);
+        } else if (typeof SpritePosesController !== "undefined") {
+          SpritePosesController.selectPose(targetItem, poseName);
         } else {
           targetItem.currentPose = poseName;
         }
       } else if (bid === "next_costume") {
-        const poses = targetItem.poses ? Object.keys(targetItem.poses) : [];
-        if (poses.length) {
-          const curIdx = poses.indexOf(targetItem.currentPose || poses[0]);
-          const nextPose = poses[(curIdx + 1) % poses.length];
-          if (typeof SpritePosesController !== "undefined" && targetItem.poses[nextPose]) {
-            SpritePosesController.selectPose(targetItem, nextPose, targetItem.poses[nextPose]);
-          } else {
-            targetItem.currentPose = nextPose;
+        if (typeof PoseAnimator !== "undefined") {
+          PoseAnimator.nextPose(targetItem);
+        } else {
+          const poses = targetItem.poses ? Object.keys(targetItem.poses) : [];
+          if (poses.length) {
+            const curIdx = poses.indexOf(targetItem.currentPose || poses[0]);
+            targetItem.currentPose = poses[(curIdx + 1) % poses.length];
           }
         }
       } else if (bid === "change_size") {
