@@ -61,6 +61,13 @@ const PropertiesInspector = {
 
     if (btnFlipH) btnFlipH.classList.toggle("active", !!item.flipH);
     if (btnFlipV) btnFlipV.classList.toggle("active", !!item.flipV);
+    const btnLockAspect = document.getElementById("btn-lock-aspect");
+    if (btnLockAspect && typeof controller.lockAspect !== "undefined") {
+      btnLockAspect.classList.toggle("active", !!controller.lockAspect);
+      btnLockAspect.innerHTML = controller.lockAspect
+        ? `<i class="ph ph-lock-simple"></i> LOCK`
+        : `<i class="ph ph-lock-simple-open"></i> FREE`;
+    }
     if (chkPlayable) chkPlayable.checked = !!item.isPlayable;
     if (selectDeviceVis) selectDeviceVis.value = item.deviceVisibility || "all";
     if (selectCollision) selectCollision.value = item.isSolid ? "solid" : "pass_through";

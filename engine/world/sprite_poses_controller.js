@@ -44,6 +44,9 @@ const SpritePosesController = {
       if (this.countEl) this.countEl.textContent = `${Object.keys(poses).length} POSES`;
 
       this.panelEl.style.display = "block";
+      if (typeof SpritePosesPanel !== "undefined" && typeof SpritePosesPanel.updateToolbar === "function") {
+        SpritePosesPanel.updateToolbar(this);
+      }
       if (typeof PoseCards !== "undefined" && typeof PoseCards.renderPoseCards === "function") {
         PoseCards.renderPoseCards(this, item, poses);
       }
