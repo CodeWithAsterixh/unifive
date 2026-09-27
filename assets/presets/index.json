@@ -12,12 +12,12 @@
       "file": "assets/presets/sidefacing_desert_oasis_expanse.json",
       "thumbnail": "assets/presets/desert_oasis_preview.png",
       "author": "Paul Peter (@asterixh)",
-      "assetCount": 21,
-      "layerCount": 8,
+      "assetCount": 24,
+      "layerCount": 5,
       "dimensions": "5760 × 1080",
-      "scriptsCount": 4,
-      "description": "A vast 5760x1080 panoramic desert world featuring golden rolling dunes, lush palm oases, crystal mountain springs, nomad traders, and patrolling dune raiders with full player controller scripts.",
-      "tags": ["Desert", "Platformer", "Parallax", "Player Physics", "Dune Raiders"]
+      "scriptsCount": 8,
+      "description": "A vast 5760x1080 panoramic desert world seamlessly structured across 3 geographical sectors: Western Oasis Haven, Central Springs & Silk Bazaar, and the Eastern Raider Stronghold.",
+      "tags": ["Desert", "Platformer", "Parallax", "Living NPCs", "Raider Patrol", "Bazaar"]
     },
     {
       "id": "sidefacing_metropolis_quest",
