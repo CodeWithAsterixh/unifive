@@ -58,10 +58,11 @@ const VControlResize = {
     }
 
     window.addEventListener("pointermove", (event) => {
+      const vScale = typeof VControlDom !== "undefined" ? VControlDom.getViewportScale() : 1.0;
       if (manager.resizingGroup) {
         const state = manager.resizingGroup;
         const cfg = manager.currentLayout[state.key];
-        const delta = (event.clientX - state.startX) + (event.clientY - state.startY);
+        const delta = ((event.clientX - state.startX) + (event.clientY - state.startY)) / vScale;
         cfg.scale = Math.max(0.5, Math.min(2.5, Math.round((state.startScale + delta / 180) * 100) / 100));
         manager.applyLayout();
         const label = document.getElementById("customizer-resize-label");
@@ -69,8 +70,8 @@ const VControlResize = {
       } else if (manager.draggedGroup) {
         const state = manager.draggedGroup;
         const cfg = manager.currentLayout[state.key];
-        const dx = event.clientX - state.startX;
-        const dy = event.clientY - state.startY;
+        const dx = (event.clientX - state.startX) / vScale;
+        const dy = (event.clientY - state.startY) / vScale;
         const rightAnchored = state.anchor === "top-right" || state.anchor === "bottom-right";
         const bottomAnchored = state.anchor === "bottom-left" || state.anchor === "bottom-right" || state.anchor === "bottom-center";
         cfg.x = Math.round(state.startControlX + (rightAnchored ? -dx : dx));

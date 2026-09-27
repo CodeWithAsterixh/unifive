@@ -143,6 +143,9 @@
         if (controller.currentMode === "canvas" && typeof WorldConfig !== "undefined") {
           WorldConfig.clampPan();
         }
+        if (typeof MobileControlsManager !== "undefined") {
+          MobileControlsManager.applyLayout();
+        }
       }, 60);
     }
   };

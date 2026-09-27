@@ -4259,6 +4259,18 @@ body.resizing {
   background-color: var(--burgundy-darkest);
   border-bottom: 3px solid var(--burgundy-darkest);
   flex-shrink: 0;
+  transition: height 0.2s ease, min-height 0.2s ease;
+}
+
+.code-section-preview.collapsed {
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  flex: 0 0 38px !important;
+}
+
+.code-section-preview.collapsed .code-preview-canvas-box {
+  display: none !important;
 }
 
 .code-section-header {

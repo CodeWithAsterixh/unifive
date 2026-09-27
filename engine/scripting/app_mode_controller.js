@@ -16,7 +16,30 @@ const AppModeController = {
     if (typeof BlockDragSnap !== "undefined") BlockDragSnap.init();
     if (typeof CodeRuntimeEngine !== "undefined") CodeRuntimeEngine.init();
     this.bindWorkspaceZoomControls();
+    this.bindStagePreviewControls();
     this.updateWorkspaceTransform();
+  },
+
+  bindStagePreviewControls() {
+    const btnToggleStage = document.getElementById("btn-toggle-code-stage");
+    const previewSection = document.getElementById("code-preview-section");
+    if (btnToggleStage && previewSection) {
+      btnToggleStage.addEventListener("click", () => {
+        const isCollapsed = previewSection.classList.toggle("collapsed");
+        const icon = btnToggleStage.querySelector("i");
+        if (icon) {
+          icon.className = isCollapsed ? "ph ph-caret-down" : "ph ph-caret-up";
+        }
+        btnToggleStage.title = isCollapsed ? "Expand Stage Preview" : "Minimize / Expand Stage Preview";
+        if (typeof SoundEngine !== "undefined") {
+          SoundEngine.playChiptuneTone(isCollapsed ? 380 : 540, "square", 0.04, 0.07);
+        }
+        setTimeout(() => {
+          if (typeof resizeStageCanvas === "function") resizeStageCanvas();
+          if (typeof MobileControlsManager !== "undefined") MobileControlsManager.applyLayout();
+        }, 60);
+      });
+    }
   },
 
   bindWorkspaceZoomControls() {

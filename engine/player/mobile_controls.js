@@ -37,6 +37,10 @@ const MobileControlsManager = {
     };
     bindToggleBtn("btn-dock-toggle-vcontrols");
     bindToggleBtn("btn-toggle-preview-vcontrols");
+
+    window.addEventListener("resize", () => {
+      if (typeof VControlDom !== "undefined") VControlDom.applyLayout(self);
+    });
   },
 
   toggleEditorPreview() {

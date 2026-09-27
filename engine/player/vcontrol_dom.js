@@ -2,8 +2,29 @@
  * UNIFIVE Engine - Virtual Controls DOM Subsystem
  */
 const VControlDom = {
+  getViewportScale() {
+    const pad = document.getElementById("mobile-virtual-gamepad");
+    const container = (pad && pad.parentElement) || document.getElementById("canvas-container");
+    if (!container) return 1.0;
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || window.innerHeight;
+    // Baseline reference resolution is ~880px width, ~500px height.
+    // When the container is in a compact preview (e.g. Stage Preview width ~320-380px),
+    // or smaller mobile screens, the scale adapts proportionally to the canvas viewport.
+    const scaleW = w / 880;
+    const scaleH = h / 500;
+    const baseScale = Math.min(scaleW, scaleH);
+    return Math.max(0.32, Math.min(1.0, baseScale));
+  },
+
   applyLayout(manager) {
     if (!manager.currentLayout) return;
+    const vScale = this.getViewportScale();
+    const pad = document.getElementById("mobile-virtual-gamepad");
+    if (pad) {
+      pad.style.setProperty("--vc-viewport-scale", String(vScale));
+    }
+
     for (const groupKey of Object.keys(manager.currentLayout)) {
       const cfg = manager.currentLayout[groupKey];
       const el = document.getElementById("vcontrol-" + groupKey);
@@ -46,31 +67,35 @@ const VControlDom = {
       el.style.removeProperty("right");
       el.style.removeProperty("transform");
 
-      const scale = cfg.scale || 1.0;
+      const userScale = cfg.scale || 1.0;
+      const totalScale = Math.round(userScale * vScale * 100) / 100;
+      const scaledX = Math.round((cfg.x || 0) * vScale);
+      const scaledY = Math.round((cfg.y || 0) * vScale);
+
       if (cfg.anchor === "top-left" || !cfg.anchor) {
-        el.style.top = cfg.y + "px";
-        el.style.left = cfg.x + "px";
-        el.style.transform = "scale(" + scale + ")";
+        el.style.top = scaledY + "px";
+        el.style.left = scaledX + "px";
+        el.style.transform = "scale(" + totalScale + ")";
         el.style.transformOrigin = "top left";
       } else if (cfg.anchor === "top-right") {
-        el.style.top = cfg.y + "px";
-        el.style.right = cfg.x + "px";
-        el.style.transform = "scale(" + scale + ")";
+        el.style.top = scaledY + "px";
+        el.style.right = scaledX + "px";
+        el.style.transform = "scale(" + totalScale + ")";
         el.style.transformOrigin = "top right";
       } else if (cfg.anchor === "bottom-left") {
-        el.style.bottom = cfg.y + "px";
-        el.style.left = cfg.x + "px";
-        el.style.transform = "scale(" + scale + ")";
+        el.style.bottom = scaledY + "px";
+        el.style.left = scaledX + "px";
+        el.style.transform = "scale(" + totalScale + ")";
         el.style.transformOrigin = "bottom left";
       } else if (cfg.anchor === "bottom-right") {
-        el.style.bottom = cfg.y + "px";
-        el.style.right = cfg.x + "px";
-        el.style.transform = "scale(" + scale + ")";
+        el.style.bottom = scaledY + "px";
+        el.style.right = scaledX + "px";
+        el.style.transform = "scale(" + totalScale + ")";
         el.style.transformOrigin = "bottom right";
       } else if (cfg.anchor === "bottom-center") {
-        el.style.bottom = cfg.y + "px";
-        el.style.left = "calc(50% + " + cfg.x + "px)";
-        el.style.transform = "translateX(-50%) scale(" + scale + ")";
+        el.style.bottom = scaledY + "px";
+        el.style.left = "calc(50% + " + scaledX + "px)";
+        el.style.transform = "translateX(-50%) scale(" + totalScale + ")";
         el.style.transformOrigin = "bottom center";
       }
       el.style.display = cfg.visible !== false ? "" : "none";
