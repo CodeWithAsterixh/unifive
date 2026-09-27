@@ -40,7 +40,13 @@ const PropertiesInspector = {
     const cropW = document.getElementById("prop-crop-w");
     const cropH = document.getElementById("prop-crop-h");
 
-    if (thumbImg) thumbImg.src = item.src;
+    if (thumbImg) {
+      const nextSrc = item.src || "";
+      if (thumbImg.dataset.lastSrc !== nextSrc) {
+        thumbImg.dataset.lastSrc = nextSrc;
+        thumbImg.src = nextSrc;
+      }
+    }
     if (nameInput) nameInput.value = item.name;
     if (idBadge) idBadge.textContent = `ID: ${item.id.substring(0, 14)}`;
     if (croppedBadge) croppedBadge.style.display = (item.crop && item.crop.isCropped) ? "inline-block" : "none";
@@ -109,6 +115,43 @@ const PropertiesInspector = {
         const on = !!item.value;
         if (ctrlValToggle) ctrlValToggle.checked = on;
         if (ctrlValToggleLabel) ctrlValToggleLabel.textContent = on ? "STATE: ON" : "STATE: OFF";
+      }
+    }
+
+    controller.isUpdatingUI = false;
+  },
+
+  updateTransformOnly(controller, item) {
+    if (!item) return;
+    controller.isUpdatingUI = true;
+
+    const posX = document.getElementById("prop-pos-x");
+    const posY = document.getElementById("prop-pos-y");
+    const sizeW = document.getElementById("prop-size-w");
+    const sizeH = document.getElementById("prop-size-h");
+    const rotSlider = document.getElementById("prop-rotation-slider");
+    const rotNum = document.getElementById("prop-rotation-num");
+
+    if (posX) posX.value = Math.round(item.x);
+    if (posY) posY.value = Math.round(item.y);
+    if (sizeW) sizeW.value = Math.round(item.w);
+    if (sizeH) sizeH.value = Math.round(item.h);
+
+    const deg = Math.round(item.rotation || 0);
+    if (rotSlider) rotSlider.value = deg;
+    if (rotNum) rotNum.value = deg;
+
+    if (item.crop) {
+      const cropX = document.getElementById("prop-crop-x");
+      const cropY = document.getElementById("prop-crop-y");
+      const cropW = document.getElementById("prop-crop-w");
+      const cropH = document.getElementById("prop-crop-h");
+      if (cropX) cropX.value = Math.round(item.crop.x);
+      if (cropY) cropY.value = Math.round(item.crop.y);
+      if (cropW) cropW.value = Math.round(item.crop.w);
+      if (cropH) cropH.value = Math.round(item.crop.h);
+      if (typeof CropController !== "undefined") {
+        CropController.updateUI();
       }
     }
 

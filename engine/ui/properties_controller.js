@@ -93,6 +93,12 @@ const PropertiesController = {
     }
   },
 
+  updateTransformOnly(item) {
+    if (typeof PropertiesInspector !== "undefined") {
+      PropertiesInspector.updateTransformOnly(this, item);
+    }
+  },
+
   clearVirtualControl() {
     this.virtualControlKey = null;
     this.virtualControlPartKey = null;

@@ -39,7 +39,7 @@ const LifecycleMouseMove = {
         selectedItem.crop.h = Math.round(ch);
         selectedItem.crop.isCropped = (cx > 0 || cy > 0 || cw < nw || ch < nh);
 
-        if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(selectedItem);
+        if (typeof PropertiesController !== "undefined") PropertiesController.updateTransformOnly(selectedItem);
       }
       return;
     }

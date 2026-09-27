@@ -34,7 +34,7 @@ const LifecycleObjectDrag = {
     deg = ((deg % 360) + 360) % 360;
     if (shiftKey) deg = Math.round(deg / 15) * 15;
     item.rotation = Math.round(deg);
-    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(item);
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateTransformOnly(item);
   },
 
   applyResize(item, wx, wy, ds, shiftKey) {
@@ -69,7 +69,7 @@ const LifecycleObjectDrag = {
     item.h = h;
     item.x = Math.round(cx - w / 2);
     item.y = Math.round(cy - h / 2);
-    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(item);
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateTransformOnly(item);
   },
 
   applyMove(item, wx, wy, ds) {
@@ -79,6 +79,6 @@ const LifecycleObjectDrag = {
     const dy = wy - ds.startY;
     item.x = Math.round(Math.max(0, Math.min(wWidth - item.w, ds.startItemX + dx)));
     item.y = Math.round(Math.max(0, Math.min(wHeight - item.h, ds.startItemY + dy)));
-    if (typeof PropertiesController !== "undefined") PropertiesController.updateFromSelected(item);
+    if (typeof PropertiesController !== "undefined") PropertiesController.updateTransformOnly(item);
   }
 };
