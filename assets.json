@@ -10,7 +10,7 @@
         {
           "id": "city_1_comp",
           "name": "City 1 Skyline",
-          "src": "assets/sidefacing-assets/city-backgrounds/city_1_composite.png"
+          "src": "assets/sidefacing-assets/city-backgrounds/city_1_composite_hd.png"
         },
         {
           "id": "city_1_l1",
@@ -40,7 +40,7 @@
         {
           "id": "city_2_comp",
           "name": "City 2 Panorama",
-          "src": "assets/sidefacing-assets/city-backgrounds/city_2_composite.png"
+          "src": "assets/sidefacing-assets/city-backgrounds/city_2_composite_hd.png"
         },
         {
           "id": "city_2_l2",
@@ -65,7 +65,7 @@
         {
           "id": "city_3_comp",
           "name": "City 3 Metropolis",
-          "src": "assets/sidefacing-assets/city-backgrounds/city_3_composite.png"
+          "src": "assets/sidefacing-assets/city-backgrounds/city_3_composite_hd.png"
         },
         {
           "id": "city_3_l2",
@@ -115,7 +115,7 @@
         {
           "id": "city_5_comp",
           "name": "City 5 Night",
-          "src": "assets/sidefacing-assets/city-backgrounds/city_5_composite.png"
+          "src": "assets/sidefacing-assets/city-backgrounds/city_5_composite_hd.png"
         },
         {
           "id": "city_5_l3",
@@ -130,7 +130,7 @@
         {
           "id": "city_6_comp",
           "name": "City 6 Sunset",
-          "src": "assets/sidefacing-assets/city-backgrounds/city_6_composite.png"
+          "src": "assets/sidefacing-assets/city-backgrounds/city_6_composite_hd.png"
         },
         {
           "id": "city_6_l3",
