@@ -87,6 +87,11 @@
         const scriptsObj = (payload.code && payload.code.objectScripts) || payload.codeScripts || payload.objectScripts || payload.scripts;
         if (scriptsObj && typeof AppModeController !== "undefined") {
           AppModeController.objectScripts = JSON.parse(JSON.stringify(scriptsObj));
+          if (typeof BlockPalette !== "undefined" && typeof BlockPalette.layoutScripts === "function") {
+            Object.values(AppModeController.objectScripts).forEach(arr => {
+              if (Array.isArray(arr)) BlockPalette.layoutScripts(arr);
+            });
+          }
         }
 
         const rawVars = (payload.code && payload.code.variables) || payload.variables;

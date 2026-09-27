@@ -21,7 +21,7 @@
     "panY": 1500,
     "zoom": 0.55,
     "minZoom": 0.15,
-    "maxZoom": 4.0
+    "maxZoom": 4
   },
   "items": [
     {
@@ -8216,7 +8216,7 @@
       "item_sf_052_sprite_swordsman": [
         {
           "id": "blk_hero_start",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "type": "event_when_flag",
           "hat": true,
           "color": "#fecc1b",
@@ -8234,7 +8234,7 @@
           "color": "#ff8a3d",
           "icon": "ph-sliders-horizontal",
           "x": 40,
-          "y": 92,
+          "y": 78,
           "inputs": [
             "health",
             "100"
@@ -8250,7 +8250,7 @@
           "color": "#ff8a3d",
           "icon": "ph-sliders-horizontal",
           "x": 40,
-          "y": 144,
+          "y": 112,
           "inputs": [
             "score",
             "0"
@@ -8266,7 +8266,7 @@
           "color": "#ff8a3d",
           "icon": "ph-sliders-horizontal",
           "x": 40,
-          "y": 196,
+          "y": 146,
           "inputs": [
             "coins",
             "0"
@@ -8281,7 +8281,7 @@
           "color": "#9b5de5",
           "icon": "ph-chat-circle-dots",
           "x": 40,
-          "y": 248,
+          "y": 180,
           "inputs": [
             "Welcome to Metropolis Quest!",
             "2"
@@ -8296,7 +8296,7 @@
           "color": "#f15bb5",
           "icon": "ph-speaker-high",
           "x": 40,
-          "y": 300,
+          "y": 214,
           "inputs": [
             "jump"
           ],
@@ -8323,7 +8323,7 @@
           "color": "#9b5de5",
           "icon": "ph-sparkle",
           "x": 440,
-          "y": 92,
+          "y": 78,
           "inputs": [
             "Jump"
           ],
@@ -8337,7 +8337,7 @@
           "color": "#4361ee",
           "icon": "ph-arrows-down-up",
           "x": 440,
-          "y": 144,
+          "y": 112,
           "inputs": [
             "-35"
           ],
@@ -8351,7 +8351,7 @@
           "color": "#e0a96d",
           "icon": "ph-clock",
           "x": 440,
-          "y": 196,
+          "y": 146,
           "inputs": [
             "0.3"
           ],
@@ -8365,7 +8365,7 @@
           "color": "#4361ee",
           "icon": "ph-arrows-down-up",
           "x": 440,
-          "y": 248,
+          "y": 180,
           "inputs": [
             "35"
           ],
@@ -8379,7 +8379,7 @@
           "color": "#9b5de5",
           "icon": "ph-sparkle",
           "x": 440,
-          "y": 300,
+          "y": 214,
           "inputs": [
             "Idle"
           ],
@@ -8389,7 +8389,7 @@
       "item_sf_064_sprite_police_1": [
         {
           "id": "blk_police_start",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "type": "event_when_flag",
           "hat": true,
           "color": "#fecc1b",
@@ -8407,7 +8407,7 @@
           "color": "#e0a96d",
           "icon": "ph-arrows-clockwise",
           "x": 40,
-          "y": 92,
+          "y": 78,
           "inputs": [
             "10"
           ],
@@ -8434,7 +8434,7 @@
           "color": "#e0a96d",
           "icon": "ph-clock",
           "x": 64,
-          "y": 196,
+          "y": 178,
           "inputs": [
             "0.4"
           ],
@@ -8448,7 +8448,7 @@
           "color": "#4361ee",
           "icon": "ph-arrows-left-right",
           "x": 64,
-          "y": 248,
+          "y": 212,
           "inputs": [
             "-20"
           ],
@@ -8462,7 +8462,7 @@
           "color": "#e0a96d",
           "icon": "ph-clock",
           "x": 64,
-          "y": 300,
+          "y": 246,
           "inputs": [
             "0.4"
           ],
@@ -8490,7 +8490,7 @@
           "color": "#ff8a3d",
           "icon": "ph-arrows-counter-clockwise",
           "x": 40,
-          "y": 92,
+          "y": 78,
           "inputs": [
             "coins",
             "15"
@@ -8505,7 +8505,7 @@
           "color": "#9b5de5",
           "icon": "ph-chat-circle-dots",
           "x": 40,
-          "y": 144,
+          "y": 112,
           "inputs": [
             "Take these credits, traveler!",
             "2"
@@ -8520,7 +8520,7 @@
           "color": "#f15bb5",
           "icon": "ph-speaker-high",
           "x": 40,
-          "y": 196,
+          "y": 146,
           "inputs": [
             "coin"
           ],

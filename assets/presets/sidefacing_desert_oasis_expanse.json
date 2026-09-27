@@ -699,7 +699,7 @@
       {
         "id": "arc_f1",
         "blockId": "when_flag",
-        "name": "when \ud83d\udea9 clicked",
+        "name": "when 🚩 clicked",
         "hat": true,
         "cap": false,
         "c_block": false,
@@ -1699,7 +1699,7 @@
       {
         "id": "tr1_f1",
         "blockId": "when_flag",
-        "name": "when \ud83d\udea9 clicked",
+        "name": "when 🚩 clicked",
         "hat": true,
         "cap": false,
         "c_block": false,
@@ -1980,7 +1980,7 @@
       {
         "id": "wiz_f1",
         "blockId": "when_flag",
-        "name": "when \ud83d\udea9 clicked",
+        "name": "when 🚩 clicked",
         "hat": true,
         "cap": false,
         "c_block": false,
@@ -2245,7 +2245,7 @@
       {
         "id": "rd1_f1",
         "blockId": "when_flag",
-        "name": "when \ud83d\udea9 clicked",
+        "name": "when 🚩 clicked",
         "hat": true,
         "cap": false,
         "c_block": false,
@@ -2813,7 +2813,7 @@
         {
           "id": "arc_f1",
           "blockId": "when_flag",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "hat": true,
           "cap": false,
           "c_block": false,
@@ -2848,7 +2848,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "health",
             100
@@ -2874,7 +2874,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "score",
             0
@@ -2900,7 +2900,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "coins",
             50
@@ -2926,7 +2926,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "The Great Desert Oasis... Time to explore!",
             3
@@ -2958,7 +2958,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             "jump"
           ],
@@ -3015,7 +3015,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 440,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Jump"
           ],
@@ -3040,7 +3040,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-down-up",
           "x": 440,
-          "y": 148,
+          "y": 112,
           "inputs": [
             -40
           ],
@@ -3071,7 +3071,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 440,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "jump"
           ],
@@ -3096,7 +3096,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 440,
-          "y": 256,
+          "y": 180,
           "inputs": [
             0.25
           ],
@@ -3121,7 +3121,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-down-up",
           "x": 440,
-          "y": 310,
+          "y": 214,
           "inputs": [
             40
           ],
@@ -3146,7 +3146,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 440,
-          "y": 364,
+          "y": 248,
           "inputs": [
             "Idle"
           ],
@@ -3203,7 +3203,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 800,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Run"
           ],
@@ -3228,7 +3228,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-left-right",
           "x": 800,
-          "y": 148,
+          "y": 112,
           "inputs": [
             35
           ],
@@ -3253,7 +3253,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 800,
-          "y": 202,
+          "y": 146,
           "inputs": [
             0.2
           ],
@@ -3278,7 +3278,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 800,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "Idle"
           ],
@@ -3335,7 +3335,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 1160,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Run"
           ],
@@ -3360,7 +3360,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-left-right",
           "x": 1160,
-          "y": 148,
+          "y": 112,
           "inputs": [
             -35
           ],
@@ -3385,7 +3385,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 1160,
-          "y": 202,
+          "y": 146,
           "inputs": [
             0.2
           ],
@@ -3410,7 +3410,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 1160,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "Idle"
           ],
@@ -3458,7 +3458,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 440,
-          "y": 514,
+          "y": 498,
           "inputs": [
             "Attack 1"
           ],
@@ -3489,7 +3489,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 440,
-          "y": 568,
+          "y": 532,
           "inputs": [
             "laser"
           ],
@@ -3514,7 +3514,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 440,
-          "y": 622,
+          "y": 566,
           "inputs": [
             "Take aim!",
             1.5
@@ -3540,7 +3540,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 440,
-          "y": 676,
+          "y": 600,
           "inputs": [
             "score",
             10
@@ -3566,7 +3566,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 440,
-          "y": 730,
+          "y": 634,
           "inputs": [
             0.3
           ],
@@ -3591,7 +3591,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 440,
-          "y": 784,
+          "y": 668,
           "inputs": [
             "Idle"
           ],
@@ -3641,7 +3641,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Approval"
           ],
@@ -3666,7 +3666,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "Welcome, nomad! Fresh water & provisions for 15 coins.",
             3
@@ -3698,7 +3698,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "coin"
           ],
@@ -3723,7 +3723,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "coins",
             15
@@ -3749,7 +3749,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             "score",
             5
@@ -3775,7 +3775,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 364,
+          "y": 248,
           "inputs": [
             1
           ],
@@ -3800,7 +3800,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 418,
+          "y": 282,
           "inputs": [
             "Idle"
           ],
@@ -3813,7 +3813,7 @@
         {
           "id": "tr1_f1",
           "blockId": "when_flag",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "hat": true,
           "cap": false,
           "c_block": false,
@@ -3848,7 +3848,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 480,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Dialogue"
           ],
@@ -3873,7 +3873,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 480,
-          "y": 148,
+          "y": 112,
           "inputs": [
             1
           ],
@@ -3898,7 +3898,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 480,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "Idle"
           ],
@@ -3948,7 +3948,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Attack 1"
           ],
@@ -3973,7 +3973,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "Beware the raiders patrolling the eastern dunes beyond the ridge!",
             3.5
@@ -4005,7 +4005,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "fanfare"
           ],
@@ -4030,7 +4030,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "score",
             25
@@ -4056,7 +4056,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             0.5
           ],
@@ -4081,7 +4081,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 364,
+          "y": 248,
           "inputs": [
             "Idle"
           ],
@@ -4094,7 +4094,7 @@
         {
           "id": "wiz_f1",
           "blockId": "when_flag",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "hat": true,
           "cap": false,
           "c_block": false,
@@ -4129,7 +4129,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 480,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "May the oasis winds guide your steps.",
             2.5
@@ -4161,7 +4161,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 480,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "laser"
           ],
@@ -4211,7 +4211,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Approval"
           ],
@@ -4236,7 +4236,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "Our caravan travels between distant cities across the sands.",
             3
@@ -4262,7 +4262,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "coins",
             20
@@ -4294,7 +4294,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "coin"
           ],
@@ -4319,7 +4319,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             0.5
           ],
@@ -4344,7 +4344,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 364,
+          "y": 248,
           "inputs": [
             "Idle"
           ],
@@ -4359,7 +4359,7 @@
         {
           "id": "rd1_f1",
           "blockId": "when_flag",
-          "name": "when \ud83d\udea9 clicked",
+          "name": "when 🚩 clicked",
           "hat": true,
           "cap": false,
           "c_block": false,
@@ -4394,7 +4394,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Walk"
           ],
@@ -4419,7 +4419,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-left-right",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             30
           ],
@@ -4444,7 +4444,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             0.4
           ],
@@ -4469,7 +4469,7 @@
           "color": "#3b82f6",
           "icon": "ph-arrows-left-right",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             -30
           ],
@@ -4494,7 +4494,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             0.4
           ],
@@ -4519,7 +4519,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 364,
+          "y": 248,
           "inputs": [
             "Idle"
           ],
@@ -4567,7 +4567,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 480,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Attack 1"
           ],
@@ -4592,7 +4592,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 480,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "Halt! You trespass on raider territory!",
             2.5
@@ -4624,7 +4624,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 480,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "hurt"
           ],
@@ -4649,7 +4649,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 480,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "health",
             -15
@@ -4675,7 +4675,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 480,
-          "y": 310,
+          "y": 214,
           "inputs": [
             0.5
           ],
@@ -4700,7 +4700,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 480,
-          "y": 364,
+          "y": 248,
           "inputs": [
             "Idle"
           ],
@@ -4750,7 +4750,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 94,
+          "y": 78,
           "inputs": [
             "Shot 1"
           ],
@@ -4775,7 +4775,7 @@
           "color": "#a855f7",
           "icon": "ph-chat-circle-dots",
           "x": 60,
-          "y": 148,
+          "y": 112,
           "inputs": [
             "Drop your gold or face the dunes!",
             2.5
@@ -4807,7 +4807,7 @@
           "color": "#ec4899",
           "icon": "ph-speaker-high",
           "x": 60,
-          "y": 202,
+          "y": 146,
           "inputs": [
             "laser"
           ],
@@ -4832,7 +4832,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 256,
+          "y": 180,
           "inputs": [
             "coins",
             -10
@@ -4858,7 +4858,7 @@
           "color": "#f97316",
           "icon": "ph-brackets-curly",
           "x": 60,
-          "y": 310,
+          "y": 214,
           "inputs": [
             "health",
             -20
@@ -4884,7 +4884,7 @@
           "color": "#eab308",
           "icon": "ph-hourglass-simple",
           "x": 60,
-          "y": 364,
+          "y": 248,
           "inputs": [
             0.5
           ],
@@ -4909,7 +4909,7 @@
           "color": "#a855f7",
           "icon": "ph-user-focus",
           "x": 60,
-          "y": 418,
+          "y": 282,
           "inputs": [
             "Idle"
           ],

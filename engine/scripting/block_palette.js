@@ -173,8 +173,57 @@ const BlockPalette = {
     return element;
   },
 
+  getBlockHeight(block) {
+    if (!block) return 34;
+    if (block.hat) return 38;
+    if (block.c_block) return 78;
+    if (block.e_block) return 130;
+    return 34;
+  },
+
+  layoutScripts(scripts) {
+    if (!Array.isArray(scripts) || scripts.length === 0) return;
+    const blockMap = new Map();
+    scripts.forEach(b => blockMap.set(b.id, b));
+
+    // Find all root blocks (blocks with no prevId, or whose prevId is not in the current scripts)
+    const roots = scripts.filter(b => !b.prevId || !blockMap.has(b.prevId));
+
+    const layoutChain = (startBlock, startX, startY) => {
+      let current = startBlock;
+      let currX = startX;
+      let currY = startY;
+      const visited = new Set();
+
+      while (current && !visited.has(current.id)) {
+        visited.add(current.id);
+        current.x = currX;
+        current.y = currY;
+
+        const h = this.getBlockHeight(current);
+        currY += h;
+
+        if (current.nextId && blockMap.has(current.nextId)) {
+          const nextBlock = blockMap.get(current.nextId);
+          nextBlock.prevId = current.id;
+          current = nextBlock;
+        } else {
+          current = null;
+        }
+      }
+    };
+
+    roots.forEach(root => {
+      const rx = root.x !== undefined ? root.x : 40;
+      const ry = root.y !== undefined ? root.y : 40;
+      layoutChain(root, rx, ry);
+    });
+  },
+
   renderScripts(container, scripts) {
     container.innerHTML = "";
+    if (!Array.isArray(scripts)) return;
+    this.layoutScripts(scripts);
     scripts.forEach(block => {
       const element = this.createBlockElement(block, true);
       element.style.position = "absolute";
