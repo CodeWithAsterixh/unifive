@@ -21,6 +21,7 @@ const AsyncSceneStoreSaver = {
         panX: WorldConfig.panX,
         panY: WorldConfig.panY,
         zoom: WorldConfig.zoom,
+        orientation: WorldConfig.orientation || "landscape",
         responsiveLayering: WorldConfig.responsiveLayering !== false,
         autoGoAround: WorldConfig.autoGoAround !== false
       } : {},

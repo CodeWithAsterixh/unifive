@@ -16,6 +16,7 @@
           zoom: WorldConfig.zoom,
           panX: WorldConfig.panX,
           panY: WorldConfig.panY,
+          orientation: WorldConfig.orientation || "landscape",
           responsiveLayering: WorldConfig.responsiveLayering,
           autoGoAround: WorldConfig.autoGoAround
         } : {},

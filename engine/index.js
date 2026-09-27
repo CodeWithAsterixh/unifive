@@ -66,6 +66,7 @@
     'engine/ui/stage_limits.js',
     'engine/ui/cfg_color_picker.js',
     'engine/ui/cfg_toggles.js',
+    'engine/ui/cfg_orientation.js',
     'engine/ui/config_modal.js',
     'engine/ui/config_controller.js',
     'engine/ui/prop_name_position.js',

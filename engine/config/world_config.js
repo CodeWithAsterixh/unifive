@@ -10,6 +10,7 @@ const WorldConfig = {
   zoom: 1.0,
   minZoom: 0.15,
   maxZoom: 4.0,
+  orientation: "landscape",
   responsiveLayering: true,
   autoGoAround: true,
   isPanning: false,
@@ -46,6 +47,10 @@ const WorldConfig = {
   setResponsiveLayering(enabled) {
     this.responsiveLayering = !!enabled;
     if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setResponsiveLayering(this, enabled);
+  },
+  setOrientation(orientation) {
+    this.orientation = orientation || "landscape";
+    if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setOrientation(this, orientation);
   },
   setAutoGoAround(enabled) {
     this.autoGoAround = !!enabled;

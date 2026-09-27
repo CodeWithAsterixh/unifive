@@ -6,6 +6,7 @@ const ConfigController = {
     if (typeof CfgColorPicker !== "undefined") CfgColorPicker.init(this);
     if (typeof StageLimits !== "undefined") StageLimits.init(this);
     if (typeof CfgToggles !== "undefined") CfgToggles.init(this);
+    if (typeof CfgOrientation !== "undefined") CfgOrientation.init(this);
 
     this.bindCompilationActions();
     this.syncUIFromWorldConfig();
@@ -57,6 +58,9 @@ const ConfigController = {
     }
     if (typeof CfgToggles !== "undefined" && typeof CfgToggles.syncUI === "function") {
       CfgToggles.syncUI(this);
+    }
+    if (typeof CfgOrientation !== "undefined" && typeof CfgOrientation.syncUI === "function") {
+      CfgOrientation.syncUI(this);
     }
     this.updateStats();
   },

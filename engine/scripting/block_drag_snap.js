@@ -77,6 +77,9 @@ const BlockDragSnap = {
     this.dragState.descendants = initialOffsets;
     this.dragState.offsetX = worldX - (block.x || 0);
     this.dragState.offsetY = worldY - (block.y || 0);
+    this.dragState.startX = e.clientX;
+    this.dragState.startY = e.clientY;
+    this.dragState.hasMoved = false;
 
     descendants.forEach(d => {
       const el = document.querySelector(`#code-workspace-blocks [data-block-id="${d.id}"]`);
@@ -86,8 +89,18 @@ const BlockDragSnap = {
     e.preventDefault();
   },
 
-  startPaletteDrag(block, event) {
-    const ghost = typeof BlockPalette !== "undefined" ? BlockPalette.createBlockElement(block, true) : null;
+  startPaletteDrag(block, event, paletteElement = null) {
+    const inputEls = paletteElement ? Array.from(paletteElement.querySelectorAll(".code-block-input, .code-block-select")) : [];
+    const inputs = inputEls.length > 0
+      ? inputEls.map(el => (el.tagName === "SELECT" || el.value !== undefined) ? el.value : el.textContent.trim())
+      : (block.inputs ? [...block.inputs] : []);
+
+    const blockWithInputs = {
+      ...block,
+      inputs
+    };
+
+    const ghost = typeof BlockPalette !== "undefined" ? BlockPalette.createBlockElement(blockWithInputs, true) : null;
     if (!ghost) return;
     ghost.classList.add("code-drag-ghost");
     ghost.style.position = "fixed";
@@ -100,7 +113,8 @@ const BlockDragSnap = {
       offsetX: 0,
       offsetY: 0,
       mode: "palette",
-      block,
+      block: blockWithInputs,
+      blockInputs: inputs,
       descendants: [],
       ghost
     };
@@ -115,6 +129,11 @@ const BlockDragSnap = {
 
   handleMouseMove(e) {
     if (!this.dragState.isDragging) return;
+    if (this.dragState.startX !== undefined && this.dragState.startY !== undefined) {
+      if (Math.hypot(e.clientX - this.dragState.startX, e.clientY - this.dragState.startY) > 4) {
+        this.dragState.hasMoved = true;
+      }
+    }
     if (this.dragState.mode === "palette") {
       this.positionGhost(e);
       return;
@@ -155,6 +174,7 @@ const BlockDragSnap = {
         const panX = typeof AppModeController !== "undefined" ? AppModeController.panX : 0;
         const panY = typeof AppModeController !== "undefined" ? AppModeController.panY : 0;
         const scripts = AppModeController.getCurrentScripts();
+        const inputs = Array.isArray(this.dragState.blockInputs) ? [...this.dragState.blockInputs] : (Array.isArray(this.dragState.block.inputs) ? [...this.dragState.block.inputs] : []);
         const newBlock = {
           ...this.dragState.block,
           id: "block_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
@@ -163,14 +183,25 @@ const BlockDragSnap = {
           y: Math.round((e.clientY - rect.top - panY) / zoom),
           nextId: null,
           prevId: null,
-          inputs: Array.isArray(this.dragState.block.inputs) ? [...this.dragState.block.inputs] : []
+          inputs: inputs
         };
         scripts.push(newBlock);
         if (typeof BlockPalette !== "undefined") BlockPalette.layoutScripts(scripts);
         AppModeController.renderScriptsForActiveTarget();
       }
     } else if (this.dragState.mode === "workspace") {
-      this.snapDraggedBlock();
+      if (!this.dragState.hasMoved && this.dragState.block) {
+        // User clicked the block stack in workspace: execute it!
+        const targetId = typeof AppModeController !== "undefined" ? AppModeController.getActiveTargetId() : null;
+        const targetItem = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.items.find(i => i.id === targetId) : null;
+        if (typeof CodeRuntimeEngine !== "undefined") {
+          CodeRuntimeEngine.isRunning = true;
+          CodeRuntimeEngine.updateRunButtonUI(true);
+          CodeRuntimeEngine.launchThread(this.dragState.block, targetItem, targetId);
+        }
+      } else {
+        this.snapDraggedBlock();
+      }
       if (typeof AppModeController !== "undefined") AppModeController.renderScriptsForActiveTarget();
     }
     this.dragState.isDragging = false;

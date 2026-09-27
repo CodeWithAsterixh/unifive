@@ -30,6 +30,10 @@ const CodeRuntimeEngine = {
   },
 
   triggerEvent(triggerType, eventArg = null, specificTargetId = null) {
+    if (!this.isRunning) {
+      this.isRunning = true;
+      this.updateRunButtonUI(true);
+    }
     if (typeof RuntimeEvents !== "undefined") RuntimeEvents.triggerEvent(this, triggerType, eventArg, specificTargetId);
   },
 

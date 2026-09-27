@@ -636,7 +636,31 @@
               </div>
             </div>
 
-            <!-- 3. Gameplay & Depth Sorting Config -->
+            <!-- 3. Game Orientation Config -->
+            <div class="config-group">
+              <div class="config-group-header">
+                <i class="ph ph-device-mobile"></i>
+                <span>GAME ORIENTATION</span>
+              </div>
+              <div class="config-group-body">
+                <div class="preset-chips-row orientation-presets">
+                  <button class="preset-chip active" id="cfg-orient-landscape" data-orientation="landscape">
+                    <i class="ph ph-device-tablet-speaker" style="transform: rotate(90deg); margin-right: 4px;"></i>LANDSCAPE
+                  </button>
+                  <button class="preset-chip" id="cfg-orient-portrait" data-orientation="portrait">
+                    <i class="ph ph-device-mobile-speaker" style="margin-right: 4px;"></i>PORTRAIT
+                  </button>
+                  <button class="preset-chip" id="cfg-orient-auto" data-orientation="auto">
+                    <i class="ph ph-arrows-clockwise" style="margin-right: 4px;"></i>AUTO
+                  </button>
+                </div>
+                <p class="config-field-hint" style="margin-top: 8px; font-size: 0.65rem; color: var(--text-secondary); line-height: 1.35;">
+                  Controls display format during Play Mode. <strong>Landscape</strong> locks widescreen, <strong>Portrait</strong> optimizes for vertical phone screens, and <strong>Auto</strong> adapts to device angle.
+                </p>
+              </div>
+            </div>
+
+            <!-- 4. Gameplay & Depth Sorting Config -->
             <div class="config-group">
               <div class="config-group-header">
                 <i class="ph ph-stack-overflow"></i>
@@ -1110,6 +1134,20 @@
           <i class="ph ph-x-bold"></i>
           <span>QUIT</span>
         </button>
+      </div>
+
+      <!-- Device Orientation Rotation Helper Overlay -->
+      <div class="player-orientation-hint" id="player-orientation-hint" style="display: none;">
+        <div class="player-orientation-hint-content">
+          <div class="player-orientation-hint-body">
+            <i class="ph ph-device-mobile-camera orientation-rotate-icon"></i>
+            <span id="player-orientation-hint-text">Please rotate your device for best experience</span>
+          </div>
+          <button class="btn btn-pixel btn-dismiss-orientation" id="btn-dismiss-orientation-hint">
+            <i class="ph ph-arrow-fat-right"></i>
+            <span>CONTINUE ANYWAY</span>
+          </button>
+        </div>
       </div>
 
       <!-- Player Game Viewport -->

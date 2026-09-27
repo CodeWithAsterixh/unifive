@@ -71,9 +71,15 @@ const AppModeController = {
   },
 
   handleModeClick(e) {
-    const target = e.target.closest("#btn-mode-canvas, #btn-mode-code, #btn-mobile-nav-canvas, #btn-mobile-nav-code");
+    const target = e.target.closest("#btn-mode-canvas, #btn-mode-code, #btn-mode-play, #btn-mobile-nav-canvas, #btn-mobile-nav-code, #btn-mobile-nav-play");
     if (!target) return;
-    this.setMode(target.id.includes("code") ? "code" : "canvas");
+    if (target.id.includes("play")) {
+      this.setMode("play");
+    } else if (target.id.includes("code")) {
+      this.setMode("code");
+    } else {
+      this.setMode("canvas");
+    }
   },
 
   isCodeMode() {

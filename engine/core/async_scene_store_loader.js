@@ -16,6 +16,7 @@ const AsyncSceneStoreLoader = {
       WorldConfig.panX = typeof scene.worldConfig.panX === "number" ? scene.worldConfig.panX : Math.round(WorldConfig.worldWidth / 2);
       WorldConfig.panY = typeof scene.worldConfig.panY === "number" ? scene.worldConfig.panY : Math.round(WorldConfig.worldHeight / 2);
       WorldConfig.zoom = scene.worldConfig.zoom || 1.0;
+      WorldConfig.orientation = scene.worldConfig.orientation || "landscape";
       WorldConfig.responsiveLayering = scene.worldConfig.responsiveLayering !== false;
       WorldConfig.autoGoAround = scene.worldConfig.autoGoAround !== false;
       WorldConfig.clampPan();

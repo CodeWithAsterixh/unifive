@@ -16,6 +16,10 @@ const WorldConfigMutations = {
     config.responsiveLayering = !!enabled;
     if (typeof AsyncSceneStore !== "undefined") AsyncSceneStore.saveCurrentScene();
   },
+  setOrientation(config, orientation) {
+    config.orientation = orientation || "landscape";
+    if (typeof AsyncSceneStore !== "undefined") AsyncSceneStore.saveCurrentScene();
+  },
   setAutoGoAround(config, enabled) {
     config.autoGoAround = !!enabled;
     if (typeof AsyncSceneStore !== "undefined") AsyncSceneStore.saveCurrentScene();

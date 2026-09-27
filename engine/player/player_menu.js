@@ -4,11 +4,10 @@
 const PlayerMenu = {
   bindUI(engine) {
     document.addEventListener("click", (e) => {
-      const target = e.target.closest("#btn-mode-play, #btn-mobile-nav-play, #btn-player-pause, #btn-player-fullscreen, #btn-player-exit, #btn-pause-resume, #btn-pause-customize-controls, #btn-pause-restart, #btn-pause-exit, #btn-gameover-retry, #btn-gameover-exit");
+      const target = e.target.closest("#btn-player-pause, #btn-player-fullscreen, #btn-player-exit, #btn-pause-resume, #btn-pause-customize-controls, #btn-pause-restart, #btn-pause-exit, #btn-gameover-retry, #btn-gameover-exit");
       if (!target) return;
       const id = target.id;
-      if (id === "btn-mode-play" || id === "btn-mobile-nav-play") engine.togglePlay();
-      else if (id === "btn-player-pause") engine.togglePause();
+      if (id === "btn-player-pause") engine.togglePause();
       else if (id === "btn-player-fullscreen") engine.toggleFullscreen();
       else if (id === "btn-player-exit" || id === "btn-pause-exit" || id === "btn-gameover-exit") engine.exit();
       else if (id === "btn-pause-resume") engine.resume();

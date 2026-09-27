@@ -12,6 +12,7 @@ const AsyncSceneStoreDefaults = {
         panX: 1000,
         panY: 750,
         zoom: 1.0,
+        orientation: "landscape",
         responsiveLayering: true,
         autoGoAround: true
       },

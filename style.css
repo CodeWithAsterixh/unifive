@@ -5117,6 +5117,15 @@ body.resizing {
   pointer-events: auto;
 }
 
+@media (min-width: 861px) {
+  .sidebar-drawer-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+}
+
 /* Mobile Bottom Tab Navigation */
 .mobile-bottom-nav {
   position: fixed;
@@ -7570,3 +7579,169 @@ body.standalone-player .game-player-pane {
   text-transform: uppercase;
   text-shadow: 1px 1px 0px #000000;
 }
+
+/* ==========================================================================
+   GAME ORIENTATION CONFIG & PLAYER ORIENTATION ADAPTATION
+   ========================================================================== */
+
+.orientation-presets {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.orientation-presets .preset-chip {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--burgundy-dark);
+  border: 2px solid var(--burgundy-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.orientation-presets .preset-chip:hover {
+  color: var(--text-light);
+  border-color: var(--gold-mid);
+  background: var(--burgundy-base);
+}
+
+.orientation-presets .preset-chip.active {
+  color: var(--gold-bright);
+  background: var(--burgundy-base);
+  border-color: var(--gold-bright);
+  box-shadow: inset 1px 1px 0px var(--gold-bright), 0 0 6px rgba(253, 224, 71, 0.3);
+}
+
+/* Player Orientation Hint (Mobile Device Rotation Advisory) */
+.player-orientation-hint {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 520px;
+  z-index: 100005;
+  background: rgba(26, 4, 11, 0.95);
+  backdrop-filter: blur(12px);
+  border: 2px solid var(--gold-bright);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 3px 3px 0px #000;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  animation: pulseRotateBanner 2.2s infinite ease-in-out;
+  pointer-events: auto;
+}
+
+@keyframes pulseRotateBanner {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 3px 3px 0px #000, 0 0 8px rgba(253, 224, 71, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 3px 3px 0px #000, 0 0 16px rgba(253, 224, 71, 0.5);
+  }
+}
+
+.player-orientation-hint-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.player-orientation-hint-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.player-orientation-hint .orientation-rotate-icon {
+  font-size: 1.6rem;
+  color: var(--gold-bright);
+  flex-shrink: 0;
+  animation: rotateHintAnim 2s infinite ease-in-out;
+}
+
+@keyframes rotateHintAnim {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.player-orientation-hint span#player-orientation-hint-text {
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.35;
+  text-shadow: 1px 1px 0px #000;
+  flex: 1;
+}
+
+.player-orientation-hint .btn-dismiss-orientation {
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--burgundy-dark);
+  border: 2px solid var(--gold-mid);
+  color: var(--gold-bright);
+  box-shadow: 2px 2px 0px #000, inset 1px 1px 0px rgba(253, 224, 71, 0.2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.player-orientation-hint .btn-dismiss-orientation:hover {
+  background: var(--burgundy-base);
+  border-color: var(--gold-bright);
+  color: var(--text-white);
+  box-shadow: 2px 2px 0px #000, inset 1px 1px 0px var(--gold-bright), 0 0 8px rgba(253, 224, 71, 0.3);
+}
+
+@media (min-width: 600px) {
+  .player-orientation-hint-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .player-orientation-hint .btn-dismiss-orientation {
+    width: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Portrait Mode Stage Adaptation for Play Mode */
+body.mode-play.player-orientation-portrait .player-canvas-container {
+  max-width: 520px;
+  margin: 0 auto;
+  left: 50% !important;
+  transform: translateX(-50%);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.95);
+  border-left: 2px solid rgba(99, 18, 43, 0.6);
+  border-right: 2px solid rgba(99, 18, 43, 0.6);
+}
+
+@media (max-width: 600px) {
+  body.mode-play.player-orientation-portrait .player-canvas-container {
+    max-width: 100vw;
+    left: 0 !important;
+    transform: none;
+    border-left: none;
+    border-right: none;
+  }
+}
+

@@ -40,6 +40,7 @@ function setup() {
   if (typeof AppModeController !== "undefined") AppModeController.init();
   if (typeof VariableManager !== "undefined") VariableManager.init();
   if (typeof CodeRuntimeEngine !== "undefined") CodeRuntimeEngine.init();
+  if (typeof GamePlayerEngine !== "undefined") GamePlayerEngine.init();
   if (typeof U5Compiler !== "undefined") U5Compiler.init();
   if (typeof HistoryManager !== "undefined") HistoryManager.updateUI();
   if (typeof LayersController !== "undefined") LayersController.update();

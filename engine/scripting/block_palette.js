@@ -90,10 +90,10 @@ const BlockPalette = {
       { id: "op_contains", name: "<[apple] contains [a]>", isBoolean: true, scope: "universal", color: "#22c55e", icon: "ph-magnifying-glass" }
     ],
     variables: [
-      { id: "set_var", name: "set variable", scope: "global", color: "#f97316", icon: "ph-textbox" },
-      { id: "change_var", name: "change variable", scope: "global", color: "#f97316", icon: "ph-plus-circle" },
-      { id: "show_var", name: "show variable", scope: "global", color: "#f97316", icon: "ph-eye" },
-      { id: "hide_var", name: "hide variable", scope: "global", color: "#f97316", icon: "ph-eye-slash" }
+      { id: "set_var", name: "set [score] to (0)", scope: "global", color: "#f97316", icon: "ph-textbox" },
+      { id: "change_var", name: "change [score] by (1)", scope: "global", color: "#f97316", icon: "ph-plus-circle" },
+      { id: "show_var", name: "show variable [score]", scope: "global", color: "#f97316", icon: "ph-eye" },
+      { id: "hide_var", name: "hide variable [score]", scope: "global", color: "#f97316", icon: "ph-eye-slash" }
     ]
   },
 
@@ -142,6 +142,42 @@ const BlockPalette = {
     return true;
   },
 
+  getBlockOptions(block) {
+    if (block.options && Array.isArray(block.options)) return block.options;
+    
+    // Dynamic sprite poses
+    if (block.id === "switch_pose" || block.id === "switch_costume") {
+      const selected = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
+      if (selected && selected.poses && Object.keys(selected.poses).length > 0) {
+        return Object.keys(selected.poses);
+      }
+      return ["Idle", "Walk", "Jump", "Attack", "Hurt", "Dead"];
+    }
+
+    // Dynamic playable character names
+    if (block.id === "set_playable_char" || block.isPlayableCharSelector) {
+      const items = (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items) ? WorldObjectsManager.items : [];
+      const spriteNames = items.filter(i => i.type === "sprite" || (i.poses && Object.keys(i.poses).length > 0)).map(i => i.name || "Sprite");
+      return spriteNames.length > 0 ? ["this sprite", ...spriteNames] : ["this sprite"];
+    }
+
+    // Dynamic objects for touching / distance
+    if (block.id === "touching_object" || block.id === "distance_to_object" || block.isTouchingSelector || block.isDistanceSelector) {
+      const items = (typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items) ? WorldObjectsManager.items : [];
+      const itemNames = items.map(i => i.name || "Object");
+      return ["edge", "solid", "mouse-pointer", ...itemNames];
+    }
+
+    // Dynamic variable names
+    if (block.id && block.id.endsWith("_var")) {
+      const vars = (typeof VariableManager !== "undefined" && VariableManager.variables) ? VariableManager.variables : [];
+      const varNames = vars.map(v => v.name);
+      return varNames.length > 0 ? varNames : ["score", "coins", "lives"];
+    }
+
+    return null;
+  },
+
   createBlockElement(block, workspace = false) {
     const element = document.createElement("div");
     let blockType = "stack-block";
@@ -154,14 +190,38 @@ const BlockPalette = {
     element.className = `code-block-item ${blockType}`;
     element.dataset.blockId = block.id;
     element.style.setProperty("--block-bg", block.color || "#2563eb");
-    let formattedName = String(block.name || block.id)
-      .replace(/\((.*?)\)/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
-    if (block.options) {
-      const options = block.options.map(option => `<option value="${option}">${option}</option>`).join("");
-      formattedName = formattedName.replace(/\[(.*?)\]/g, `<select class="code-block-select">${options}</select>`);
+
+    const blockOptions = this.getBlockOptions(block);
+    let inputIdx = 0;
+    let formattedName = String(block.name || block.id);
+
+    // 1. Replace (param) number/text fields
+    formattedName = formattedName.replace(/\((.*?)\)/g, (match, defaultVal) => {
+      const currentVal = (block.inputs && block.inputs[inputIdx] !== undefined) ? block.inputs[inputIdx] : defaultVal;
+      inputIdx++;
+      return `<span class="code-block-input" contenteditable="true" spellcheck="false">${currentVal}</span>`;
+    });
+
+    // 2. Replace [option] dropdowns or editable text
+    if (blockOptions && blockOptions.length > 0) {
+      formattedName = formattedName.replace(/\[(.*?)\]/g, (match, defaultVal) => {
+        const currentVal = (block.inputs && block.inputs[inputIdx] !== undefined) ? block.inputs[inputIdx] : defaultVal;
+        inputIdx++;
+        const optsList = blockOptions.includes(currentVal) ? blockOptions : [currentVal, ...blockOptions];
+        const optionsHtml = optsList.map(option => {
+          const selected = String(option) === String(currentVal) ? ' selected="selected"' : '';
+          return `<option value="${option}"${selected}>${option}</option>`;
+        }).join("");
+        return `<select class="code-block-select">${optionsHtml}</select>`;
+      });
     } else {
-      formattedName = formattedName.replace(/\[(.*?)\]/g, '<span class="code-block-input" contenteditable="true" spellcheck="false">$1</span>');
+      formattedName = formattedName.replace(/\[(.*?)\]/g, (match, defaultVal) => {
+        const currentVal = (block.inputs && block.inputs[inputIdx] !== undefined) ? block.inputs[inputIdx] : defaultVal;
+        inputIdx++;
+        return `<span class="code-block-input" contenteditable="true" spellcheck="false">${currentVal}</span>`;
+      });
     }
+
     const deleteButton = workspace ? '<button class="code-block-delete-btn" title="Delete Block">x</button>' : "";
     if (block.e_block) {
       element.innerHTML = `<div class="e-block-header"><i class="ph ${block.icon || "ph-git-branch"}"></i><span>${formattedName}</span>${deleteButton}</div><div class="e-block-body e-block-body-if"></div><div class="e-block-divider"><span>else</span></div><div class="e-block-body e-block-body-else"></div><div class="e-block-footer"></div>`;
@@ -170,14 +230,192 @@ const BlockPalette = {
     } else {
       element.innerHTML = `<i class="ph ${block.icon || "ph-code"}"></i><span>${formattedName}</span>${deleteButton}`;
     }
+
+    // Bind input change and sync
+    const inputs = element.querySelectorAll(".code-block-input, .code-block-select");
+    inputs.forEach((inp, idx) => {
+      inp.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+      });
+      const syncInput = () => {
+        if (!block.inputs) block.inputs = [];
+        block.inputs[idx] = (inp.tagName === "SELECT" || inp.value !== undefined) ? inp.value : inp.textContent.trim();
+      };
+      inp.addEventListener("input", syncInput);
+      inp.addEventListener("change", syncInput);
+      inp.addEventListener("blur", syncInput);
+    });
+
     if (!workspace) {
+      let startX = 0;
+      let startY = 0;
+      let isDragging = false;
+      let onMouseMove = null;
+      let onMouseUp = null;
+
       element.addEventListener("mousedown", (event) => {
         if (event.button !== 0) return;
+        if (event.target.closest(".code-block-input, .code-block-select, select, input, option")) {
+          return;
+        }
         event.preventDefault();
-        if (typeof BlockDragSnap !== "undefined") BlockDragSnap.startPaletteDrag(block, event);
+        startX = event.clientX;
+        startY = event.clientY;
+        isDragging = false;
+
+        onMouseMove = (e) => {
+          const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+          if (dist > 4 && !isDragging) {
+            isDragging = true;
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+            if (typeof BlockDragSnap !== "undefined") {
+              BlockDragSnap.startPaletteDrag(block, e, element);
+            }
+          }
+        };
+
+        onMouseUp = (e) => {
+          window.removeEventListener("mousemove", onMouseMove);
+          window.removeEventListener("mouseup", onMouseUp);
+          if (!isDragging) {
+            this.executePaletteBlock(block, element);
+          }
+        };
+
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
       });
     }
+
     return element;
+  },
+
+  async executePaletteBlock(block, element) {
+    if (!block) return;
+    
+    // 1. Flash executing halo
+    if (element) {
+      element.classList.add("executing-halo");
+      setTimeout(() => element.classList.remove("executing-halo"), 300);
+    }
+    
+    // 2. Extract inputs directly from DOM
+    const inputEls = element ? Array.from(element.querySelectorAll(".code-block-input, .code-block-select")) : [];
+    const inputs = inputEls.map(el => (el.tagName === "SELECT" || el.value !== undefined) ? el.value : el.textContent.trim());
+    
+    const blockToRun = {
+      ...block,
+      blockId: block.id,
+      inputs: inputs.length > 0 ? inputs : (block.inputs || [])
+    };
+    
+    // 3. Resolve active target
+    let targetItem = typeof WorldObjectsManager !== "undefined" ? WorldObjectsManager.getSelectedItem() : null;
+    if (!targetItem && typeof WorldObjectsManager !== "undefined" && WorldObjectsManager.items.length > 0) {
+      targetItem = WorldObjectsManager.items.find(i => i.isPlayable) || WorldObjectsManager.items.find(i => i.type === "sprite") || WorldObjectsManager.items[0];
+      if (targetItem && WorldObjectsManager.selectItem) WorldObjectsManager.selectItem(targetItem.id);
+    }
+    const targetId = targetItem ? targetItem.id : "global_stage";
+    
+    const evalInput = (idx, fb) => {
+      if (blockToRun.inputs && blockToRun.inputs[idx] !== undefined && blockToRun.inputs[idx] !== "") {
+        return blockToRun.inputs[idx];
+      }
+      return fb;
+    };
+    
+    const bid = block.id;
+    
+    // 4. Handle events/hat blocks
+    if (bid === "when_flag") {
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.start("when_flag");
+      }
+      return;
+    }
+    
+    if (bid === "when_key") {
+      const key = evalInput(0, "space");
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.triggerEvent("when_key", key);
+      }
+      if (typeof SoundEngine !== "undefined") {
+        SoundEngine.playChiptuneTone(520, "sine", 0.04, 0.08);
+      }
+      return;
+    }
+    
+    if (bid === "when_vcontrol") {
+      const btn = evalInput(0, "cross");
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.triggerEvent("when_vcontrol", btn);
+      }
+      if (typeof SoundEngine !== "undefined") {
+        SoundEngine.playChiptuneTone(560, "sine", 0.04, 0.08);
+      }
+      return;
+    }
+    
+    if (bid === "when_clicked") {
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.triggerEvent("when_clicked", null, targetId);
+      }
+      return;
+    }
+    
+    if (bid === "when_became_playable") {
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.triggerEvent("when_became_playable", null, targetId);
+      }
+      return;
+    }
+    
+    if (bid === "when_receive" || bid === "broadcast") {
+      const msg = evalInput(0, "message1");
+      if (typeof CodeRuntimeEngine !== "undefined") {
+        CodeRuntimeEngine.triggerEvent("when_receive", msg);
+      }
+      if (typeof SoundEngine !== "undefined") {
+        SoundEngine.playChiptuneTone(600, "square", 0.04, 0.08);
+      }
+      return;
+    }
+    
+    // 5. Execute action blocks
+    const mockEngine = {
+      isRunning: true,
+      sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
+      stopAll() {
+        if (typeof CodeRuntimeEngine !== "undefined") CodeRuntimeEngine.stopAll();
+      }
+    };
+    
+    try {
+      if (bid.startsWith("move_") || bid.startsWith("turn_") || bid.startsWith("goto_") || bid === "glide_xy" || bid === "point_dir" || bid === "bounce_edge" || bid.startsWith("set_") || bid.startsWith("change_")) {
+        if (typeof BuiltinMotion !== "undefined") {
+          await BuiltinMotion.execute(mockEngine, blockToRun, targetItem, evalInput);
+        }
+      }
+      if (bid.startsWith("say_") || bid === "switch_pose" || bid === "switch_costume" || bid === "next_costume" || bid === "show" || bid === "hide") {
+        if (typeof BuiltinLooks !== "undefined") {
+          await BuiltinLooks.execute(mockEngine, blockToRun, targetItem, evalInput);
+        }
+      }
+      if (typeof BuiltinExtended !== "undefined") {
+        await BuiltinExtended.execute(mockEngine, blockToRun, targetItem, evalInput);
+      }
+      
+      if (block.isReporter || block.isBoolean) {
+        if (typeof SoundEngine !== "undefined") {
+          SoundEngine.playChiptuneTone(540, "sine", 0.04, 0.08);
+        }
+      }
+    } catch (err) {
+      console.warn("Error running palette block:", err);
+    }
   },
 
   getBlockHeight(block) {

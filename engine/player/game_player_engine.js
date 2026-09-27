@@ -22,6 +22,15 @@ const GamePlayerEngine = {
     if (typeof PlayerInputManager !== "undefined") PlayerInputManager.init();
     if (typeof MobileControlsManager !== "undefined") MobileControlsManager.init();
     if (typeof PlayerMenu !== "undefined") PlayerMenu.bindUI(this);
+
+    window.addEventListener("resize", () => {
+      if (this.isPlaying) this.applyOrientation();
+    });
+    window.addEventListener("orientationchange", () => {
+      if (this.isPlaying) {
+        setTimeout(() => this.applyOrientation(), 100);
+      }
+    });
   },
 
   togglePlay() {
@@ -66,6 +75,8 @@ const GamePlayerEngine = {
     if (typeof CodeRuntimeEngine !== "undefined") CodeRuntimeEngine.start("when_flag");
     if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(523, "triangle", 0.08, 0.15);
 
+    this.applyOrientation();
+
     setTimeout(() => {
       if (typeof resizeStageCanvas === "function") resizeStageCanvas();
     }, 0);
@@ -74,9 +85,62 @@ const GamePlayerEngine = {
     }, 60);
   },
 
+  applyOrientation() {
+    const orientation = (typeof WorldConfig !== "undefined" && WorldConfig.orientation) ? WorldConfig.orientation : "landscape";
+    const gamePlayerPane = document.getElementById("game-player-pane");
+    const hintEl = document.getElementById("player-orientation-hint");
+    const hintText = document.getElementById("player-orientation-hint-text");
+    const btnDismiss = document.getElementById("btn-dismiss-orientation-hint");
+
+    document.body.classList.remove("player-orientation-landscape", "player-orientation-portrait", "player-orientation-auto");
+    if (gamePlayerPane) {
+      gamePlayerPane.classList.remove("player-orientation-landscape", "player-orientation-portrait", "player-orientation-auto");
+    }
+
+    const cls = `player-orientation-${orientation}`;
+    document.body.classList.add(cls);
+    if (gamePlayerPane) gamePlayerPane.classList.add(cls);
+
+    if (btnDismiss && !this._dismissBound) {
+      btnDismiss.addEventListener("click", () => {
+        if (hintEl) hintEl.style.display = "none";
+        this._hintDismissed = true;
+        if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(480, "sine", 0.04, 0.08);
+      });
+      this._dismissBound = true;
+    }
+
+    if (!hintEl || this._hintDismissed) return;
+
+    const isMobile = window.innerWidth <= 860 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isWindowPortrait = window.innerHeight > window.innerWidth;
+
+    if (isMobile && orientation === "landscape" && isWindowPortrait) {
+      if (hintText) hintText.textContent = "Please rotate your device to landscape for best experience";
+      hintEl.style.display = "block";
+    } else if (isMobile && orientation === "portrait" && !isWindowPortrait) {
+      if (hintText) hintText.textContent = "Please rotate your device to portrait for best experience";
+      hintEl.style.display = "block";
+    } else {
+      hintEl.style.display = "none";
+    }
+  },
+
+  clearOrientation() {
+    this._hintDismissed = false;
+    document.body.classList.remove("player-orientation-landscape", "player-orientation-portrait", "player-orientation-auto");
+    const gamePlayerPane = document.getElementById("game-player-pane");
+    if (gamePlayerPane) {
+      gamePlayerPane.classList.remove("player-orientation-landscape", "player-orientation-portrait", "player-orientation-auto");
+    }
+    const hintEl = document.getElementById("player-orientation-hint");
+    if (hintEl) hintEl.style.display = "none";
+  },
+
   exit() {
     this.isPlaying = false;
     this.isPaused = false;
+    this.clearOrientation();
     if (typeof CodeRuntimeEngine !== "undefined" && CodeRuntimeEngine.isRunning) CodeRuntimeEngine.stopAll();
     if (typeof PlayerState !== "undefined") PlayerState.restoreSnapshot(this);
 
