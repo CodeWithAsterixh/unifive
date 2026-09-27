@@ -6,7 +6,7 @@ const AsyncSceneStoreDefaults = {
     return {
       viewId: viewId,
       worldConfig: {
-        bgColor: "#ffffff",
+        bgColor: "#18181b",
         worldWidth: 2000,
         worldHeight: 1500,
         panX: 1000,

@@ -77,7 +77,7 @@ const CfgColorPicker = {
     if (typeof WorldConfig === "undefined") return;
     this.isUpdatingUI = true;
 
-    const currentHex = WorldConfig.bgColor || "#ffffff";
+    const currentHex = WorldConfig.bgColor || "#18181b";
     const bgPicker = document.getElementById("cfg-bg-color-picker") || document.getElementById("cfg-bg-color");
     const bgText = document.getElementById("cfg-bg-color-text");
     const previewBox = document.getElementById("color-preview-box");

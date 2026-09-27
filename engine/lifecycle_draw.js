@@ -38,8 +38,20 @@ function drawStageCanvas() {
     GamePlayerEngine.updateGameLoop();
   }
 
-  // 1. Dark outer void canvas background
-  background(isPlay ? 6 : (isCode ? 10 : 18), isPlay ? 2 : (isCode ? 3 : 4), isPlay ? 4 : (isCode ? 5 : 9));
+  const bgColor = typeof WorldConfig !== "undefined" ? (WorldConfig.bgColor || "#ffffff") : "#ffffff";
+  let bgCol;
+  try {
+    bgCol = color(bgColor);
+  } catch (e) {
+    bgCol = color(255);
+  }
+
+  // 1. Dark outer void canvas background (or world backdrop in Play mode)
+  if (isPlay) {
+    background(bgCol);
+  } else {
+    background(isCode ? 10 : 18, isCode ? 3 : 4, isCode ? 5 : 9);
+  }
 
   const cam = (typeof getActiveStageCamera === "function") ? getActiveStageCamera() : { panX: 1000, panY: 750, zoom: 1.0 };
 
@@ -52,9 +64,8 @@ function drawStageCanvas() {
   // 3. Draw World Canvas Background
   const wWidth = typeof WorldConfig !== "undefined" ? WorldConfig.worldWidth : 2000;
   const wHeight = typeof WorldConfig !== "undefined" ? WorldConfig.worldHeight : 1500;
-  const bgColor = typeof WorldConfig !== "undefined" ? WorldConfig.bgColor : "#ffffff";
 
-  fill(bgColor);
+  fill(bgCol);
   if (isPlay) {
     noStroke();
   } else {

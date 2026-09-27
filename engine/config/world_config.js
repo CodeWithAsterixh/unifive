@@ -2,7 +2,7 @@
  * UNIFIVE Engine - World & Canvas Configuration Subsystem
  */
 const WorldConfig = {
-  bgColor: "#ffffff",
+  bgColor: "#18181b",
   worldWidth: 2000,
   worldHeight: 1500,
   panX: 1000,
@@ -33,8 +33,25 @@ const WorldConfig = {
     else this.panY = this.worldHeight / 2;
   },
 
-  setBgColor(hex) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setBgColor(this, hex); },
-  setWorldSize(w, h) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setWorldSize(this, w, h); },
-  setResponsiveLayering(enabled) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setResponsiveLayering(this, enabled); },
-  setAutoGoAround(enabled) { if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setAutoGoAround(this, enabled); }
+  setBgColor(hex) {
+    if (hex) this.bgColor = hex;
+    if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setBgColor(this, hex);
+  },
+  setWorldSize(w, h) {
+    this.worldWidth = Math.max(200, parseInt(w, 10) || 2000);
+    this.worldHeight = Math.max(200, parseInt(h, 10) || 1500);
+    this.clampPan();
+    if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setWorldSize(this, w, h);
+  },
+  setResponsiveLayering(enabled) {
+    this.responsiveLayering = !!enabled;
+    if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setResponsiveLayering(this, enabled);
+  },
+  setAutoGoAround(enabled) {
+    this.autoGoAround = !!enabled;
+    if (typeof WorldConfigMutations !== "undefined") WorldConfigMutations.setAutoGoAround(this, enabled);
+  }
 };
+
+if (typeof window !== "undefined") window.WorldConfig = WorldConfig;
+if (typeof globalThis !== "undefined") globalThis.WorldConfig = WorldConfig;

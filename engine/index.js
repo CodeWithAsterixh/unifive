@@ -24,6 +24,7 @@
     // 2. Camera, Config & Audio
     'engine/config/stage_camera.js',
     'engine/config/world_pan.js',
+    'engine/config/world_config_mutations.js',
     'engine/config/world_config.js',
     'engine/audio/synth_core.js',
     'engine/audio/action_history_sounds.js',

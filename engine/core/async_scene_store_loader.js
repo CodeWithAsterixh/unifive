@@ -10,7 +10,7 @@ const AsyncSceneStoreLoader = {
     }
 
     if (scene.worldConfig && typeof WorldConfig !== "undefined") {
-      WorldConfig.bgColor = scene.worldConfig.bgColor || "#ffffff";
+      WorldConfig.bgColor = scene.worldConfig.bgColor || "#18181b";
       WorldConfig.worldWidth = scene.worldConfig.worldWidth || 2000;
       WorldConfig.worldHeight = scene.worldConfig.worldHeight || 1500;
       WorldConfig.panX = typeof scene.worldConfig.panX === "number" ? scene.worldConfig.panX : Math.round(WorldConfig.worldWidth / 2);
