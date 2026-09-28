@@ -1899,15 +1899,18 @@ body.resizing {
 
 .floating-action-dock.dock-dragging {
   transition: none !important;
-  box-shadow: 0 0 20px rgba(254, 240, 138, 0.95), 0 8px 16px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: 0 0 24px rgba(254, 240, 138, 0.95), 0 12px 28px rgba(0, 0, 0, 0.85) !important;
   border-color: var(--gold-bright) !important;
+  z-index: 10000 !important;
+  cursor: grabbing !important;
+  pointer-events: none !important;
 }
 
 /* 1. Bottom Center (Default) */
 .floating-action-dock,
 .floating-action-dock.dock-pos-bottom {
   top: auto;
-  bottom: 20px;
+  bottom: 12px;
   left: 50%;
   right: auto;
   transform: translateX(-50%);
@@ -1917,7 +1920,7 @@ body.resizing {
 
 /* 2. Top Center */
 .floating-action-dock.dock-pos-top {
-  top: 20px;
+  top: 12px;
   bottom: auto;
   left: 50%;
   right: auto;
@@ -1930,7 +1933,7 @@ body.resizing {
 .floating-action-dock.dock-pos-left {
   top: 50%;
   bottom: auto;
-  left: 20px;
+  left: 12px;
   right: auto;
   transform: translateY(-50%);
   flex-direction: column;
@@ -1942,7 +1945,7 @@ body.resizing {
   top: 50%;
   bottom: auto;
   left: auto;
-  right: 20px;
+  right: 12px;
   transform: translateY(-50%);
   flex-direction: column;
   padding: 6px 4px;
@@ -2001,16 +2004,10 @@ body.resizing {
 }
 
 /* ------------------------------------------------------------------------
-   DOCK SNAP DROP TARGET INDICATORS
+   DOCK SNAP DROP TARGET INDICATORS (Hidden - magnetic docking used)
    ------------------------------------------------------------------------ */
 .dock-snap-indicators {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none !important;
-  z-index: 490;
+  display: none !important;
 }
 
 .dock-snap-zone {
@@ -6089,19 +6086,29 @@ body.resizing {
     display: flex;
   }
 
-  /* Stage Pane takes full screen width on mobile */
+  /* Workspace Main fills exactly the area between Header and Mobile Bottom Nav */
+  .workspace-main {
+    width: 100% !important;
+    height: calc(100vh - var(--header-height) - var(--mobile-nav-height)) !important;
+    height: calc(100dvh - var(--header-height) - var(--mobile-nav-height)) !important;
+    overflow: hidden !important;
+  }
+
+  /* Stage Pane takes full available workspace without bottom overflow */
   .stage-main,
   .panel-stage {
     width: 100% !important;
+    height: 100% !important;
     flex: 1 1 100% !important;
-    padding-bottom: var(--mobile-nav-height);
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
   }
 
   /* Floating Action Dock on Mobile (Snappable to Bottom, Top, Left, Right) */
   .floating-action-dock,
   .floating-action-dock.dock-pos-bottom {
     top: auto !important;
-    bottom: calc(var(--mobile-nav-height) + 10px) !important;
+    bottom: 8px !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) scale(0.95) !important;
@@ -6109,7 +6116,7 @@ body.resizing {
   }
 
   .floating-action-dock.dock-pos-top {
-    top: calc(var(--header-height) + 10px) !important;
+    top: 8px !important;
     bottom: auto !important;
     left: 50% !important;
     right: auto !important;
@@ -6428,9 +6435,13 @@ body.mode-play .workspace-main {
   position: fixed !important;
   inset: 0 !important;
   width: 100vw !important;
+  width: 100dvw !important;
   height: 100vh !important;
+  height: 100dvh !important;
   max-width: 100vw !important;
+  max-width: 100dvw !important;
   max-height: 100vh !important;
+  max-height: 100dvh !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -6446,7 +6457,13 @@ body.standalone-player .game-player-pane {
   position: fixed !important;
   inset: 0 !important;
   width: 100vw !important;
+  width: 100dvw !important;
   height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-width: 100dvw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
   z-index: 99999 !important;
   background-color: #060204;
   display: flex !important;
@@ -7774,6 +7791,7 @@ body.mode-play.player-orientation-portrait .player-canvas-container {
 @media (max-width: 600px) {
   body.mode-play.player-orientation-portrait .player-canvas-container {
     max-width: 100vw;
+    max-width: 100dvw;
     left: 0 !important;
     transform: none;
     border-left: none;

@@ -24,12 +24,15 @@ const DockController = {
     this.setPosition(nextPos);
   },
   calculateSnapZone(clientX, clientY) {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    const dLeft = clientX;
-    const dRight = w - clientX;
-    const dTop = clientY;
-    const dBottom = h - clientY;
+    if (clientX === undefined || clientY === undefined || isNaN(clientX) || isNaN(clientY)) {
+      return this.dockPosition || "bottom";
+    }
+    const w = window.innerWidth || 800;
+    const h = window.innerHeight || 600;
+    const dLeft = Math.max(0, clientX);
+    const dRight = Math.max(0, w - clientX);
+    const dTop = Math.max(0, clientY);
+    const dBottom = Math.max(0, h - clientY);
     const minD = Math.min(dLeft, dRight, dTop, dBottom);
     if (minD === dLeft) return "left";
     if (minD === dRight) return "right";
@@ -47,3 +50,11 @@ const DockController = {
     }
   }
 };
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => DockController.init());
+  } else {
+    setTimeout(() => DockController.init(), 0);
+  }
+}

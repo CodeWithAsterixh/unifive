@@ -36,6 +36,7 @@ function setup() {
   if (typeof ConfigController !== "undefined") ConfigController.init();
   if (typeof SpritePosesController !== "undefined") SpritePosesController.init();
   if (typeof MouseToolController !== "undefined") MouseToolController.init();
+  if (typeof DockController !== "undefined") DockController.init();
   if (typeof SplitterController !== "undefined") SplitterController.init();
   if (typeof AppModeController !== "undefined") AppModeController.init();
   if (typeof VariableManager !== "undefined") VariableManager.init();
