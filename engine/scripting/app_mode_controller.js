@@ -23,9 +23,16 @@ const AppModeController = {
   bindStagePreviewControls() {
     const btnToggleStage = document.getElementById("btn-toggle-code-stage");
     const previewSection = document.getElementById("code-preview-section");
-    if (btnToggleStage && previewSection) {
+    const stageSidebar = document.getElementById("code-stage-sidebar");
+    if (btnToggleStage) {
       btnToggleStage.addEventListener("click", () => {
-        const isCollapsed = previewSection.classList.toggle("collapsed");
+        let isCollapsed = false;
+        if (stageSidebar) {
+          isCollapsed = stageSidebar.classList.toggle("collapsed");
+        }
+        if (previewSection) {
+          previewSection.classList.toggle("collapsed", isCollapsed);
+        }
         const icon = btnToggleStage.querySelector("i");
         if (icon) {
           icon.className = isCollapsed ? "ph ph-caret-down" : "ph ph-caret-up";
@@ -63,11 +70,59 @@ const AppModeController = {
       this.updateWorkspaceTransform();
       if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(600, "sine", 0.05, 0.08);
     });
-    if (dropZone) dropZone.addEventListener("wheel", (event) => {
-      event.preventDefault();
-      this.zoom = Math.max(0.35, Math.min(2.5, this.zoom * (event.deltaY < 0 ? 1.1 : 0.9)));
-      this.updateWorkspaceTransform();
-    }, { passive: false });
+    if (dropZone) {
+      dropZone.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        this.zoom = Math.max(0.35, Math.min(2.5, this.zoom * (event.deltaY < 0 ? 1.1 : 0.9)));
+        this.updateWorkspaceTransform();
+      }, { passive: false });
+
+      let initialPinchDist = 0;
+      let initialZoom = 1.0;
+      let panStartX = 0;
+      let panStartY = 0;
+      let initialPanX = 0;
+      let initialPanY = 0;
+      let isDropZonePanning = false;
+
+      dropZone.addEventListener("touchstart", (e) => {
+        if (e.target.closest(".code-block-item, .code-block-input, .code-block-select, button")) return;
+        if (e.touches.length === 2) {
+          isDropZonePanning = false;
+          initialPinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          initialZoom = this.zoom;
+          if (e.cancelable) e.preventDefault();
+        } else if (e.touches.length === 1) {
+          isDropZonePanning = true;
+          panStartX = e.touches[0].clientX;
+          panStartY = e.touches[0].clientY;
+          initialPanX = this.panX;
+          initialPanY = this.panY;
+        }
+      }, { passive: false });
+
+      dropZone.addEventListener("touchmove", (e) => {
+        if (e.touches.length === 2 && initialPinchDist > 0) {
+          const currentDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          const scale = currentDist / initialPinchDist;
+          this.zoom = Math.max(0.35, Math.min(2.5, initialZoom * scale));
+          this.updateWorkspaceTransform();
+          if (e.cancelable) e.preventDefault();
+        } else if (e.touches.length === 1 && isDropZonePanning) {
+          const dx = e.touches[0].clientX - panStartX;
+          const dy = e.touches[0].clientY - panStartY;
+          this.panX = initialPanX + dx;
+          this.panY = initialPanY + dy;
+          this.updateWorkspaceTransform();
+          if (e.cancelable) e.preventDefault();
+        }
+      }, { passive: false });
+
+      dropZone.addEventListener("touchend", (e) => {
+        if (e.touches.length < 2) initialPinchDist = 0;
+        if (e.touches.length === 0) isDropZonePanning = false;
+      });
+    }
   },
 
   handleModeClick(e) {

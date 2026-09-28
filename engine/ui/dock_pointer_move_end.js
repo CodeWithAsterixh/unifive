@@ -21,11 +21,14 @@ const DockPointerMoveEnd = {
         for (const z of indicators.querySelectorAll(".dock-snap-zone")) z.classList.remove("active-zone");
       }
       if (state.hasMoved) {
-        const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-        const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+        const clientX = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : (e.clientX || state.startX);
+        const clientY = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : (e.clientY || state.startY);
         const finalPos = controller.calculateSnapZone(clientX, clientY);
         controller.setPosition(finalPos);
         if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(540, "square", 0.05, 0.08);
+      } else {
+        controller.cyclePosition();
+        if (typeof SoundEngine !== "undefined") SoundEngine.playChiptuneTone(520, "sine", 0.04, 0.07);
       }
     }
     window.addEventListener("mousemove", onMove);

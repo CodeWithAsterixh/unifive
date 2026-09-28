@@ -15,9 +15,42 @@ const BlockDragSnap = {
 
   init() {
     const workspace = document.getElementById("code-workspace-blocks");
-    if (workspace) workspace.addEventListener("mousedown", this.handleMouseDown.bind(this));
+    if (workspace) {
+      workspace.addEventListener("mousedown", this.handleMouseDown.bind(this));
+      workspace.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          this.handleMouseDown({
+            target: e.target,
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            preventDefault: () => { if (e.cancelable) e.preventDefault(); }
+          });
+        }
+      }, { passive: false });
+    }
     window.addEventListener("mousemove", this.handleMouseMove.bind(this));
     window.addEventListener("mouseup", this.handleMouseUp.bind(this));
+
+    window.addEventListener("touchmove", (e) => {
+      if (this.dragState.isDragging && e.touches.length === 1) {
+        this.handleMouseMove({
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY
+        });
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
+
+    window.addEventListener("touchend", (e) => {
+      if (this.dragState.isDragging) {
+        const touch = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : null;
+        this.handleMouseUp({
+          clientX: touch ? touch.clientX : 0,
+          clientY: touch ? touch.clientY : 0
+        });
+      }
+    });
   },
 
   getDescendants(startBlock, scripts) {
@@ -90,6 +123,20 @@ const BlockDragSnap = {
   },
 
   startPaletteDrag(block, event, paletteElement = null) {
+    // Auto-close sidebar on mobile as soon as a block drag starts
+    if (typeof MobileNavigationController !== "undefined") {
+      MobileNavigationController.closeDrawer();
+    }
+    const controls = document.getElementById("controls-pane");
+    const codePane = document.getElementById("code-toolbox-pane");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    if (controls) controls.classList.remove("drawer-open");
+    if (codePane) codePane.classList.remove("drawer-open");
+    if (backdrop) {
+      backdrop.classList.remove("active");
+      backdrop.style.display = "none";
+    }
+
     const inputEls = paletteElement ? Array.from(paletteElement.querySelectorAll(".code-block-input, .code-block-select")) : [];
     const inputs = inputEls.length > 0
       ? inputEls.map(el => (el.tagName === "SELECT" || el.value !== undefined) ? el.value : el.textContent.trim())

@@ -253,6 +253,7 @@ const BlockPalette = {
       let onMouseMove = null;
       let onMouseUp = null;
 
+      // Mouse drag handlers
       element.addEventListener("mousedown", (event) => {
         if (event.button !== 0) return;
         if (event.target.closest(".code-block-input, .code-block-select, select, input, option")) {
@@ -269,6 +270,9 @@ const BlockPalette = {
             isDragging = true;
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
+            if (typeof MobileNavigationController !== "undefined") {
+              MobileNavigationController.closeDrawer();
+            }
             if (typeof BlockDragSnap !== "undefined") {
               BlockDragSnap.startPaletteDrag(block, e, element);
             }
@@ -285,6 +289,68 @@ const BlockPalette = {
 
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
+      });
+
+      // Touch drag handlers for mobile
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let lastTouchX = 0;
+      let lastTouchY = 0;
+      let isTouchDragging = false;
+
+      element.addEventListener("touchstart", (e) => {
+        if (e.target.closest(".code-block-input, .code-block-select, select, input, option")) return;
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        isTouchDragging = false;
+      }, { passive: false });
+
+      element.addEventListener("touchmove", (e) => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        const dist = Math.hypot(touch.clientX - touchStartX, touch.clientY - touchStartY);
+
+        if (dist > 5 && !isTouchDragging) {
+          isTouchDragging = true;
+          // Auto-close sidebar on mobile as soon as block drag starts
+          if (typeof MobileNavigationController !== "undefined") {
+            MobileNavigationController.closeDrawer();
+          }
+          if (typeof BlockDragSnap !== "undefined") {
+            BlockDragSnap.startPaletteDrag(block, { clientX: touch.clientX, clientY: touch.clientY }, element);
+          }
+        }
+
+        if (isTouchDragging && typeof BlockDragSnap !== "undefined") {
+          BlockDragSnap.positionGhost({ clientX: touch.clientX, clientY: touch.clientY });
+          if (e.cancelable) e.preventDefault();
+        }
+      }, { passive: false });
+
+      element.addEventListener("touchend", () => {
+        if (isTouchDragging) {
+          if (typeof BlockDragSnap !== "undefined") {
+            BlockDragSnap.handleMouseUp({ clientX: lastTouchX, clientY: lastTouchY });
+          }
+        } else if (Math.hypot(lastTouchX - touchStartX, lastTouchY - touchStartY) <= 5) {
+          this.executePaletteBlock(block, element);
+        }
+        isTouchDragging = false;
+      });
+
+      element.addEventListener("touchcancel", () => {
+        if (isTouchDragging) {
+          if (typeof BlockDragSnap !== "undefined") {
+            BlockDragSnap.handleMouseUp({ clientX: -9999, clientY: -9999 });
+          }
+        }
+        isTouchDragging = false;
       });
     }
 

@@ -77,7 +77,7 @@ body.resizing {
   align-items: center;
   justify-content: space-between;
   padding: 0 0.85rem;
-  z-index: 100;
+  z-index: 1300;
   position: relative;
 }
 
@@ -5098,11 +5098,11 @@ body.resizing {
 /* Sidebar Backdrop Overlay */
 .sidebar-drawer-backdrop {
   position: fixed;
-  top: 0;
+  top: var(--header-height);
   left: 0;
   width: 100vw;
-  height: 100vh;
-  height: 100dvh;
+  height: calc(100vh - var(--header-height) - var(--mobile-nav-height));
+  height: calc(100dvh - var(--header-height) - var(--mobile-nav-height));
   background-color: rgba(13, 2, 5, 0.75);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -5137,7 +5137,7 @@ body.resizing {
   border-top: 3px solid var(--burgundy-darkest);
   box-shadow: inset 0 2px 0px var(--burgundy-base), 0 -4px 16px rgba(0, 0, 0, 0.5);
   display: none;
-  z-index: 1100;
+  z-index: 1300;
   align-items: stretch;
   justify-content: space-around;
   padding: 4px 8px;
@@ -6066,11 +6066,11 @@ body.resizing {
   /* Off-Canvas Slide-out Controls Panel */
   .panel-controls {
     position: fixed !important;
-    top: 0 !important;
+    top: var(--header-height) !important;
     left: 0 !important;
     width: min(88vw, 360px) !important;
-    height: 100vh !important;
-    height: 100dvh !important;
+    height: calc(100vh - var(--header-height) - var(--mobile-nav-height)) !important;
+    height: calc(100dvh - var(--header-height) - var(--mobile-nav-height)) !important;
     z-index: 1200 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -6097,10 +6097,42 @@ body.resizing {
     padding-bottom: var(--mobile-nav-height);
   }
 
-  /* Floating Dock offset above Mobile Bottom Nav */
-  .floating-action-dock {
+  /* Floating Action Dock on Mobile (Snappable to Bottom, Top, Left, Right) */
+  .floating-action-dock,
+  .floating-action-dock.dock-pos-bottom {
+    top: auto !important;
     bottom: calc(var(--mobile-nav-height) + 10px) !important;
-    transform: translateX(-50%) scale(0.95);
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) scale(0.95) !important;
+    flex-direction: row !important;
+  }
+
+  .floating-action-dock.dock-pos-top {
+    top: calc(var(--header-height) + 10px) !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) scale(0.95) !important;
+    flex-direction: row !important;
+  }
+
+  .floating-action-dock.dock-pos-left {
+    top: 50% !important;
+    bottom: auto !important;
+    left: 8px !important;
+    right: auto !important;
+    transform: translateY(-50%) scale(0.95) !important;
+    flex-direction: column !important;
+  }
+
+  .floating-action-dock.dock-pos-right {
+    top: 50% !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: 8px !important;
+    transform: translateY(-50%) scale(0.95) !important;
+    flex-direction: column !important;
   }
 
   /* Floating Sprite Poses Panel on Mobile */
@@ -6119,11 +6151,11 @@ body.resizing {
   .panel-code-toolbox,
   .code-toolbox-panel {
     position: fixed !important;
-    top: 0 !important;
+    top: var(--header-height) !important;
     left: 0 !important;
     width: min(88vw, 340px) !important;
-    height: 100vh !important;
-    height: 100dvh !important;
+    height: calc(100vh - var(--header-height) - var(--mobile-nav-height)) !important;
+    height: calc(100dvh - var(--header-height) - var(--mobile-nav-height)) !important;
     z-index: 1200 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
@@ -6197,22 +6229,26 @@ body.resizing {
     box-shadow: 4px 4px 0px #000000, 0 6px 18px rgba(0, 0, 0, 0.75) !important;
     display: flex !important;
     flex-direction: column !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    overflow: hidden !important;
+  }
+
+  .code-stage-sidebar.collapsed {
+    width: auto !important;
+    max-height: 38px !important;
+    height: 38px !important;
+    overflow: hidden !important;
+  }
+
+  .code-stage-sidebar.collapsed .code-section-preview {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-bottom: none !important;
   }
 
   .code-stage-sidebar.collapsed .code-preview-canvas-box,
   .code-stage-sidebar.collapsed .code-section-objects {
     display: none !important;
-  }
-
-  .code-stage-sidebar.collapsed {
-    width: auto !important;
-    max-height: 42px !important;
-  }
-
-  .code-stage-sidebar.collapsed .code-section-preview {
-    height: auto !important;
-    border-bottom: none !important;
   }
 
   .code-section-preview {
@@ -7744,4 +7780,31 @@ body.mode-play.player-orientation-portrait .player-canvas-container {
     border-right: none;
   }
 }
+
+/* Touch interaction optimizations for mobile stage canvas, create palette, and code workspace */
+#canvas-container,
+#canvas-container canvas,
+.stage-pane canvas,
+#code-preview-canvas-box canvas {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#code-drop-zone {
+  touch-action: none;
+}
+
+.create-item-card,
+.code-block-item {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.create-touch-drag-ghost {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
 

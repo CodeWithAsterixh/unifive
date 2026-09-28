@@ -41,7 +41,9 @@ const DockController = {
     if (!indicators) return;
     const zones = indicators.querySelectorAll(".dock-snap-zone");
     for (const z of zones) {
-      z.classList.toggle("active-zone", z.getAttribute("data-zone") === pos);
+      const match = z.getAttribute("data-target") === pos || z.getAttribute("data-zone") === pos || z.classList.contains("snap-" + pos);
+      z.classList.toggle("active", match);
+      z.classList.toggle("active-zone", match);
     }
   }
 };

@@ -6,9 +6,10 @@ const ViewController = {
 
   init() {
     document.addEventListener("click", (e) => {
-      const btn = e.target.closest("#btn-view-sidefacing, #btn-view-topdown");
+      const btn = e.target.closest(".btn-view-mode, [data-view]");
       if (!btn) return;
-      this.setView(btn.id.includes("sidefacing") ? "sidefacing" : "topdown");
+      const view = btn.getAttribute("data-view") || (btn.classList.contains("btn-view-sidefacing") ? "sidefacing" : "topdown");
+      this.setView(view);
     });
   },
 
@@ -16,10 +17,15 @@ const ViewController = {
     if (this.currentView === viewId) return;
     if (typeof AsyncSceneStore !== "undefined") AsyncSceneStore.saveCurrentScene();
     this.currentView = viewId;
-    const btnSide = document.getElementById("btn-view-sidefacing");
-    const btnTop = document.getElementById("btn-view-topdown");
-    if (btnSide) btnSide.classList.toggle("active", viewId === "sidefacing");
-    if (btnTop) btnTop.classList.toggle("active", viewId === "topdown");
+
+    // Synchronize all view switch buttons across desktop header and mobile sidebar
+    document.querySelectorAll(".btn-view-sidefacing, [data-view='sidefacing']").forEach(el => {
+      el.classList.toggle("active", viewId === "sidefacing");
+    });
+    document.querySelectorAll(".btn-view-topdown, [data-view='topdown']").forEach(el => {
+      el.classList.toggle("active", viewId === "topdown");
+    });
+
     if (typeof CreatePalette !== "undefined" && typeof CreatePanelController !== "undefined") {
       CreatePalette.renderCategories(CreatePanelController);
     }

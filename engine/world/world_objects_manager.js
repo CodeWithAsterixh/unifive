@@ -133,7 +133,7 @@ const WorldObjectsManager = {
     return item;
   },
 
-  addItemFromPalette(assetData) {
-    return this.addItem(assetData);
+  addItemFromPalette(assetData, x, y) {
+    return this.addItem(assetData, x, y);
   }
 };

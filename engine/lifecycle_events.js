@@ -30,8 +30,8 @@ function bindCanvasEvents(canvasEl) {
   });
   window.addEventListener("touchmove", function(e) {
     if (typeof LifecycleTouchEvents !== "undefined") LifecycleTouchEvents.handleTouchMove(e, canvasEl);
-  }, { passive: true });
-  window.addEventListener("touchend", function() {
-    if (typeof LifecycleTouchEvents !== "undefined") LifecycleTouchEvents.handleTouchEnd();
+  }, { passive: false });
+  window.addEventListener("touchend", function(e) {
+    if (typeof LifecycleTouchEvents !== "undefined") LifecycleTouchEvents.handleTouchEnd(e);
   });
 }
